@@ -22,7 +22,10 @@ export const useAuthStore = defineStore('auth', () => {
 
   async function signInWithGoogle() {
     await supabase.auth.signInWithOAuth({
-      provider: 'google'
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}`,
+      }
     })
   }
 
