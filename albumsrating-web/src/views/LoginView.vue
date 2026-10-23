@@ -11,6 +11,9 @@ const authStore = useAuthStore()
         AlbumsRating
       </h1>
 
+      <p>User :</p>
+      <pre>{{ authStore.user }}</pre>
+
       <button
         class="rounded bg-orange-500 px-6 py-3 text-white hover:bg-orange-600"
         @click="authStore.signInWithGoogle()"
