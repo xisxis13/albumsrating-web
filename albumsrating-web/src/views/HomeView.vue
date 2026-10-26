@@ -24,6 +24,13 @@ onMounted(() => {
       </p>
 
       <RouterLink
+        to="/search"
+        class="px-6 py-3 rounded-full border border-outline-variant-light text-center label-large text-on-surface-variant-light hover:border-on-surface-light hover:text-on-surface-light"
+      >
+        Rechercher un album
+      </RouterLink>
+
+      <RouterLink
         to="/profile"
         class="px-6 py-3 rounded-full border border-outline-variant-light text-center label-large text-on-surface-variant-light hover:border-on-surface-light hover:text-on-surface-light"
       >
