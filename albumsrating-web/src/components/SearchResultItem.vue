@@ -1,11 +1,26 @@
 <script setup lang="ts">
+import type { PropType } from 'vue'
+
+interface Artist {
+  name: string,
+}
+
+interface Album {
+  spotifyId: string
+  title: string
+  coverUrl?: string | null
+  artists: Artist[]
+  releaseDate: string
+  totalTracks: number
+}
+
 const props = defineProps({
   to: {
     type: String,
     required: true,
   },
   album: {
-    type: Object,
+    type: Object as PropType<Album>,
     required: true,
   },
   isInCollection: {
