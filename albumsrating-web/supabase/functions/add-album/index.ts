@@ -1,34 +1,6 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 import { corsHeaders, json } from '../_shared/http.ts'
-import { spotifyGet } from '../_shared/spotify.ts'
-
-interface SpotifyArtist {
-  id: string
-  name: string
-}
-
-interface SpotifyTrack {
-  id: string
-  name: string
-  track_number: number
-  disc_number: number
-  duration_ms: number
-  artists: SpotifyArtist[]
-}
-
-interface SpotifyAlbum {
-  id: string
-  name: string
-  album_type: string
-  release_date: string
-  images?: { url: string }[]
-  artists: SpotifyArtist[]
-  tracks: { items: SpotifyTrack[]; total: number }
-}
-
-function mapAlbumType(type: string): string {
-  return ['album', 'single', 'compilation'].includes(type) ? type : 'album'
-}
+import { fetchFullAlbum, mapAlbumType } from '../_shared/spotify.ts'
 
 function check<T>(result: { data: T; error: { message: string } | null }): T {
   if (result.error) throw new Error(result.error.message)
@@ -53,15 +25,7 @@ async function ensureAlbumInCatalog(admin: SupabaseClient, spotifyId: string): P
     if ((count ?? 0) > 0) return existing.id
   }
 
-  const album = await spotifyGet<SpotifyAlbum>(`/albums/${spotifyId}`)
-  const tracks = [...album.tracks.items]
-  while (tracks.length < album.tracks.total) {
-    const page = await spotifyGet<{ items: SpotifyTrack[] }>(
-      `/albums/${spotifyId}/tracks?limit=50&offset=${tracks.length}`,
-    )
-    if (page.items.length === 0) break
-    tracks.push(...page.items)
-  }
+  const { album, tracks } = await fetchFullAlbum(spotifyId)
 
   const artistNames = new Map<string, string>()
   for (const a of [...album.artists, ...tracks.flatMap((t) => t.artists)]) {

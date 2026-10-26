@@ -60,23 +60,28 @@ function remove(item: CollectionItem) {
           :key="item.reviewId"
           class="flex items-center gap-4 p-3 rounded-medium bg-surface-container-low-light"
         >
-          <img
-            v-if="item.album.coverUrl"
-            :src="item.album.coverUrl"
-            :alt="`Pochette de ${item.album.title}`"
-            class="aspect-square w-16 rounded-small object-cover"
-          />
-          <div v-else class="aspect-square w-16 rounded-small bg-surface-container-high-light" />
+          <RouterLink
+            :to="{ name: 'album', params: { spotifyId: item.album.spotifyId } }"
+            class="flex items-center flex-1 min-w-0 gap-4 cursor-pointer"
+          >
+            <img
+              v-if="item.album.coverUrl"
+              :src="item.album.coverUrl"
+              :alt="`Pochette de ${item.album.title}`"
+              class="aspect-square w-16 rounded-small object-cover"
+            />
+            <div v-else class="aspect-square w-16 rounded-small bg-surface-container-high-light" />
 
-          <div class="flex flex-col flex-1 min-w-0">
-            <span class="title-medium truncate">{{ item.album.title }}</span>
-            <span class="body-medium text-on-surface-variant-light truncate">
-              {{ item.album.artists.join(', ') }}
-            </span>
-            <span class="body-small text-on-surface-variant-light">
-              {{ item.album.releaseYear }}
-            </span>
-          </div>
+            <div class="flex flex-col flex-1 min-w-0">
+              <span class="title-medium truncate">{{ item.album.title }}</span>
+              <span class="body-medium text-on-surface-variant-light truncate">
+                {{ item.album.artists.join(', ') }}
+              </span>
+              <span class="body-small text-on-surface-variant-light">
+                {{ item.album.releaseYear }}
+              </span>
+            </div>
+          </RouterLink>
 
           <button
             class="px-4 py-2 rounded-full border border-outline-variant-light label-medium text-on-surface-variant-light cursor-pointer hover:border-error-light hover:text-error-light"

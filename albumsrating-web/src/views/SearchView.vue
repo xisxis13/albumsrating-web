@@ -67,23 +67,28 @@ function formatYear(date: string) {
           :key="album.spotifyId"
           class="flex items-center gap-4 p-3 rounded-medium bg-surface-container-low-light"
         >
-          <img
-            v-if="album.coverUrl"
-            :src="album.coverUrl"
-            :alt="`Pochette de ${album.title}`"
-            class="aspect-square w-16 rounded-small object-cover"
-          />
-          <div v-else class="aspect-square w-16 rounded-small bg-surface-container-high-light" />
+          <RouterLink
+            :to="{ name: 'album', params: { spotifyId: album.spotifyId } }"
+            class="flex items-center flex-1 min-w-0 gap-4"
+          >
+            <img
+              v-if="album.coverUrl"
+              :src="album.coverUrl"
+              :alt="`Pochette de ${album.title}`"
+              class="aspect-square w-16 rounded-small object-cover"
+            />
+            <div v-else class="aspect-square w-16 rounded-small bg-surface-container-high-light" />
 
-          <div class="flex flex-col flex-1 min-w-0">
-            <span class="title-medium truncate">{{ album.title }}</span>
-            <span class="body-medium text-on-surface-variant-light truncate">
-              {{ album.artists.map((a) => a.name).join(', ') }}
-            </span>
-            <span class="body-small text-on-surface-variant-light">
-              {{ formatYear(album.releaseDate) }} · {{ album.totalTracks }} titres
-            </span>
-          </div>
+            <div class="flex flex-col flex-1 min-w-0">
+              <span class="title-medium truncate">{{ album.title }}</span>
+              <span class="body-medium text-on-surface-variant-light truncate">
+                {{ album.artists.map((a) => a.name).join(', ') }}
+              </span>
+              <span class="body-small text-on-surface-variant-light">
+                {{ formatYear(album.releaseDate) }} · {{ album.totalTracks }} titres
+              </span>
+            </div>
+          </RouterLink>
 
           <span
             v-if="collectionStore.has(album.spotifyId)"
@@ -99,7 +104,7 @@ function formatYear(date: string) {
           >
             {{ collectionStore.isAdding(album.spotifyId) ? 'Ajout…' : 'Ajouter' }}
           </button>
-        </li>
+          </li>
       </ul>
 
       <p v-if="searchStore.loading" class="body-medium text-on-surface-variant-light">
