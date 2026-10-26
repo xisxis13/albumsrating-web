@@ -1,1 +1,131 @@
-@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@1..144,1..1000&display=swap');
+@import 'tailwindcss';
+
+@theme {
+  /* Light colors */
+  --color-primary-light: #5A5891;
+  --color-on-primary-light: #FFFFFF;
+  --color-primary-container-light: #E3DFFF;
+  --color-on-primary-container-light: #434078;
+  --color-secondary-light: #5E5C71;
+  --color-on-secondary-light: #FFFFFF;
+  --color-secondary-container-light: #E3E0F9;
+  --color-on-secondary-container-light: #464559;
+  --color-tertiary-light: #7A5368;
+  --color-on-tertiary-light: #FFFFFF;
+  --color-tertiary-container-light: #FFD8EA;
+  --color-on-tertiary-container-light: #603B4F;
+  --color-error-light: #BA1A1A;
+  --color-on-error-light: #FFFFFF;
+  --color-error-container-light: #FFDAD6;
+  --color-on-error-container-light: #93000A;
+  --color-surface-light: #FCF8FF;
+  --color-on-surface-light: #1C1B21;
+  --color-surface-variant-light: #E4E1EC;
+  --color-on-surface-variant-light: #47464F;
+  --color-outline-light: #787680;
+  --color-outline-variant-light: #C8C5D0;
+  --color-surface-container-lowest-light: #FFFFFF;
+  --color-surface-container-low-light: #F6F2FA;
+  --color-surface-container-light: #F0ECF4;
+  --color-surface-container-high-light: #EAE7EF;
+  --color-surface-container-highest-light: #E5E1E9;
+
+  /* Dark colors */
+
+
+  /* Radius */
+  --radius-extra-small: 4px;
+  --radius-small: 12px;
+  --radius-medium: 16px;
+  --radius-large: 28px;
+  --radius-extra-large: 40px;
+
+  /* Font */
+  --font-sans: 'Google Sans Flex', sans-serif;
+
+  /* Typo */
+  --text-display-large: 3.5rem;
+  --text-display-medium: 2.75rem;
+  --text-display-small: 2.25rem;
+
+  --text-headline-large: 2rem;
+  --text-headline-medium: 1.75rem;
+  --text-headline-small: 1.5rem;
+
+  --text-title-large: 1.375rem;
+  --text-title-medium: 1rem;
+  --text-title-small: 0.875rem;
+
+  --text-body-large: 1rem;
+  --text-body-medium: 0.875rem;
+  --text-body-small: 0.75rem;
+
+  --text-label-large: 0.875rem;
+  --text-label-medium: 0.75rem;
+  --text-label-small: 0.6875rem;
+}
+
+@layer components {
+  .display-large {
+    @apply text-display-large leading-tight font-bold;
+  }
+
+  .display-medium {
+    @apply text-display-medium leading-tight font-bold;
+  }
+
+  .display-small {
+    @apply text-display-small leading-tight font-bold;
+  }
+
+  .headline-large {
+    @apply text-headline-large leading-tight font-bold;
+  }
+
+  .headline-medium {
+    @apply text-headline-medium leading-snug font-bold;
+  }
+
+  .headline-small {
+    @apply text-headline-small leading-snug font-semibold;
+  }
+
+  .title-large {
+    @apply text-title-large leading-snug font-semibold;
+  }
+
+  .title-medium {
+    @apply text-title-medium leading-normal font-medium;
+  }
+
+  .title-small {
+    @apply text-title-small leading-normal font-medium;
+  }
+
+  .body-large {
+    @apply text-body-large leading-relaxed font-normal;
+  }
+
+  .body-medium {
+    @apply text-body-medium leading-relaxed font-normal;
+  }
+
+  .body-small {
+    @apply text-body-small leading-normal font-normal;
+  }
+
+  .label-large {
+    @apply text-label-large leading-normal font-medium;
+  }
+
+  .label-medium {
+    @apply text-label-medium leading-normal font-medium;
+  }
+
+  .label-small {
+    @apply text-label-small leading-normal font-medium;
+  }
+}
+
+@variant dark (&:where(.dark, .dark *));
