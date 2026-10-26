@@ -447,3 +447,14 @@ entrypoint = "./functions/get-album/index.ts"
 # Specifies static files to be bundled with the function. Supports glob patterns.
 # For example, if you want to serve static HTML pages in your function:
 # static_files = [ "./functions/get-album/*.html" ]
+
+[functions.ensure-album]
+enabled = true
+verify_jwt = false
+import_map = "./functions/ensure-album/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/ensure-album/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/ensure-album/*.html" ]

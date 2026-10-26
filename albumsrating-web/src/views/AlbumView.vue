@@ -1,8 +1,12 @@
 <script setup lang="ts">
 import { computed, onMounted, watch } from 'vue'
-import { RouterLink, useRoute, useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useAlbumDetailStore } from '@/stores/albumDetail'
 import { useCollectionStore } from '@/stores/collection'
+import type { AlbumTrack } from '@/stores/albumDetail'
+import { ArrowLeft } from 'lucide-vue-next'
+import NavigationRail from '@/components/NavigationRail.vue'
+import TrackItem from '@/components/TrackItem.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -14,6 +18,20 @@ const spotifyId = computed(() => String(route.params.spotifyId))
 function goBack() {
   if (window.history.state?.back) router.back()
   else router.push('/collection')
+}
+
+function trackArtists(track: AlbumTrack): string[] {
+  const albumArtists = albumStore.album?.artists ?? []
+  const same =
+    track.artists.length === albumArtists.length &&
+    track.artists.every((name) => albumArtists.includes(name))
+  return same ? [] : track.artists
+}
+
+async function addToCollection() {
+  if (!albumStore.album) return
+  await collectionStore.addAlbum(albumStore.album.spotifyId)
+  await albumStore.fetchAlbum(spotifyId.value, true)
 }
 
 onMounted(() => {
@@ -42,24 +60,19 @@ const totalMinutes = computed(() => {
   const ms = (albumStore.album?.tracks ?? []).reduce((sum, t) => sum + (t.durationMs ?? 0), 0)
   return Math.round(ms / 60000)
 })
-
-function formatDuration(ms: number | null) {
-  if (ms === null) return ''
-  const totalSeconds = Math.round(ms / 1000)
-  const minutes = Math.floor(totalSeconds / 60)
-  const seconds = String(totalSeconds % 60).padStart(2, '0')
-  return `${minutes}:${seconds}`
-}
 </script>
 
 <template>
-  <main class="flex flex-col items-center min-h-dvh p-3 bg-surface-light">
-    <div class="flex flex-col w-full max-w-2xl p-6 gap-6 rounded-large bg-surface-container-lowest-light">
+  <main class="flex items-center justify-center h-dvh p-3 gap-3 bg-surface-light">
+    <NavigationRail />
+    
+    <div class="flex flex-col w-full h-full p-6 gap-6 rounded-large bg-surface-container-lowest-light overflow-scroll">
       <button
-        class="self-start label-large text-on-surface-variant-light hover:text-on-surface-light cursor-pointer"
+        class="flex items-center w-fit p-1 gap-2 rounded-full cursor-pointer"
         @click="goBack"
       >
-        ← Retour
+        <ArrowLeft class="text-on-surface-light" />
+        <span class="text-label-large text-on-surface-light">Retour</span>
       </button>
 
       <p v-if="albumStore.loading" class="body-medium text-on-surface-variant-light">
@@ -80,16 +93,16 @@ function formatDuration(ms: number | null) {
             v-if="albumStore.album.coverUrl"
             :src="albumStore.album.coverUrl"
             :alt="`Pochette de ${albumStore.album.title}`"
-            class="aspect-square w-full sm:w-48 rounded-medium object-cover"
+            class="aspect-square w-full sm:w-64 rounded-large object-cover"
           />
-          <div v-else class="aspect-square w-full sm:w-48 rounded-medium bg-surface-container-high-light" />
+          <div v-else class="aspect-square w-full sm:w-64 rounded-large bg-surface-container-high-light" />
 
           <div class="flex flex-col justify-end gap-2 min-w-0">
-            <span class="label-medium text-on-surface-variant-light">
+            <span class="text-title-medium text-on-surface-variant-light">
               {{ typeLabels[albumStore.album.albumType] ?? 'Album' }}
             </span>
-            <h1 class="headline-small">{{ albumStore.album.title }}</h1>
-            <span class="body-large text-on-surface-variant-light">
+            <h1 class="display-medium">{{ albumStore.album.title }}</h1>
+            <span class="title-large text-primary-light">
               {{ albumStore.album.artists.join(', ') }}
             </span>
             <span class="body-medium text-on-surface-variant-light">
@@ -99,7 +112,7 @@ function formatDuration(ms: number | null) {
 
             <div class="mt-2">
               <span
-                v-if="collectionStore.has(albumStore.album.spotifyId)"
+                v-if="albumStore.album.review"
                 class="inline-block px-4 py-2 rounded-full bg-secondary-container-light text-on-secondary-container-light label-medium"
               >
                 Dans ma collection
@@ -108,7 +121,7 @@ function formatDuration(ms: number | null) {
                 v-else
                 :disabled="collectionStore.isAdding(albumStore.album.spotifyId)"
                 class="px-4 py-2 rounded-full bg-primary-light text-on-primary-light label-medium cursor-pointer disabled:opacity-50 disabled:cursor-wait"
-                @click="collectionStore.addAlbum(albumStore.album.spotifyId)"
+                @click="addToCollection"
               >
                 {{ collectionStore.isAdding(albumStore.album.spotifyId) ? 'Ajout…' : 'Ajouter à ma collection' }}
               </button>
@@ -116,24 +129,21 @@ function formatDuration(ms: number | null) {
           </div>
         </div>
 
-        <section v-for="disc in discs" :key="disc.number" class="flex flex-col gap-1">
-          <h2 v-if="discs.length > 1" class="title-small mt-2 text-on-surface-variant-light">
+        <section v-for="disc in discs" :key="disc.number" class="flex flex-col gap-3">
+          <h2 v-if="discs.length > 1" class="title-small text-on-surface-light">
             Disque {{ disc.number }}
           </h2>
 
-          <ol class="flex flex-col">
+          <ol class="flex flex-col gap-0.5 rounded-large overflow-hidden">
             <li
               v-for="track in disc.tracks"
               :key="track.spotifyId"
-              class="flex items-center gap-4 px-3 py-3 rounded-small hover:bg-surface-container-low-light"
             >
-              <span class="w-6 text-right body-medium text-on-surface-variant-light">
-                {{ track.trackNumber }}
-              </span>
-              <span class="flex-1 body-large truncate">{{ track.title }}</span>
-              <span class="body-medium text-on-surface-variant-light">
-                {{ formatDuration(track.durationMs) }}
-              </span>
+              <TrackItem 
+                :track-number="track.trackNumber"
+                :track-title="track.title"
+                :artists="trackArtists(track)"
+              />
             </li>
           </ol>
         </section>
