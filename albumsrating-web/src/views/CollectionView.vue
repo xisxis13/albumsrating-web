@@ -2,6 +2,8 @@
 import { onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useCollectionStore, type CollectionItem } from '@/stores/collection'
+import NavigationRail from '@/components/NavigationRail.vue'
+import CollectionResultItem from '@/components/CollectionResultItem.vue'
 
 const collectionStore = useCollectionStore()
 
@@ -18,12 +20,10 @@ function remove(item: CollectionItem) {
 </script>
 
 <template>
-  <main class="flex flex-col items-center min-h-dvh p-3 bg-surface-light">
-    <div class="flex flex-col w-full max-w-2xl p-6 gap-6 rounded-large bg-surface-container-lowest-light">
-      <RouterLink to="/" class="label-large text-on-surface-variant-light hover:text-on-surface-light">
-        ← Retour
-      </RouterLink>
+  <main class="flex items-center justify-center h-dvh p-3 gap-3 bg-surface-light">
+    <NavigationRail /> 
 
+    <div class="flex flex-col w-full h-full p-6 gap-6 rounded-large bg-surface-container-lowest-light overflow-scroll">
       <div class="flex items-end justify-between gap-4">
         <h1 class="headline-small">Ma collection</h1>
         <span v-if="collectionStore.loaded" class="body-medium text-on-surface-variant-light">
@@ -54,41 +54,16 @@ function remove(item: CollectionItem) {
         </RouterLink>
       </div>
 
-      <ul v-else class="flex flex-col gap-3">
+      <ul v-else class="grid grid-cols-[repeat(auto-fill,minmax(210px,1fr))] gap-4">
         <li
           v-for="item in collectionStore.items"
           :key="item.reviewId"
-          class="flex items-center gap-4 p-3 rounded-medium bg-surface-container-low-light"
         >
-          <RouterLink
-            :to="{ name: 'album', params: { spotifyId: item.album.spotifyId } }"
-            class="flex items-center flex-1 min-w-0 gap-4 cursor-pointer"
-          >
-            <img
-              v-if="item.album.coverUrl"
-              :src="item.album.coverUrl"
-              :alt="`Pochette de ${item.album.title}`"
-              class="aspect-square w-16 rounded-small object-cover"
-            />
-            <div v-else class="aspect-square w-16 rounded-small bg-surface-container-high-light" />
-
-            <div class="flex flex-col flex-1 min-w-0">
-              <span class="title-medium truncate">{{ item.album.title }}</span>
-              <span class="body-medium text-on-surface-variant-light truncate">
-                {{ item.album.artists.join(', ') }}
-              </span>
-              <span class="body-small text-on-surface-variant-light">
-                {{ item.album.releaseYear }}
-              </span>
-            </div>
-          </RouterLink>
-
-          <button
-            class="px-4 py-2 rounded-full border border-outline-variant-light label-medium text-on-surface-variant-light cursor-pointer hover:border-error-light hover:text-error-light"
-            @click="remove(item)"
-          >
-            Retirer
-          </button>
+          <CollectionResultItem
+            :to="`/album/${item.album.spotifyId}`"
+            :album="item.album"
+            @remove="remove(item)"
+          />
         </li>
       </ul>
     </div>
