@@ -63,26 +63,26 @@ const totalMinutes = computed(() => {
 </script>
 
 <template>
-  <main class="flex items-center justify-center h-dvh p-3 gap-3 bg-surface-light">
+  <main class="flex items-center justify-center h-dvh p-3 gap-3 bg-surface">
     <NavigationRail />
     
-    <div class="flex flex-col w-full h-full p-6 gap-6 rounded-large bg-surface-container-lowest-light overflow-scroll">
+    <div class="flex flex-col w-full h-full p-6 gap-6 rounded-large bg-surface-container-lowest overflow-scroll">
       <button
-        class="flex items-center w-fit p-1 gap-2 rounded-full cursor-pointer hover:bg-surface-container-light"
+        class="flex items-center w-fit p-1 gap-2 rounded-full cursor-pointer hover:bg-surface-container"
         @click="goBack"
       >
-        <ArrowLeft class="text-on-surface-light" />
+        <ArrowLeft class="text-on-surface" />
       </button>
 
-      <p v-if="albumStore.loading" class="body-medium text-on-surface-variant-light">
+      <p v-if="albumStore.loading" class="body-medium text-on-surface-variant">
         Chargement…
       </p>
 
-      <p v-else-if="albumStore.error" class="body-medium text-error-light">
+      <p v-else-if="albumStore.error" class="body-medium text-error">
         {{ albumStore.error }}
       </p>
 
-      <p v-else-if="albumStore.notFound" class="body-medium text-on-surface-variant-light">
+      <p v-else-if="albumStore.notFound" class="body-medium text-on-surface-variant">
         Cet album est introuvable.
       </p>
 
@@ -94,17 +94,17 @@ const totalMinutes = computed(() => {
             :alt="`Pochette de ${albumStore.album.title}`"
             class="aspect-square w-full sm:w-64 rounded-large object-cover"
           />
-          <div v-else class="aspect-square w-full sm:w-64 rounded-large bg-surface-container-high-light" />
+          <div v-else class="aspect-square w-full sm:w-64 rounded-large bg-surface-container-high" />
 
           <div class="flex flex-col justify-end gap-2 min-w-0">
-            <span class="text-title-medium text-on-surface-variant-light">
+            <span class="text-title-medium text-on-surface-variant">
               {{ typeLabels[albumStore.album.albumType] ?? 'Album' }}
             </span>
-            <h1 class="display-medium">{{ albumStore.album.title }}</h1>
-            <span class="title-large text-primary-light">
+            <h1 class="display-medium text-on-surface">{{ albumStore.album.title }}</h1>
+            <span class="title-large text-primary">
               {{ albumStore.album.artists.join(', ') }}
             </span>
-            <span class="body-medium text-on-surface-variant-light">
+            <span class="body-medium text-on-surface-variant">
               {{ albumStore.album.releaseYear }} · {{ albumStore.album.tracks.length }} titres
               <template v-if="totalMinutes > 0"> · {{ totalMinutes }} min</template>
             </span>
@@ -112,14 +112,14 @@ const totalMinutes = computed(() => {
             <div class="mt-2">
               <span
                 v-if="albumStore.album.review"
-                class="inline-block px-4 py-2 rounded-full bg-secondary-container-light text-on-secondary-container-light label-medium"
+                class="inline-block px-4 py-2 rounded-full bg-secondary-container text-on-secondary-container label-medium"
               >
                 Dans ma collection
               </span>
               <button
                 v-else
                 :disabled="collectionStore.isAdding(albumStore.album.spotifyId)"
-                class="px-4 py-2 rounded-full bg-primary-light text-on-primary-light label-medium cursor-pointer disabled:opacity-50 disabled:cursor-wait"
+                class="px-4 py-2 rounded-full bg-primary text-on-primary label-medium cursor-pointer disabled:opacity-50 disabled:cursor-wait"
                 @click="addToCollection"
               >
                 {{ collectionStore.isAdding(albumStore.album.spotifyId) ? 'Ajout…' : 'Ajouter à ma collection' }}
@@ -129,7 +129,7 @@ const totalMinutes = computed(() => {
         </div>
 
         <section v-for="disc in discs" :key="disc.number" class="flex flex-col gap-3">
-          <h2 v-if="discs.length > 1" class="title-small text-on-surface-light">
+          <h2 v-if="discs.length > 1" class="title-small text-on-surface">
             Disque {{ disc.number }}
           </h2>
 

@@ -20,22 +20,22 @@ function remove(item: CollectionItem) {
 </script>
 
 <template>
-  <main class="flex items-center justify-center h-dvh p-3 gap-3 bg-surface-light">
+  <main class="flex items-center justify-center h-dvh p-3 gap-3 bg-surface">
     <NavigationRail /> 
 
-    <div class="flex flex-col w-full h-full p-6 gap-6 rounded-large bg-surface-container-lowest-light overflow-scroll">
+    <div class="flex flex-col w-full h-full p-6 gap-6 rounded-large bg-surface-container-lowest overflow-scroll">
       <div class="flex items-end justify-between gap-4">
-        <h1 class="headline-small">Ma collection</h1>
-        <span v-if="collectionStore.loaded" class="body-medium text-on-surface-variant-light">
+        <h1 class="headline-small text-on-surface">Ma collection</h1>
+        <span v-if="collectionStore.loaded" class="body-medium text-on-surface-variant">
           {{ collectionStore.count }} album{{ collectionStore.count > 1 ? 's' : '' }}
         </span>
       </div>
 
-      <p v-if="collectionStore.loading && !collectionStore.loaded" class="body-medium text-on-surface-variant-light">
+      <p v-if="collectionStore.loading && !collectionStore.loaded" class="body-medium text-on-surface-variant">
         Chargement…
       </p>
 
-      <p v-if="collectionStore.error" class="body-medium text-error-light">
+      <p v-if="collectionStore.error" class="body-medium text-error">
         {{ collectionStore.error }}
       </p>
 
@@ -43,12 +43,12 @@ function remove(item: CollectionItem) {
         v-else-if="collectionStore.loaded && collectionStore.count === 0"
         class="flex flex-col items-start gap-4"
       >
-        <p class="body-medium text-on-surface-variant-light">
+        <p class="body-medium text-on-surface-variant">
           Votre collection est vide pour l'instant.
         </p>
         <RouterLink
           to="/search"
-          class="px-6 py-3 rounded-full bg-primary-light text-on-primary-light label-large"
+          class="px-6 py-3 rounded-full bg-primary text-on-primary label-large"
         >
           Rechercher un album
         </RouterLink>

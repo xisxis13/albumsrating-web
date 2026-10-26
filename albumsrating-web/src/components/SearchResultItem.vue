@@ -42,7 +42,7 @@ function formatYear(date: string) {
 
 <template>
   <div
-    class="flex flex-col flex-1 min-w-0 p-4 gap-3 rounded-large bg-surface-container-low-light"  
+    class="flex flex-col flex-1 min-w-0 p-4 gap-3 rounded-large bg-surface-container-low"  
   >
     <RouterLink
       :to="{ name: 'album', params: { spotifyId: album.spotifyId } }"
@@ -55,14 +55,14 @@ function formatYear(date: string) {
         class="aspect-square w-full rounded-medium object-cover"
       />
 
-      <div v-else class="aspect-square w-full rounded-medium bg-surface-container-high-light" />
+      <div v-else class="aspect-square w-full rounded-medium bg-surface-container-high" />
 
       <div class="flex flex-col flex-1">
-        <span class="title-medium truncate">{{ album.title }}</span>
-        <span class="body-medium text-on-surface-variant-light truncate">
+        <span class="title-medium text-on-surface truncate">{{ album.title }}</span>
+        <span class="body-medium text-on-surface-variant truncate">
           {{ album.artists.map((a) => a.name).join(', ') }}
         </span>
-        <span class="body-small text-on-surface-variant-light">
+        <span class="body-small text-on-surface-variant">
           {{ formatYear(album.releaseDate) }} · {{ album.totalTracks }} titres
         </span>
       </div>
@@ -71,7 +71,7 @@ function formatYear(date: string) {
 
     <span
       v-if="isInCollection"
-      class="flex items-center justify-center w-full px-4 py-3 rounded-full bg-primary-container-light text-on-primary-container-light label-medium whitespace-nowrap"
+      class="flex items-center justify-center w-full px-4 py-3 rounded-full bg-primary-container text-on-primary-container label-medium whitespace-nowrap"
     >
       Dans ma collection
     </span>
@@ -79,7 +79,7 @@ function formatYear(date: string) {
     <button
       v-else
       :disabled="isAdding"
-      class="flex items-center justify-center w-full px-4 py-3 rounded-full border border-outline-variant-light label-medium whitespace-nowrap text-on-surface-variant-light cursor-pointer hover:border-primary-light hover:text-primary-light disabled:opacity-50 disabled:cursor-wait"
+      class="flex items-center justify-center w-full px-4 py-3 rounded-full border border-outline-variant label-medium whitespace-nowrap text-on-surface-variant cursor-pointer hover:border-primary hover:text-primary disabled:opacity-50 disabled:cursor-wait"
       @click="emit('add')"
     >
       {{ isAdding ? 'Ajout…' : 'Ajouter' }}

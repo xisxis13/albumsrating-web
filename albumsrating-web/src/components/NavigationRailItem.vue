@@ -30,18 +30,18 @@ const isActive = computed(() => route.path === props.to)
   >
     <div 
       class="flex items-center justify-center w-14 h-8 rounded-full"
-      :class="isActive ? 'bg-primary-container-light' : 'bg-transparent'"
+      :class="isActive ? 'bg-primary-container' : 'bg-transparent'"
     >
       <component 
         :is="icon" 
         class="w-5 h-5" 
-        :class="isActive ? 'text-on-primary-container-light' : 'text-on-surface-variant-light'"
+        :class="isActive ? 'text-on-primary-container' : 'text-on-surface-variant'"
       />
     </div>
     
     <span 
       class="label-medium"
-      :class="isActive ? 'text-on-primary-container-light' : 'text-on-surface-variant-light'"
+      :class="isActive ? 'text-on-primary-container' : 'text-on-surface-variant'"
     >
       {{ label }}
     </span>

@@ -25,7 +25,7 @@ const emit = defineEmits(['remove'])
 
 <template>
   <div
-    class="flex flex-col flex-1 min-w-0 p-4 gap-3 rounded-large bg-surface-container-low-light"  
+    class="flex flex-col flex-1 min-w-0 p-4 gap-3 rounded-large bg-surface-container-low"  
   >
     <RouterLink
       :to="{ name: 'album', params: { spotifyId: album.spotifyId } }"
@@ -38,21 +38,21 @@ const emit = defineEmits(['remove'])
         class="aspect-square w-full rounded-medium object-cover"
       />
 
-      <div v-else class="aspect-square w-full rounded-medium bg-surface-container-high-light" />
+      <div v-else class="aspect-square w-full rounded-medium bg-surface-container-high" />
 
       <div class="flex flex-col flex-1">
-        <span class="title-medium truncate">{{ album.title }}</span>
-        <span class="body-medium text-on-surface-variant-light truncate">
+        <span class="title-medium text-on-surface truncate">{{ album.title }}</span>
+        <span class="body-medium text-on-surface-variant truncate">
           {{ album.artists.join(', ') }}
         </span>
-        <span class="body-small text-on-surface-variant-light">
+        <span class="body-small text-on-surface-variant">
           {{ album.releaseYear }} titres
         </span>
       </div>
     </RouterLink>
 
     <button
-      class="flex items-center justify-between w-full px-4 py-2 rounded-full border border-outline-variant-light text-on-surface-variant-light cursor-pointer hover:border-error-light hover:text-error-light"
+      class="flex items-center justify-between w-full px-4 py-2 rounded-full border border-outline-variant text-on-surface-variant cursor-pointer hover:border-error hover:text-error"
       @click="emit('remove')"
     >
       <span
