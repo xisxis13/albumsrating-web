@@ -31,6 +31,13 @@ onMounted(() => {
       </RouterLink>
 
       <RouterLink
+        to="/collection"
+        class="px-6 py-3 rounded-full border border-outline-variant-light text-center label-large text-on-surface-variant-light hover:border-on-surface-light hover:text-on-surface-light"
+      >
+        Ma collection
+      </RouterLink>
+
+      <RouterLink
         to="/profile"
         class="px-6 py-3 rounded-full border border-outline-variant-light text-center label-large text-on-surface-variant-light hover:border-on-surface-light hover:text-on-surface-light"
       >

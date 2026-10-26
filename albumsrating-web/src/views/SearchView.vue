@@ -1,10 +1,16 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useSearchStore } from '@/stores/search'
+import { useCollectionStore } from '@/stores/collection'
 
 const searchStore = useSearchStore()
+const collectionStore = useCollectionStore()
 const input = ref(searchStore.query)
+
+onMounted(() => {
+  collectionStore.fetchCollection()
+})
 
 function submit() {
   searchStore.search(input.value)
@@ -44,6 +50,10 @@ function formatYear(date: string) {
         {{ searchStore.error }}
       </p>
 
+      <p v-if="collectionStore.error" class="body-medium text-error-light">
+        {{ collectionStore.error }}
+      </p>
+
       <p
         v-else-if="searchStore.hasSearched && !searchStore.loading && searchStore.results.length === 0"
         class="body-medium text-on-surface-variant-light"
@@ -63,12 +73,9 @@ function formatYear(date: string) {
             :alt="`Pochette de ${album.title}`"
             class="aspect-square w-16 rounded-small object-cover"
           />
-          <div
-            v-else
-            class="aspect-square w-16 rounded-small bg-surface-container-high-light"
-          />
+          <div v-else class="aspect-square w-16 rounded-small bg-surface-container-high-light" />
 
-          <div class="flex flex-col min-w-0">
+          <div class="flex flex-col flex-1 min-w-0">
             <span class="title-medium truncate">{{ album.title }}</span>
             <span class="body-medium text-on-surface-variant-light truncate">
               {{ album.artists.map((a) => a.name).join(', ') }}
@@ -77,6 +84,21 @@ function formatYear(date: string) {
               {{ formatYear(album.releaseDate) }} · {{ album.totalTracks }} titres
             </span>
           </div>
+
+          <span
+            v-if="collectionStore.has(album.spotifyId)"
+            class="px-4 py-2 rounded-full bg-secondary-container-light text-on-secondary-container-light label-medium whitespace-nowrap"
+          >
+            Dans ma collection
+          </span>
+          <button
+            v-else
+            :disabled="collectionStore.isAdding(album.spotifyId)"
+            class="px-4 py-2 rounded-full border border-outline-variant-light label-medium whitespace-nowrap text-on-surface-variant-light cursor-pointer hover:border-on-surface-light hover:text-on-surface-light disabled:opacity-50 disabled:cursor-wait"
+            @click="collectionStore.addAlbum(album.spotifyId)"
+          >
+            {{ collectionStore.isAdding(album.spotifyId) ? 'Ajout…' : 'Ajouter' }}
+          </button>
         </li>
       </ul>
 
