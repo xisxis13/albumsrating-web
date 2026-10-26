@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
-import { RouterLink } from 'vue-router';
+import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 import { useProfileStore } from '@/stores/profile';
+import { ArrowLeft } from 'lucide-vue-next'
+import NavigationRail from '@/components/NavigationRail.vue';
 
+const router = useRouter()
 const authStore = useAuthStore()
 const profileStore = useProfileStore()
 
@@ -13,6 +16,11 @@ onMounted(() => {
   }
 })
 
+function goBack() {
+  if (window.history.state?.back) router.back()
+  else router.push('/')
+}
+
 function formatDate(value: string | null) {
   if (!value) return '-'
   return new Date(value).toLocaleDateString('fr-BE', { dateStyle: 'long' })
@@ -20,15 +28,18 @@ function formatDate(value: string | null) {
 </script>
 
 <template>
-  <main class="flex flex-col items-center justify-center h-dvh p-3 gap-6 bg-surface-light">
-    <div
-      class="flex flex-col w-full max-w-96 p-6 gap-6 rounded-large bg-surface-container-lowest-light"
-    >
-      <RouterLink to="/" class="label-large text-on-surface-variant-light hover:text-on-surface-light">
-        ← Retour
-      </RouterLink>
+  <main class="flex items-center justify-center h-dvh p-3 gap-3 bg-surface-light">
+    <NavigationRail />
 
-      <h1 class="headline-small">Profil</h1>
+    <div
+      class="flex flex-col w-full h-full p-6 gap-6 rounded-large bg-surface-container-lowest-light overflow-scroll"
+    >
+      <button
+        class="flex items-center w-fit p-1 gap-2 rounded-full cursor-pointer hover:bg-surface-container-light"
+        @click="goBack"
+      >
+        <ArrowLeft class="text-on-surface-light" />
+      </button>
 
       <p v-if="profileStore.loading" class="body-medium text-on-surface-variant-light">
         Chargement…
