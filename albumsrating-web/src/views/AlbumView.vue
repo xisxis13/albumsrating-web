@@ -68,11 +68,10 @@ const totalMinutes = computed(() => {
     
     <div class="flex flex-col w-full h-full p-6 gap-6 rounded-large bg-surface-container-lowest-light overflow-scroll">
       <button
-        class="flex items-center w-fit p-1 gap-2 rounded-full cursor-pointer"
+        class="flex items-center w-fit p-1 gap-2 rounded-full cursor-pointer hover:bg-surface-container-light"
         @click="goBack"
       >
         <ArrowLeft class="text-on-surface-light" />
-        <span class="text-label-large text-on-surface-light">Retour</span>
       </button>
 
       <p v-if="albumStore.loading" class="body-medium text-on-surface-variant-light">
