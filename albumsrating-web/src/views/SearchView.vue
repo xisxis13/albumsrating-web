@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { RouterLink } from 'vue-router'
 import { useSearchStore } from '@/stores/search'
 import { useCollectionStore } from '@/stores/collection'
+import NavigationRail from '@/components/NavigationRail.vue'
+import SearchResultItem from '@/components/SearchResultItem.vue'
 
 const searchStore = useSearchStore()
 const collectionStore = useCollectionStore()
@@ -22,12 +23,10 @@ function formatYear(date: string) {
 </script>
 
 <template>
-  <main class="flex flex-col items-center min-h-dvh p-3 bg-surface-light">
-    <div class="flex flex-col w-full max-w-2xl p-6 gap-6 rounded-large bg-surface-container-lowest-light">
-      <RouterLink to="/" class="label-large text-on-surface-variant-light hover:text-on-surface-light">
-        ← Retour
-      </RouterLink>
+  <main class="flex items-center justify-center h-dvh p-3 gap-3 bg-surface-light">
+    <NavigationRail />
 
+    <div class="flex flex-col w-full h-full p-6 gap-6 overflow-scroll rounded-large bg-surface-container-lowest-light">
       <h1 class="headline-small">Rechercher un album</h1>
 
       <form class="flex gap-3" @submit.prevent="submit">
@@ -37,6 +36,7 @@ function formatYear(date: string) {
           placeholder="Titre d'album ou artiste"
           class="flex-1 px-6 py-3 rounded-full border border-outline-variant-light bg-surface-light body-large outline-none focus:border-primary-light"
         />
+
         <button
           type="submit"
           :disabled="searchStore.loading || !input.trim()"
@@ -61,50 +61,19 @@ function formatYear(date: string) {
         Aucun album trouvé pour « {{ searchStore.query }} ».
       </p>
 
-      <ul v-if="searchStore.results.length" class="flex flex-col gap-3">
+      <ul v-if="searchStore.results.length" class="grid grid-cols-[repeat(auto-fill,minmax(210px,1fr))] gap-4">
         <li
           v-for="album in searchStore.results"
           :key="album.spotifyId"
-          class="flex items-center gap-4 p-3 rounded-medium bg-surface-container-low-light"
         >
-          <RouterLink
-            :to="{ name: 'album', params: { spotifyId: album.spotifyId } }"
-            class="flex items-center flex-1 min-w-0 gap-4"
-          >
-            <img
-              v-if="album.coverUrl"
-              :src="album.coverUrl"
-              :alt="`Pochette de ${album.title}`"
-              class="aspect-square w-16 rounded-small object-cover"
-            />
-            <div v-else class="aspect-square w-16 rounded-small bg-surface-container-high-light" />
-
-            <div class="flex flex-col flex-1 min-w-0">
-              <span class="title-medium truncate">{{ album.title }}</span>
-              <span class="body-medium text-on-surface-variant-light truncate">
-                {{ album.artists.map((a) => a.name).join(', ') }}
-              </span>
-              <span class="body-small text-on-surface-variant-light">
-                {{ formatYear(album.releaseDate) }} · {{ album.totalTracks }} titres
-              </span>
-            </div>
-          </RouterLink>
-
-          <span
-            v-if="collectionStore.has(album.spotifyId)"
-            class="px-4 py-2 rounded-full bg-secondary-container-light text-on-secondary-container-light label-medium whitespace-nowrap"
-          >
-            Dans ma collection
-          </span>
-          <button
-            v-else
-            :disabled="collectionStore.isAdding(album.spotifyId)"
-            class="px-4 py-2 rounded-full border border-outline-variant-light label-medium whitespace-nowrap text-on-surface-variant-light cursor-pointer hover:border-on-surface-light hover:text-on-surface-light disabled:opacity-50 disabled:cursor-wait"
-            @click="collectionStore.addAlbum(album.spotifyId)"
-          >
-            {{ collectionStore.isAdding(album.spotifyId) ? 'Ajout…' : 'Ajouter' }}
-          </button>
-          </li>
+          <SearchResultItem
+            :to="`/album/${album.spotifyId}`"
+            :album="album"
+            :is-in-collection="collectionStore.has(album.spotifyId)"
+            :is-adding="collectionStore.isAdding(album.spotifyId)"
+            @add="collectionStore.addAlbum(album.spotifyId)"
+          />
+        </li>
       </ul>
 
       <p v-if="searchStore.loading" class="body-medium text-on-surface-variant-light">
