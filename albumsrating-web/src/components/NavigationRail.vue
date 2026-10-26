@@ -26,13 +26,7 @@ onMounted(() => {
     profileStore.fetchProfile(authStore.user.id)
   }
 
-  const savedTheme = localStorage.getItem('theme')
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-
-  if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-    isDark.value = true
-    document.documentElement.classList.add('dark')
-  }
+  isDark.value = localStorage.getItem('theme') === 'dark'
 })
 
 function toggleTheme() {
