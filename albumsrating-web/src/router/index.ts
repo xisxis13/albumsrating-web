@@ -19,6 +19,14 @@ const router = createRouter({
       component: () => import('@/views/LoginView.vue'),
     },
     {
+      path: '/profile',
+      name: 'profile',
+      component: () => import('@/views/ProfileView.vue'),
+      meta: {
+        requiresAuth: true,
+      },
+    },
+    {
       path: '/about',
       name: 'about',
       component: () => import('../views/AboutView.vue'),
@@ -29,18 +37,11 @@ const router = createRouter({
 router.beforeEach((to) => {
   const authStore = useAuthStore()
 
-  console.log('GUARD')
-  console.log('Route :', to.path)
-  console.log('User :', authStore.user)
-  console.log('RequiresAuth :', to.meta.requiresAuth)
-
   if (to.meta.requiresAuth && !authStore.user) {
-    console.log('REDIRECTION LOGIN')
     return '/login'
   }
 
   if (to.path === '/login' && authStore.user) {
-    console.log('REDIRECTION HOME')
     return '/'
   }
 

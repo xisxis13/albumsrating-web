@@ -19,7 +19,7 @@ export const useAuthStore = defineStore('auth', () => {
     supabase.auth.onAuthStateChange((event, session) => {
       user.value = session?.user ?? null
 
-      if (event === 'SIGNED_IN') {
+      if (event === 'SIGNED_IN' && router.currentRoute.value.path === '/login') {
         router.push('/')
       }
 
