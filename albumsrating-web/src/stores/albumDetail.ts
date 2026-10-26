@@ -150,5 +150,16 @@ export const useAlbumDetailStore = defineStore('albumDetail', () => {
     }
   }
 
-  return { album, loading, error, notFound, fetchAlbum }
+  async function updateComment(albumReviewId: string, newComment: string | null) {
+    const { data, error } = await supabase
+      .from('album_review')
+      .update({ comment: newComment })
+      .eq('id', albumReviewId)
+      .select()
+
+    if (error) throw error
+    return data
+  }
+
+  return { album, loading, error, notFound, fetchAlbum, updateComment }
 })
