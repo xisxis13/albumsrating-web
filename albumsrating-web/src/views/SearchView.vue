@@ -1,9 +1,15 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useSearchStore } from '@/stores/search'
+import { useCollectionStore } from '@/stores/collection'
 
 const searchStore = useSearchStore()
+const collectionStore = useCollectionStore()
 const input = ref(searchStore.query)
+
+onMounted(() => {
+  collectionStore.fetchCollection()
+})
 
 function submit() {
   searchStore.search(input.value)
@@ -47,6 +53,13 @@ function formatYear(date: string) {
       </p>
 
       <p
+        v-if="collectionStore.error"
+        class="text-error-light"
+      >
+        {{ collectionStore.error }}
+      </p>
+
+      <p
         v-else-if="searchStore.hasSearched && !searchStore.loadMore && searchStore.results.length === 0"
       >
         Aucun album trouvé pour "{{ searchStore.query }}"
@@ -73,6 +86,20 @@ function formatYear(date: string) {
             <span>{{ album.artists.map((a) => a.name).join(', ') }}</span>
             <span>{{ formatYear(album.releaseDate) }} • {{ album.totalTracks }} titres</span>
           </div>
+
+          <span
+            v-if="collectionStore.has(album.spotifyId)"
+          >
+            Dans ma collection
+          </span>
+          <button
+            v-else
+            @click="collectionStore.addAlbum(album.spotifyId)"
+            :disabled="collectionStore.isAdding(album.spotifyId)"
+            class="border bg-amber-500"
+          >
+            {{ collectionStore.isAdding(album.spotifyId) ? 'Ajout...' : 'Ajouter' }}
+          </button>
         </li>
       </ul>
 

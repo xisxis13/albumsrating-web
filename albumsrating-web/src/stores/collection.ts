@@ -80,6 +80,25 @@ export const useCollectionStore = defineStore('collection', () => {
     loading.value = false
   }
 
+  async function addAlbum(spotifyId: string) {
+    if (has(spotifyId) || isAdding(spotifyId)) return
+
+    adding.value.push(spotifyId)
+    error.value = null
+
+    const { error: invokeError } = await supabase.functions.invoke('add-album', {
+      body: { spotifyId },
+    })
+
+    if (invokeError) {
+      error.value = "L'ajout a échoué. Réessayez dans un instant."
+    } else {
+      await fetchCollection(true)
+    }
+
+    adding.value = adding.value.filter((id) => id !== spotifyId)
+  }
+
   async function removeAlbum(reviewId: string) {
     error.value = null
 
@@ -105,5 +124,5 @@ export const useCollectionStore = defineStore('collection', () => {
     adding.value = []
   }
 
-  return { items, loading, loaded, error, count, has, isAdding, fetchCollection, removeAlbum, reset }
+  return { items, loading, loaded, error, count, has, isAdding, fetchCollection, addAlbum, removeAlbum, reset }
 })
