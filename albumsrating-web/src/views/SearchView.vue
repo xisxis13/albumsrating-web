@@ -2,6 +2,8 @@
 import { ref, onMounted } from 'vue'
 import { useSearchStore } from '@/stores/search'
 import { useCollectionStore } from '@/stores/collection'
+import NavigationRail from '@/components/NavigationRail.vue'
+import SearchResultItem from '@/components/SearchResultItem.vue'
 
 const searchStore = useSearchStore()
 const collectionStore = useCollectionStore()
@@ -21,9 +23,11 @@ function formatYear(date: string) {
 </script>
 
 <template>
-  <main class="flex items-center justify-center h-dvh p-3 gap-3 bg-surface">
-    <div class="flex flex-col w-full h-full p-6 gap-6 overflow-scroll rounded-large bg-surface-container-lowest">
-      <h1 class="headline-small text-on-surface">Rechercher un album</h1>
+  <main class="flex items-center justify-center h-dvh p-3 gap-3">
+    <NavigationRail />
+
+    <div class="flex flex-col w-full h-full p-6 gap-6 overflow-scroll rounded-large bg-surface-container-lowest-light">
+      <h1 class="headline-small text-on-surface-light">Rechercher un album</h1>
 
       <form 
         @submit.prevent="submit"
@@ -33,78 +37,60 @@ function formatYear(date: string) {
           v-model="input"
           type="search"
           placeholder="Titre d'album ou artiste"
-          class="border"
+          class="flex-1 px-6 py-3 rounded-full border border-outline-variant-light bg-surface-light text-body-large text-on-surface-variant-light outline-none focus:border-primary-light"
         >
 
         <button
           type="submit"
           :disabled="searchStore.loading || !input.trim()"
-          class="border bg-amber-500"
+          class="px-6 py-3 rounded-full bg-primary-light text-on-primary-light text-label-large cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Rechercher
         </button>
       </form>
 
       <p
-        v-if="searchStore.error"
-        class="text-error-light"
+        v-if="!searchStore.error"
+        class="text-body-large text-error-light"
       >
         {{ searchStore.error }}
       </p>
 
       <p
         v-if="collectionStore.error"
-        class="text-error-light"
+        class="text-body-large text-error-light"
       >
         {{ collectionStore.error }}
       </p>
-
+      
       <p
         v-else-if="searchStore.hasSearched && !searchStore.loadMore && searchStore.results.length === 0"
+        class="text-body-large text-on-surface-variant-light"
       >
         Aucun album trouvé pour "{{ searchStore.query }}"
       </p>
 
       <ul
         v-if="searchStore.results.length"
-        class="flex flex-col gap-2"
+        class="grid grid-cols-[repeat(auto-fill,minmax(210px,1fr))] gap-4"
       >
         <li
           v-for="album in searchStore.results"
           :key="album.spotifyId"
-          class="flex gap-4 h-20 bg-gray-200"
         >
-          <img 
-            v-if="album.coverUrl"
-            :src="album.coverUrl"
-            :alt="`Cover de ${album.title}`"
-            class="w-10"
-          >
-
-          <div class="flex flex-col">
-            <span>{{ album.title }}</span>
-            <span>{{ album.artists.map((a) => a.name).join(', ') }}</span>
-            <span>{{ formatYear(album.releaseDate) }} • {{ album.totalTracks }} titres</span>
-          </div>
-
-          <span
-            v-if="collectionStore.has(album.spotifyId)"
-          >
-            Dans ma collection
-          </span>
-          <button
-            v-else
-            @click="collectionStore.addAlbum(album.spotifyId)"
-            :disabled="collectionStore.isAdding(album.spotifyId)"
-            class="border bg-amber-500"
-          >
-            {{ collectionStore.isAdding(album.spotifyId) ? 'Ajout...' : 'Ajouter' }}
-          </button>
+          <SearchResultItem
+            :to="`/album/${album.spotifyId}`"
+            :album="album"
+            :is-in-collection="collectionStore.has(album.spotifyId)"
+            :is-adding="collectionStore.isAdding(album.spotifyId)"
+            @add="collectionStore.addAlbum(album.spotifyId)"
+          />
         </li>
       </ul>
 
       <p
         v-if="searchStore.loading"
+        class="text-body-large text-on-surface-variant-light"
       >
         Recherche en cours...
       </p>
@@ -112,7 +98,7 @@ function formatYear(date: string) {
       <button
         v-if="searchStore.results.length && searchStore.results.length < searchStore.total && !searchStore.loading"
         @click="searchStore.loadMore()"
-        class="border bg-amber-500"
+        class="px-6 py-3 rounded-full border border-outline-variant-light text-label-large text-on-surface-variant-light cursor-pointer hover:border-on-surface-light hover:text-on-surface-light"
       >
         Charger plus de résultat
       </button>
