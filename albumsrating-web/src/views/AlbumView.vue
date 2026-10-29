@@ -4,7 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useAlbumDetailStore } from '@/stores/albumDetail'
 import { useCollectionStore } from '@/stores/collection'
 import type { AlbumTrack } from '@/stores/albumDetail'
-import { ArrowLeft, Pen } from 'lucide-vue-next'
+import { ArrowLeft } from 'lucide-vue-next'
 import NavigationRail from '@/components/NavigationRail.vue'
 import TrackItem from '@/components/TrackItem.vue'
 
@@ -65,6 +65,35 @@ async function updateComment() {
   } finally {
     isUpdating.value = false
     cancelEditing()
+  }
+}
+
+async function handleTrackRatingUpdate(trackId: string, rating: number | null) {
+  const track = albumStore.album?.tracks.find(t => t.id === trackId)
+  const currentComment = track?.review?.comment ?? null
+
+  try {
+    await albumStore.setTrackReview(trackId, rating, currentComment)
+  } catch (error) {
+    console.error("Erreur lors de la mise à jour de la note du titre.", error)
+  }
+}
+
+async function handleTrackRatingDelete(trackId: string) {
+  const track = albumStore.album?.tracks.find((t) => t.id === trackId)
+  try {
+    await albumStore.setTrackReview(trackId, null, track?.review?.comment ?? null)
+  } catch (error) {
+    console.error('Erreur lors de la suppression de la note du titre.', error)
+  }
+}
+
+async function handleTrackCommentDelete(trackId: string) {
+  const track = albumStore.album?.tracks.find((t) => t.id === trackId)
+  try {
+    await albumStore.setTrackReview(trackId, track?.review?.rating ?? null, null)
+  } catch (error) {
+    console.error('Erreur lors de la suppression du commentaire du titre.', error)
   }
 }
 
@@ -171,15 +200,23 @@ const totalMinutes = computed(() => {
             Disque {{ disc.number }}
           </h2>
 
-          <ol class="flex flex-col gap-0.5 rounded-large overflow-hidden">
+          <ol class="flex flex-col gap-0.5">
             <li
-              v-for="track in disc.tracks"
+              v-for="(track, index) in disc.tracks"
               :key="track.spotifyId"
             >
               <TrackItem 
+                :class="{
+                  'rounded-t-large': index === 0,
+                  'rounded-b-large': index === disc.tracks.length - 1
+                }"
                 :track-number="track.trackNumber"
                 :track-title="track.title"
                 :artists="trackArtists(track)"
+                :review="track.review" 
+                @update-rating="handleTrackRatingUpdate(track.id, $event)"
+                @delete-rating="handleTrackRatingDelete(track.id)"
+                @delete-comment="handleTrackCommentDelete(track.id)"
               />
             </li>
           </ol>
@@ -189,18 +226,18 @@ const totalMinutes = computed(() => {
 
     <div v-if="albumStore.album?.review" class="flex flex-col min-w-80 w-fit h-full p-6 gap-4 rounded-large bg-surface-container-lowest overflow-scroll">
       <div class="flex flex-col w-full gap-3">
-        <h1 class="text-title-large text-on-surface">Commentaire global</h1>
+        <h1 class="title-large text-on-surface">Commentaire global</h1>
         
         <div v-if="!isEditingComment" class="flex flex-col gap-3">
           <span 
             v-if="!hasComment"
-            class="text-body-medium text-on-surface-variant italic"
+            class="body-medium text-on-surface-variant italic"
           >
             Pas de commentaire
           </span>
           <span 
             v-else
-            class="text-body-medium text-on-surface"
+            class="body-medium text-on-surface"
           >
             {{ albumStore.album?.review?.comment }}
           </span>

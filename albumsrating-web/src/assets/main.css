@@ -31,6 +31,12 @@
   --color-surface-container-high: var(--surface-container-high);
   --color-surface-container-highest: var(--surface-container-highest);
 
+  --color-masterpiece: var(--masterpiece);
+  --color-great: var(--great);
+  --color-good: var(--good);
+  --color-mid: var(--mid);
+  --color-skip: var(--skip);
+
   /* Radius */
   --radius-extra-small: 4px;
   --radius-small: 12px;
@@ -91,6 +97,20 @@
   --surface-container: #F0ECF4;
   --surface-container-high: #EAE7EF;
   --surface-container-highest: #E5E1E9;
+
+  --masterpiece: #A45BE3;
+  --great: #4D9DDE;
+  --good: #63B657;
+  --mid: #E4B11B;
+  --skip: #E15757;
+
+  --md-sys-color-surface-container: var(--color-surface-container);
+  --md-sys-color-on-surface: var(--color-on-surface);
+  --md-sys-color-on-surface-variant: var(--color-on-surface-variant);
+  --md-sys-color-outline-variant: var(--color-outline-variant);
+  --md-sys-color-primary: var(--color-primary);
+  --md-sys-color-secondary-container: var(--color-secondary-container);
+  --md-sys-color-on-secondary-container: var(--color-on-secondary-container);
 }
 
 .dark {
@@ -121,6 +141,19 @@
   --surface-container: #201F25;
   --surface-container-high: #2A292F;
   --surface-container-highest: #35343A;
+
+  --masterpiece: #CF8CFF;
+  --great: #79C3FF;
+  --good: #7EDB72;
+  --mid: #E5C85A;
+  --skip: #FF8A8A;
+}
+
+md-menu {
+  text-align: start;
+  --md-menu-container-shape: 12px;
+  --md-menu-item-leading-icon-color: var(--color-on-surface-variant);
+  --md-menu-item-trailing-icon-color: var(--color-on-surface-variant);
 }
 
 @layer components {
