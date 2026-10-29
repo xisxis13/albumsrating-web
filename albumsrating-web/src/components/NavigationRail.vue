@@ -7,10 +7,13 @@ import {
   Home,
   Search,
   TextAlignStart,
+  Sun,
+  Moon,
 } from 'lucide-vue-next'
 
 const authStore = useAuthStore()
 const profileStore = useProfileStore()
+const isDark = ref(false)
 
 const navItems = [
   { path: '/', label: 'Accueil', icon: Home },
@@ -22,7 +25,22 @@ onMounted(() => {
   if (authStore.user) {
     profileStore.fetchProfile(authStore.user.id)
   }
+
+  isDark.value = localStorage.getItem('theme') === 'dark'
 })
+
+function toggleTheme() {
+  isDark.value = !isDark.value
+  
+  if (isDark.value) {
+    document.documentElement.classList.add('dark')
+    localStorage.setItem('theme', 'dark')
+  } else {
+    document.documentElement.classList.remove('dark')
+    localStorage.setItem('theme', 'light')
+  }
+}
+
 </script>
 
 <template>
@@ -30,7 +48,12 @@ onMounted(() => {
     <img 
       src="../assets/app_icon_light.svg" 
       alt="AlbumsRating icon"
-      class="w-11 aspect-square"
+      class="w-11 aspect-square dark:hidden"
+    />
+    <img 
+      src="../assets/app_icon_dark.svg" 
+      alt="AlbumsRating icon"
+      class="w-11 aspect-square hidden dark:block"
     />
 
     <nav>
@@ -43,22 +66,33 @@ onMounted(() => {
       />
     </nav>
 
-    <RouterLink
-      to="/profile"
-    >
-      <img 
-        v-if="profileStore.profile?.avatarUrl"
-        :src="profileStore.profile.avatarUrl" 
-        referrerpolicy="no-referrer"
-        alt="User avatar"
-        class="w-11 aspect-square rounded-full"
-      />
-      <div
-        v-else
-        class="flex items-center justify-center aspect-square w-16 rounded-full bg-primary-container-light text-on-primary-container-light text-title-large"
+    <div class="flex flex-col items-center gap-6">
+      <button
+        @click="toggleTheme"
+        class="flex items-center justify-center aspect-square w-11 rounded-full text-on-surface-variant hover:bg-surface-container-highest transition-colors cursor-pointer"
+        :title="isDark ? 'Passer au mode clair' : 'Passer au mode sombre'"
       >
-        {{ profileStore.profile?.displayName?.charAt(0) ?? '?' }}
-      </div>
-    </RouterLink>
+        <Sun v-if="isDark" class="w-6 h-6" />
+        <Moon v-else class="w-6 h-6" />
+      </button>
+
+      <RouterLink
+        to="/profile"
+      >
+        <img 
+          v-if="profileStore.profile?.avatarUrl"
+          :src="profileStore.profile.avatarUrl" 
+          referrerpolicy="no-referrer"
+          alt="User avatar"
+          class="w-11 aspect-square rounded-full"
+        />
+        <div
+          v-else
+          class="flex items-center justify-center aspect-square w-16 rounded-full bg-primary-container text-on-primary-container text-title-large"
+        >
+          {{ profileStore.profile?.displayName?.charAt(0) ?? '?' }}
+        </div>
+      </RouterLink>
+    </div>
   </div>
 </template>

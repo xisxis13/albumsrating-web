@@ -5,25 +5,34 @@ const authStore = useAuthStore()
 </script>
 
 <template>
-  <div class="flex flex-col items-center justify-center h-dvh p-3 gap-6 bg-surface-light">
+  <div class="flex flex-col items-center justify-center h-dvh p-3 gap-6 bg-surface">
     <div class="flex items-center justify-center gap-4">
-      <img class="aspect-square w-16" src="../assets/app_icon_light.svg" alt="AlbumsRating icon" />
+      <img 
+      src="../assets/app_icon_light.svg" 
+      alt="AlbumsRating icon"
+      class="w-11 aspect-square dark:hidden"
+    />
+    <img 
+      src="../assets/app_icon_dark.svg" 
+      alt="AlbumsRating icon"
+      class="w-11 aspect-square hidden dark:block"
+    />
 
-      <h1 class="headline-medium">AlbumsRating</h1>
+      <h1 class="headline-medium text-on-surface">AlbumsRating</h1>
     </div>
 
     <div
-      class="flex flex-col items-start justify-center max-w-96 p-6 gap-6 rounded-large bg-surface-container-lowest-light"
+      class="flex flex-col items-start justify-center max-w-96 p-6 gap-6 rounded-large bg-surface-container-lowest"
     >
       <div class="flex flex-col items-start justify-center gap-1">
-        <span class="title-large">Ravi de vous revoir,</span>
-        <span class="body-medium text-on-surface-variant-light">
+        <span class="title-large text-on-surface">Ravi de vous revoir,</span>
+        <span class="body-medium text-on-surface-variant">
           Connectez-vous pour récupérer vos données ou inscrivez-vous
         </span>
       </div>
 
       <button
-        class="flex items-center justify-center w-full px-6 py-3 gap-3 border border-outline-variant-light rounded-full text-on-surface-variant-light cursor-pointer hover:border-on-surface-light hover:bg-surface-light hover:text-on-surface-light"
+        class="flex items-center justify-center w-full px-6 py-3 gap-3 border border-outline-variant rounded-full text-on-surface-variant cursor-pointer hover:border-on-surface hover:bg-surface hover:text-on-surface"
         @click="authStore.signInWithGoogle()"
       >
         <img class="aspect-square w-6" src="../assets/google.svg" alt="Google icon" />

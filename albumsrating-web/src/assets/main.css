@@ -2,37 +2,34 @@
 @import 'tailwindcss';
 
 @theme {
-  /* Light colors */
-  --color-primary-light: #5A5891;
-  --color-on-primary-light: #FFFFFF;
-  --color-primary-container-light: #E3DFFF;
-  --color-on-primary-container-light: #434078;
-  --color-secondary-light: #5E5C71;
-  --color-on-secondary-light: #FFFFFF;
-  --color-secondary-container-light: #E3E0F9;
-  --color-on-secondary-container-light: #464559;
-  --color-tertiary-light: #7A5368;
-  --color-on-tertiary-light: #FFFFFF;
-  --color-tertiary-container-light: #FFD8EA;
-  --color-on-tertiary-container-light: #603B4F;
-  --color-error-light: #BA1A1A;
-  --color-on-error-light: #FFFFFF;
-  --color-error-container-light: #FFDAD6;
-  --color-on-error-container-light: #93000A;
-  --color-surface-light: #FCF8FF;
-  --color-on-surface-light: #1C1B21;
-  --color-surface-variant-light: #E4E1EC;
-  --color-on-surface-variant-light: #47464F;
-  --color-outline-light: #787680;
-  --color-outline-variant-light: #C8C5D0;
-  --color-surface-container-lowest-light: #FFFFFF;
-  --color-surface-container-low-light: #F6F2FA;
-  --color-surface-container-light: #F0ECF4;
-  --color-surface-container-high-light: #EAE7EF;
-  --color-surface-container-highest-light: #E5E1E9;
-
-  /* Dark colors */
-
+  /* Colors */
+  --color-primary: var(--primary);
+  --color-on-primary: var(--on-primary);
+  --color-primary-container: var(--primary-container);
+  --color-on-primary-container: var(--on-primary-container);
+  --color-secondary: var(--secondary);
+  --color-on-secondary: var(--on-secondary);
+  --color-secondary-container: var(--secondary-container);
+  --color-on-secondary-container: var(--on-secondary-container);
+  --color-tertiary: var(--tertiary);
+  --color-on-tertiary: var(--on-tertiary);
+  --color-tertiary-container: var(--tertiary-container);
+  --color-on-tertiary-container: var(--on-tertiary-container);
+  --color-error: var(--error);
+  --color-on-error: var(--on-error);
+  --color-error-container: var(--error-container);
+  --color-on-error-container: var(--on-error-container);
+  --color-surface: var(--surface);
+  --color-on-surface: var(--on-surface);
+  --color-surface-variant: var(--surface-variant);
+  --color-on-surface-variant: var(--on-surface-variant);
+  --color-outline: var(--outline);
+  --color-outline-variant: var(--outline-variant);
+  --color-surface-container-lowest: var(--surface-container-lowest);
+  --color-surface-container-low: var(--surface-container-low);
+  --color-surface-container: var(--surface-container);
+  --color-surface-container-high: var(--surface-container-high);
+  --color-surface-container-highest: var(--surface-container-highest);
 
   /* Radius */
   --radius-extra-small: 4px;
@@ -64,6 +61,66 @@
   --text-label-large: 0.875rem;
   --text-label-medium: 0.75rem;
   --text-label-small: 0.6875rem;
+}
+
+:root {
+  --primary: #5A5891;
+  --on-primary: #FFFFFF;
+  --primary-container: #E3DFFF;
+  --on-primary-container: #434078;
+  --secondary: #5E5C71;
+  --on-secondary: #FFFFFF;
+  --secondary-container: #E3E0F9;
+  --on-secondary-container: #464559;
+  --tertiary: #7A5368;
+  --on-tertiary: #FFFFFF;
+  --tertiary-container: #FFD8EA;
+  --on-tertiary-container: #603B4F;
+  --error: #BA1A1A;
+  --on-error: #FFFFFF;
+  --error-container: #FFDAD6;
+  --on-error-container: #93000A;
+  --surface: #FCF8FF;
+  --on-surface: #1C1B21;
+  --surface-variant: #E4E1EC;
+  --on-surface-variant: #47464F;
+  --outline: #787680;
+  --outline-variant: #C8C5D0;
+  --surface-container-lowest: #FFFFFF;
+  --surface-container-low: #F6F2FA;
+  --surface-container: #F0ECF4;
+  --surface-container-high: #EAE7EF;
+  --surface-container-highest: #E5E1E9;
+}
+
+.dark {
+  --primary: #C4C0FF;
+  --on-primary: #2C2960;
+  --primary-container: #434078;
+  --on-primary-container: #E3DFFF;
+  --secondary: #C7C4DD;
+  --on-secondary: #2F2E42;
+  --secondary-container: #464559;
+  --on-secondary-container: #E3E0F9;
+  --tertiary: #EAB9D1;
+  --on-tertiary: #472639;
+  --tertiary-container: #603B4F;
+  --on-tertiary-container: #FFD8EA;
+  --error: #FFB4AB;
+  --on-error: #690005;
+  --error-container: #93000A;
+  --on-error-container: #FFDAD6;
+  --surface: #131318;
+  --on-surface: #E5E1E9;
+  --surface-variant: #47464F;
+  --on-surface-variant: #C8C5D0;
+  --outline: #928F9A;
+  --outline-variant: #47464F;
+  --surface-container-lowest: #0E0E13;
+  --surface-container-low: #1C1B21;
+  --surface-container: #201F25;
+  --surface-container-high: #2A292F;
+  --surface-container-highest: #35343A;
 }
 
 @layer components {

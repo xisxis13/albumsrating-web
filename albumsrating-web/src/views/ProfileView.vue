@@ -31,19 +31,19 @@ function formatDate(value: string | null) {
   <main class="flex items-center justify-center h-dvh p-3 gap-3">
     <NavigationRail />
 
-    <div class="flex flex-col w-full h-full p-6 gap-6 overflow-scroll rounded-large bg-surface-container-lowest-light">
+    <div class="flex flex-col w-full h-full p-6 gap-6 overflow-scroll rounded-large bg-surface-container-lowest">
       <button
         @click="goBack"
-        class="flex items-center justify-center aspect-square w-9 rounded-full text-on-surface-variant-light hover:bg-surface-container-highest-light transition-colors cursor-pointer"
+        class="flex items-center justify-center aspect-square w-9 rounded-full text-on-surface-variant hover:bg-surface-container-highest transition-colors cursor-pointer"
       >
         <ArrowLeft class="w-6 h-6" />
       </button>
 
-      <p v-if="profileStore.loading" class="body-medium text-on-surface-variant-light">
+      <p v-if="profileStore.loading" class="body-medium text-on-surface-variant">
         Chargement…
       </p>
 
-      <p v-else-if="profileStore.error" class="body-medium text-error-light">
+      <p v-else-if="profileStore.error" class="body-medium text-error">
         {{ profileStore.error }}
       </p>
 
@@ -58,26 +58,26 @@ function formatDate(value: string | null) {
           />
           <div
             v-else
-            class="flex items-center justify-center aspect-square w-16 rounded-full bg-primary-container-light text-on-primary-container-light title-large"
+            class="flex items-center justify-center aspect-square w-16 rounded-full bg-primary-container text-on-primary-container title-large"
           >
             {{ profileStore.profile.displayName?.charAt(0) ?? '?' }}
           </div>
 
           <div class="flex flex-col">
             <span class="title-medium">{{ profileStore.profile.displayName }}</span>
-            <span class="body-medium text-on-surface-variant-light">
+            <span class="body-medium text-on-surface-variant">
               {{ authStore.user?.email }}
             </span>
           </div>
         </div>
 
-        <p class="body-small text-on-surface-variant-light">
+        <p class="body-small text-on-surface-variant">
           Membre depuis le {{ formatDate(profileStore.profile.createdAt) }}
         </p>
       </template>
 
       <button
-        class="w-full px-6 py-3 rounded-full bg-error-light text-on-error-light label-large cursor-pointer"
+        class="w-full px-6 py-3 rounded-full bg-error text-on-error label-large cursor-pointer"
         @click="authStore.signOut()"
       >
         Se déconnecter

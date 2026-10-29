@@ -25,12 +25,12 @@ function remove(item: CollectionItem) {
   <main class="flex items-center justify-center h-dvh p-3 gap-3">
     <NavigationRail />
 
-    <div class="flex flex-col w-full h-full p-6 gap-6 overflow-scroll rounded-large bg-surface-container-lowest-light">
+    <div class="flex flex-col w-full h-full p-6 gap-6 overflow-scroll rounded-large bg-surface-container-lowest">
       <div class="flex justify-between gap-4">
-        <h1 class="headline-small text-on-surface-light">Ma collection</h1>
+        <h1 class="headline-small text-on-surface">Ma collection</h1>
         <span
           v-if="collectionStore.loaded"
-          class="text-body-medium text-on-surface-variant-light"
+          class="body-medium text-on-surface-variant"
         >
           {{ collectionStore.count }} album{{ collectionStore.count > 1 ? 's' : '' }}
         </span>
@@ -38,14 +38,14 @@ function remove(item: CollectionItem) {
 
       <p
         v-if="collectionStore.loading && !collectionStore.loaded"
-        class="text-body-large text-on-surface-variant-light"
+        class="body-large text-on-surface-variant"
       >
         Chargement...
       </p>
 
       <p
         v-if="collectionStore.error"
-        class="text-body-large text-error-light"
+        class="body-large text-error"
       >
         {{ collectionStore.error }}
       </p>
@@ -54,12 +54,12 @@ function remove(item: CollectionItem) {
         v-else-if="collectionStore.loaded && collectionStore.count === 0"
         class="flex flex-col items-center justify-center w-full h-full gap-3"
       >
-        <EighthNotes class="w-12 h-12 text-primary-light" />
-        <p class="text-title-medium text-on-surface-light">Votre collection est vide</p>
-        <p class="text-body-medium text-on-surface-variant-light">Ajouter des albums depuis la recherche pour les voir apparaitre ici</p>
+        <EighthNotes class="w-12 h-12 text-primary" />
+        <p class="title-medium text-on-surface">Votre collection est vide</p>
+        <p class="body-medium text-on-surface-variant">Ajouter des albums depuis la recherche pour les voir apparaitre ici</p>
         <RouterLink
           to="/search"
-          class="px-6 py-3 rounded-full border border-outline-variant-light text-label-large text-on-surface-variant-light cursor-pointer hover:border-primary-light hover:text-primary-light"
+          class="px-6 py-3 rounded-full border border-outline-variant label-large text-on-surface-variant cursor-pointer hover:border-primary hover:text-primary"
         >
           Rechercher un album
         </RouterLink>

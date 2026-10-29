@@ -26,8 +26,8 @@ function formatYear(date: string) {
   <main class="flex items-center justify-center h-dvh p-3 gap-3">
     <NavigationRail />
 
-    <div class="flex flex-col w-full h-full p-6 gap-6 overflow-scroll rounded-large bg-surface-container-lowest-light">
-      <h1 class="headline-small text-on-surface-light">Rechercher un album</h1>
+    <div class="flex flex-col w-full h-full p-6 gap-6 overflow-scroll rounded-large bg-surface-container-lowest">
+      <h1 class="headline-small text-on-surface">Rechercher un album</h1>
 
       <form 
         @submit.prevent="submit"
@@ -37,13 +37,13 @@ function formatYear(date: string) {
           v-model="input"
           type="search"
           placeholder="Titre d'album ou artiste"
-          class="flex-1 px-6 py-3 rounded-full border border-outline-variant-light bg-surface-light text-body-large text-on-surface-variant-light outline-none focus:border-primary-light"
+          class="flex-1 px-6 py-3 rounded-full border border-outline-variant bg-surface body-large text-on-surface-variant outline-none focus:border-primary"
         >
 
         <button
           type="submit"
           :disabled="searchStore.loading || !input.trim()"
-          class="px-6 py-3 rounded-full bg-primary-light text-on-primary-light text-label-large cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          class="px-6 py-3 rounded-full bg-primary text-on-primary label-large cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Rechercher
         </button>
@@ -51,21 +51,21 @@ function formatYear(date: string) {
 
       <p
         v-if="!searchStore.error"
-        class="text-body-large text-error-light"
+        class="body-large text-error"
       >
         {{ searchStore.error }}
       </p>
 
       <p
         v-if="collectionStore.error"
-        class="text-body-large text-error-light"
+        class="body-large text-error"
       >
         {{ collectionStore.error }}
       </p>
       
       <p
         v-else-if="searchStore.hasSearched && !searchStore.loadMore && searchStore.results.length === 0"
-        class="text-body-large text-on-surface-variant-light"
+        class="body-large text-on-surface-variant"
       >
         Aucun album trouvé pour "{{ searchStore.query }}"
       </p>
@@ -90,7 +90,7 @@ function formatYear(date: string) {
 
       <p
         v-if="searchStore.loading"
-        class="text-body-large text-on-surface-variant-light"
+        class="body-large text-on-surface-variant"
       >
         Recherche en cours...
       </p>
@@ -98,7 +98,7 @@ function formatYear(date: string) {
       <button
         v-if="searchStore.results.length && searchStore.results.length < searchStore.total && !searchStore.loading"
         @click="searchStore.loadMore()"
-        class="px-6 py-3 rounded-full border border-outline-variant-light text-label-large text-on-surface-variant-light cursor-pointer hover:border-on-surface-light hover:text-on-surface-light"
+        class="px-6 py-3 rounded-full border border-outline-variant label-large text-on-surface-variant cursor-pointer hover:border-on-surface hover:text-on-surface"
       >
         Charger plus de résultat
       </button>
