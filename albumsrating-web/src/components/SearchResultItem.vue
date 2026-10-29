@@ -64,7 +64,7 @@ function formatYear(date: string) {
 
     <span
       v-if="isInCollection"
-      class="flex items-center justify-center w-full px-4 py-3 rounded-full bg-primary-container-light text-on-primary-container-light text-label-medium whitespace-nowrap"
+      class="flex items-center justify-center w-full px-4 py-2 rounded-full bg-primary-container-light text-on-primary-container-light text-label-medium whitespace-nowrap"
     >
       Dans ma collection
     </span>
@@ -73,7 +73,7 @@ function formatYear(date: string) {
       v-else
       @click="emit('add')"
       :disabled="isAdding"
-      class="flex items-center justify-center w-full px-4 py-3 rounded-full border border-outline-variant-light text-label-medium whitespace-nowrap text-on-surface-variant-light cursor-pointer hover:border-primary-light hover:text-primary-light disabled:opacity-50 disabled:cursor-wait"
+      class="flex items-center justify-center w-full px-4 py-2 rounded-full border border-outline-variant-light text-label-medium whitespace-nowrap text-on-surface-variant-light cursor-pointer hover:border-primary-light hover:text-primary-light disabled:opacity-50 disabled:cursor-wait"
     >
       {{ isAdding ? 'Ajout...' : 'Ajouter' }}
     </button>
