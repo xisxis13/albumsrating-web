@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { supabase } from '@/lib/supabase'
+import { useCollectionStore } from './collection'
 import type { User } from '@supabase/supabase-js'
 import router from '@/router'
 
@@ -24,6 +25,7 @@ export const useAuthStore = defineStore('auth', () => {
       }
 
       if (event === 'SIGNED_OUT') {
+        useCollectionStore().reset()
         router.push('/login')
       }
     })
