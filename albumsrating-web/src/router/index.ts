@@ -35,6 +35,14 @@ const router = createRouter({
       },
     },
     {
+      path: '/album/:spotifyId',
+      name: 'album',
+      component: () => import('@/views/AlbumView.vue'),
+      meta: {
+        requiresAuth: true,
+      },
+    },
+    {
       path: '/profile',
       name: 'profile',
       component: () => import('@/views/ProfileView.vue'),

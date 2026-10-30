@@ -43,7 +43,10 @@ function formatYear(date: string) {
 
 <template>
   <div class="flex flex-col flex-1 min-w-0 p-4 gap-3 rounded-large bg-surface-container-low">
-    <div class="flex flex-col flex-1 gap-2 rounded-medium">
+    <RouterLink
+      :to="{ name: 'album', params: { spotifyId: album.spotifyId } }"
+      class="flex flex-col flex-1 gap-2 rounded-medium cursor-pointer"
+    >
       <img 
         v-if="album.coverUrl"
         :src="album.coverUrl" 
@@ -60,7 +63,7 @@ function formatYear(date: string) {
         <span class="body-medium text-on-surface-variant truncate">{{ album.artists.map((a) => a.name).join(', ') }}</span>
         <span class="body-small text-outline truncate">{{ formatYear(album.releaseDate) }} • {{ album.totalTracks }} titre{{ album.totalTracks > 1 ? 's' : '' }}</span>
       </div>
-    </div>
+    </RouterLink>
 
     <span
       v-if="isInCollection"

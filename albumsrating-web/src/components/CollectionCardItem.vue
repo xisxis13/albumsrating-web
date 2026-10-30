@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { PropType } from 'vue'
+import { EighthNotes } from '@lucide/vue'
 
 interface Album {
   spotifyId: string
@@ -25,7 +26,10 @@ const emit = defineEmits(['remove'])
 
 <template>
   <div class="flex flex-col flex-1 min-w-0 p-4 gap-3 rounded-large bg-surface-container-low">
-    <div class="flex flex-col flex-1 gap-2 rounded-medium">
+    <RouterLink
+      :to="{ name: 'album', params: { spotifyId: album.spotifyId } }"
+      class="flex flex-col flex-1 gap-2 rounded-medium cursor-pointer"
+    >
       <img 
         v-if="album.coverUrl"
         :src="album.coverUrl" 
@@ -42,7 +46,7 @@ const emit = defineEmits(['remove'])
         <span class="body-medium text-on-surface-variant truncate">{{ album.artists.join(', ') }}</span>
         <span class="body-small text-outline truncate">{{ album.releaseYear }}</span>
       </div>
-    </div>
+    </RouterLink>
 
     <button
       @click="emit('remove')"

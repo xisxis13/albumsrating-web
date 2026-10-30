@@ -34,7 +34,7 @@ function formatDate(value: string | null) {
     <div class="flex flex-col w-full h-full p-6 gap-6 overflow-scroll rounded-large bg-surface-container-lowest">
       <button
         @click="goBack"
-        class="flex items-center justify-center aspect-square w-9 rounded-full text-on-surface-variant hover:bg-surface-container-highest transition-colors cursor-pointer"
+        class="flex items-center justify-center aspect-square w-10 rounded-full text-on-surface-variant hover:bg-surface-container-highest transition-colors cursor-pointer"
       >
         <ArrowLeft class="w-6 h-6" />
       </button>
