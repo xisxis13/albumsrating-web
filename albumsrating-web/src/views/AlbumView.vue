@@ -53,6 +53,14 @@ async function removeFromCollection() {
   await albumStore.fetchAlbum(spotifyId.value, true)
 }
 
+async function handleSetFavoriteTrack(track: AlbumTrack) {
+  albumStore.setFavoriteTrack(track.id!!)
+}
+
+async function handleSetLeastFavoriteTrack(track: AlbumTrack) {
+  albumStore.setLeastFavoriteTrack(track.id!!)
+}
+
 onMounted(() => {
   collectionStore.fetchCollection()
 })
@@ -202,6 +210,10 @@ const totalMinutes = computed(() => {
                 :track-number="track.trackNumber"
                 :track-title="track.title"
                 :artists="trackArtists(track)"
+                :is-favorite="albumStore.isFavoriteTrack(track.id!!)"
+                :is-least-favorite="albumStore.isLeastFavoriteTrack(track.id!!)"
+                @set-favorite="handleSetFavoriteTrack(track)"
+                @set-least-favorite="handleSetLeastFavoriteTrack(track)"
               />
             </li>
           </ol>
