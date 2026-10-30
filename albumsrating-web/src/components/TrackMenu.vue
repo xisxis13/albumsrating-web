@@ -21,7 +21,7 @@ const emit = defineEmits<{
   (e: 'set-least-favorite'): void
   (e: 'set-rating', rating: number): void
   // (e: 'add-comment'): void
-  // (e: 'delete-rating'): void
+  (e: 'delete-rating'): void
   // (e: 'delete-comment'): void
 }>()
 
@@ -113,7 +113,7 @@ function handleSelectRating(value: number) {
         </button>
       </div>
 
-      <div class="flex flex-col p-1 gap-1 rounded-t-extra-small rounded-b-medium bg-tertiary-container shadow-xl shadow-[#47464F]/20">
+      <div class="flex flex-col p-1 gap-1 rounded-extra-small bg-tertiary-container shadow-xl shadow-[#47464F]/20">
         <button
           ref="ratingTriggerRef"
           type="button"
@@ -141,7 +141,7 @@ function handleSelectRating(value: number) {
         </button> -->
       </div>
 
-      <!-- <div class="flex flex-col p-1 gap-1 rounded-b-medium rounded-t-extra-small bg-tertiary-container shadow-xl shadow-[#47464F]/20">
+      <div class="flex flex-col p-1 gap-1 rounded-b-medium rounded-t-extra-small bg-tertiary-container shadow-xl shadow-[#47464F]/20">
         <button
           type="button"
           @click="emit('delete-rating')"
@@ -151,15 +151,15 @@ function handleSelectRating(value: number) {
           <span class="label-large text-left">Supprimer la note</span>
         </button>
 
-        <button
+        <!-- <button
           type="button"
           @click="emit('delete-comment')"
           class="flex items-center w-full px-3 py-2 gap-3 rounded-small text-error hover:bg-on-tertiary-container/10 transition-colors cursor-pointer"
         >
           <Trash2 class="w-5 h-5" />
           <span class="label-large text-left">Supprimer le commentaire</span>
-        </button>
-      </div> -->
+        </button> -->
+      </div>
     </div>
 
     <!-- Sub menu : rating -->

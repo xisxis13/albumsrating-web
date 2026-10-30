@@ -113,6 +113,10 @@ function handleSetRating(track: AlbumTrack, rating: number) {
   albumStore.setTrackRating(track.id!!, rating)
 }
 
+function handleDeleteTrackRating(track: AlbumTrack) {
+  albumStore.deleteTrackRating(track.id!!)
+}
+
 const favoriteTrackTitle = computed(() => {
   const trackId = albumStore.album?.review?.favoriteTrackId
   if (!trackId) return null
@@ -313,6 +317,7 @@ const lastModifiedDate = computed(() => {
                 @set-favorite="handleSetFavoriteTrack(track)"
                 @set-least-favorite="handleSetLeastFavoriteTrack(track)"
                 @set-rating="(rating) => handleSetRating(track, rating)"
+                @delete-rating="handleDeleteTrackRating(track)"
               />
             </li>
           </ol>

@@ -42,7 +42,7 @@ const emit = defineEmits<{
   (e: 'set-least-favorite'): void
   (e: 'set-rating', rating: number): void
   // (e: 'add-comment'): void
-  // (e: 'delete-rating'): void
+  (e: 'delete-rating'): void
   // (e: 'delete-comment'): void
 }>()
 
@@ -111,12 +111,12 @@ const ratingColorClass = computed(() => {
         @set-favorite="emit('set-favorite')"
         @set-least-favorite="emit('set-least-favorite')"
         @set-rating="emit('set-rating', $event)"
+        @delete-rating="emit('delete-rating')"
       />
     </div>
 
     <!--
       @add-comment="emit('add-comment')"
-      @delete-rating="emit('delete-rating')"
       @delete-comment="emit('delete-comment')" 
     -->
   </div>

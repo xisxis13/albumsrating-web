@@ -288,5 +288,29 @@ export const useAlbumDetailStore = defineStore('albumDetail', () => {
     }
   }
 
-  return { album, loading, error, notFound, fetchAlbum, updateAlbumComment, isFavoriteTrack, isLeastFavoriteTrack, setFavoriteTrack, setLeastFavoriteTrack, setTrackRating }
+  async function deleteTrackRating(trackId: string) {
+    const track = album.value?.tracks.find((t) => t.id === trackId)
+    const reviewId = album.value?.review?.id
+
+    if (!track) return 
+
+    const existing = track.review
+
+    try {
+      if (existing) {
+        const { error } = await supabase
+          .from('track_review')
+          .update({ rating: null })
+          .eq('id', existing.id)
+        
+        if (error) throw error
+
+        track.review!.rating = null
+      }
+    } catch (error) {
+      console.error('Erreur lors de la suppression de la note du titre : ', error)
+    }
+  }
+
+  return { album, loading, error, notFound, fetchAlbum, updateAlbumComment, isFavoriteTrack, isLeastFavoriteTrack, setFavoriteTrack, setLeastFavoriteTrack, setTrackRating, deleteTrackRating }
 })
