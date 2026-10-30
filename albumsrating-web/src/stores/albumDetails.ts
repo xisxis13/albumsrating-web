@@ -177,6 +177,17 @@ export const useAlbumDetailStore = defineStore('albumDetail', () => {
     }
   }
 
+  async function updateAlbumComment(newComment: string | null) {
+    const { data, error } = await supabase
+      .from('album_review')
+      .update({ comment: newComment })
+      .eq('id', album.value?.review?.id)
+      .select()
+
+    if (error) throw error
+    return data
+  }
+
   function isFavoriteTrack(trackId: string) {
     return album.value?.review?.favoriteTrackId === trackId
   }
@@ -227,5 +238,5 @@ export const useAlbumDetailStore = defineStore('albumDetail', () => {
     review.lastModifiedAt = now
   }
 
-  return { album, loading, error, notFound, fetchAlbum, isFavoriteTrack, isLeastFavoriteTrack, setFavoriteTrack, setLeastFavoriteTrack }
+  return { album, loading, error, notFound, fetchAlbum, updateAlbumComment, isFavoriteTrack, isLeastFavoriteTrack, setFavoriteTrack, setLeastFavoriteTrack }
 })

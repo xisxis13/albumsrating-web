@@ -30,6 +30,9 @@ const isAdding = computed(() => {
 })
 
 const isRightMenuOpen = ref(false)
+const isEditingComment = ref(false)
+const isUpdating = ref(false)
+const comment = ref('')
 
 function goBack() {
   if (window.history.state?.back) router.back()
@@ -65,6 +68,36 @@ async function removeFromCollection() {
 
   if (confirmed) await collectionStore.removeAlbum(album.review.id)
   await albumStore.fetchAlbum(spotifyId.value, true)
+}
+
+function startEditing() {
+  comment.value = albumStore.album?.review?.comment || ''
+  isEditingComment.value = true
+}
+
+function cancelEditing() {
+  isEditingComment.value = false
+  comment.value = ''
+}
+
+async function updateAlbumComment() {
+  const reviewId = albumStore.album?.review?.id
+  if (!reviewId) return
+
+  try {
+    isUpdating.value = true
+    const newCommentValue = comment.value.trim() || null
+    await albumStore.updateAlbumComment(newCommentValue)
+    
+    if (albumStore.album && albumStore.album.review) {
+      albumStore.album.review.comment = newCommentValue
+    }
+  } catch (error) {
+    console.error("Erreur lors de la modification du commantaire.", error)
+  } finally {
+    isUpdating.value = false
+    cancelEditing()
+  }
 }
 
 async function handleSetFavoriteTrack(track: AlbumTrack) {
@@ -119,6 +152,10 @@ const totalMinutes = computed(() => {
   return Math.round(ms / 60000)
 })
 
+const hasComment = computed(() => {
+  return albumStore.album?.review?.comment
+})
+
 const lastModifiedDate = computed(() => {
   const lastModifiedAt = albumStore.album?.review?.lastModifiedAt
   if (!lastModifiedAt) return null
@@ -139,6 +176,7 @@ const lastModifiedDate = computed(() => {
   <main class="flex items-center justify-center h-dvh p-3 gap-3">
     <NavigationRail />
 
+    <!-- Album panel -->
     <div class="flex flex-col w-full h-full p-6 gap-6 overflow-scroll rounded-large bg-surface-container-lowest">
       <div class="flex justify-between gap-4">
         <button
@@ -275,10 +313,73 @@ const lastModifiedDate = computed(() => {
       </template>
     </div>
 
+    <!-- Review panel -->
     <div 
       v-if="isRightMenuOpen"
       class="flex flex-col min-w-80 w-fit h-full p-6 gap-4 rounded-large bg-surface-container-lowest overflow-scroll"
     >
+      <div class="flex flex-col w-full gap-2">
+        <span class="title-large text-on-surface">Commentaire global</span>
+
+        <div
+          v-if="!isEditingComment"
+          class="flex flex-col gap-2"
+        >
+          <span
+            v-if="!hasComment"
+            class="body-medium text-on-surface-variant italic"
+          >
+            Pas de commentaire
+          </span>
+
+          <span
+            v-else
+            class="body-medium text-on-surface"
+          >
+            {{ albumStore.album?.review?.comment }}
+          </span>
+
+          <button
+            v-if="albumStore.album?.review"
+            @click="startEditing"
+            class="flex items-center justify-center w-full mt-2 px-4 py-2 rounded-full border border-outline-variant label-medium whitespace-nowrap text-on-surface-variant cursor-pointer hover:border-primary hover:text-primary transition-colors"
+          >
+            {{ hasComment ? 'Modifier le commentaire' : 'Ajouter un commentaire' }}
+          </button>
+        </div>
+
+        <form 
+          v-else
+          @submit.prevent="updateAlbumComment"
+          class="flex flex-col gap-3"
+        >
+          <textarea 
+            v-model="comment"
+            placeholder="Écrivez votre commentaire..."
+            class="flex-1 min-h-28 px-4 py-3 rounded-large border border-outline-variant bg-surface body-medium text-on-surface outline-none focus:border-primary resize-none"
+          ></textarea>
+
+          <div class="flex gap-2">
+            <button
+              type="button"
+              @click="cancelEditing"
+              :disabled="isUpdating"
+              class="flex items-center justify-center flex-1 px-4 py-2 rounded-full border border-outline-variant label-medium whitespace-nowrap text-on-surface-variant cursor-pointer hover:border-error hover:text-error"
+            >
+              Annuler
+            </button>
+
+            <button
+              type="submit"
+              :disabled="isUpdating"
+              class="flex items-center justify-center flex-2 px-4 py-2 rounded-full bg-primary label-medium whitespace-nowrap text-on-primary cursor-pointer hover:bg-primary/80 disabled:opacity-50 disabled:cursor-wait"
+            >
+              {{ isUpdating ? 'Enregistrement...' : 'Enregistrer' }}
+            </button>
+          </div>
+        </form>
+      </div>
+
       <div class="flex flex-col gap-0.5 rounded-large overflow-hidden">
         <div class="flex items-center p-3 gap-3 rounded-extra-small bg-surface-container-low">
           <span
