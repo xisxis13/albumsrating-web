@@ -16,6 +16,7 @@ export interface AlbumTrack {
 export interface AlbumReview {
   id: string
   createdAt: string
+  lastModifiedAt: string
   comment: string | null
   favoriteTrackId: string | null
   leastFavoriteTrackId: string | null
@@ -53,6 +54,7 @@ interface AlbumResponse {
   album_review: { 
     id: string
     created_at: string
+    last_modified_at: string
     comment: string | null
     favorite_track_id: string | null
     least_favorite_track_id: string | null
@@ -75,7 +77,7 @@ function toDetails(resp: AlbumResponse): AlbumDetail {
     albumType: resp.album_type,
     artists: artistNames(resp.album_artist),
     review: review
-      ? { id: review.id, createdAt: review.created_at, comment: review.comment, favoriteTrackId: review.favorite_track_id, leastFavoriteTrackId: review.least_favorite_track_id }
+      ? { id: review.id, createdAt: review.created_at, lastModifiedAt:review.last_modified_at, comment: review.comment, favoriteTrackId: review.favorite_track_id, leastFavoriteTrackId: review.least_favorite_track_id }
       : null,
     tracks: resp.track
       .map((t) => ({
@@ -95,7 +97,7 @@ async function queryAlbum(spotifyId: string): Promise<AlbumResponse | null> {
   const { data, error } = await supabase
     .from('album')
     .select(
-      'id, spotify_id, title, cover_url, release_year, album_type, album_artist(artist(name)), track(id, spotify_id, title, track_number, disc_number, duration_ms, track_artist(artist(name))), album_review(id, created_at, comment, favorite_track_id, least_favorite_track_id)',
+      'id, spotify_id, title, cover_url, release_year, album_type, album_artist(artist(name)), track(id, spotify_id, title, track_number, disc_number, duration_ms, track_artist(artist(name))), album_review(id, created_at, last_modified_at, comment, favorite_track_id, least_favorite_track_id)',
     )
     .eq('spotify_id', spotifyId)
     .maybeSingle()
@@ -188,6 +190,7 @@ export const useAlbumDetailStore = defineStore('albumDetail', () => {
     if (!review) return
 
     const newFavoriteTrackId = review.favoriteTrackId === trackId ? null : trackId
+    const now = new Date().toISOString()
 
     const { error: updateError } = await supabase
       .from('album_review')
@@ -200,6 +203,7 @@ export const useAlbumDetailStore = defineStore('albumDetail', () => {
     }
 
     review.favoriteTrackId = newFavoriteTrackId
+    review.lastModifiedAt = now
   }
 
   async function setLeastFavoriteTrack(trackId: string) {
@@ -207,6 +211,7 @@ export const useAlbumDetailStore = defineStore('albumDetail', () => {
     if (!review) return
 
     const newLeastFavoriteTrackId = review.leastFavoriteTrackId === trackId ? null : trackId
+    const now = new Date().toISOString()
 
     const { error: updateError } = await supabase
       .from('album_review')
@@ -219,6 +224,7 @@ export const useAlbumDetailStore = defineStore('albumDetail', () => {
     }
 
     review.leastFavoriteTrackId = newLeastFavoriteTrackId
+    review.lastModifiedAt = now
   }
 
   return { album, loading, error, notFound, fetchAlbum, isFavoriteTrack, isLeastFavoriteTrack, setFavoriteTrack, setLeastFavoriteTrack }

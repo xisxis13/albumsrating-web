@@ -1,10 +1,18 @@
 <script setup lang="ts">
-import { computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAlbumDetailStore } from '@/stores/albumDetails'
 import { useCollectionStore } from '@/stores/collection'
 
-import { ArrowLeft, EighthNotes, Trash2 } from '@lucide/vue'
+import { 
+  ArrowLeft, 
+  EighthNotes, 
+  Trash2,
+  PanelRightClose,
+  PanelRightOpen,
+  Heart, 
+  HeartOff,
+} from '@lucide/vue'
 import NavigationRail from '@/components/NavigationRail.vue'
 import TrackRow from '@/components/TrackRow.vue'
 
@@ -21,9 +29,15 @@ const isAdding = computed(() => {
   return id ? collectionStore.isAdding(id) : false
 })
 
+const isRightMenuOpen = ref(false)
+
 function goBack() {
   if (window.history.state?.back) router.back()
   else router.push('/')
+}
+
+function toggleRightMenuState() {
+  isRightMenuOpen.value = !isRightMenuOpen.value
 }
 
 function trackArtists(track: AlbumTrack): string[] {
@@ -61,8 +75,24 @@ async function handleSetLeastFavoriteTrack(track: AlbumTrack) {
   albumStore.setLeastFavoriteTrack(track.id!!)
 }
 
+const favoriteTrackTitle = computed(() => {
+  const trackId = albumStore.album?.review?.favoriteTrackId
+  if (!trackId) return null
+  return albumStore.album?.tracks.find(t => t.id === trackId)?.title
+})
+
+const leastFavoriteTrackTitle = computed(() => {
+  const trackId = albumStore.album?.review?.leastFavoriteTrackId
+  if (!trackId) return null
+  return albumStore.album?.tracks.find(t => t.id === trackId)?.title
+})
+
 onMounted(() => {
   collectionStore.fetchCollection()
+
+  if (!albumStore.album?.review) {
+    isRightMenuOpen.value = false
+  }
 })
 
 watch(spotifyId, (id) => albumStore.fetchAlbum(id), { immediate: true })
@@ -87,6 +117,21 @@ const discs = computed(() => {
 const totalMinutes = computed(() => {
   const ms = (albumStore.album?.tracks ?? []).reduce((sum, t) => sum + (t.durationMs ?? 0), 0)
   return Math.round(ms / 60000)
+})
+
+const lastModifiedDate = computed(() => {
+  const lastModifiedAt = albumStore.album?.review?.lastModifiedAt
+  if (!lastModifiedAt) return null
+
+  const date = new Date(lastModifiedAt)
+
+  return new Intl.DateTimeFormat('fr-FR', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  }).format(date).replace(',', ' à')
 })
 </script>
 
@@ -119,6 +164,14 @@ const totalMinutes = computed(() => {
             class="flex items-center justify-center aspect-square w-10 rounded-full text-on-error-container bg-error-container hover:bg-error hover:text-on-error transition-colors cursor-pointer"
           >
             <Trash2 class="w-6 h-6" />
+          </button>
+
+          <button
+            @click="toggleRightMenuState"
+            class="flex items-center justify-center aspect-square w-10 rounded-full text-on-surface-variant hover:bg-surface-container-highest transition-colors cursor-pointer"
+          >
+            <PanelRightOpen v-if="!isRightMenuOpen" class="w-6 h-6" />
+            <PanelRightClose v-if="isRightMenuOpen" class="w-6 h-6" />
           </button>
         </div>
 
@@ -210,6 +263,7 @@ const totalMinutes = computed(() => {
                 :track-number="track.trackNumber"
                 :track-title="track.title"
                 :artists="trackArtists(track)"
+                :is-in-collection="albumStore.album.review !== null"
                 :is-favorite="albumStore.isFavoriteTrack(track.id!!)"
                 :is-least-favorite="albumStore.isLeastFavoriteTrack(track.id!!)"
                 @set-favorite="handleSetFavoriteTrack(track)"
@@ -219,6 +273,57 @@ const totalMinutes = computed(() => {
           </ol>
         </section>
       </template>
+    </div>
+
+    <div 
+      v-if="isRightMenuOpen"
+      class="flex flex-col min-w-80 w-fit h-full p-6 gap-4 rounded-large bg-surface-container-lowest overflow-scroll"
+    >
+      <div class="flex flex-col gap-0.5 rounded-large overflow-hidden">
+        <div class="flex items-center p-3 gap-3 rounded-extra-small bg-surface-container-low">
+          <span
+            class="flex items-center justify-center min-w-12 aspect-square rounded-medium bg-secondary-container text-on-secondary-container label-medium"
+          >
+            <Heart class="w-6 h-6" />
+          </span>
+          <span 
+            v-if="albumStore.album?.review?.favoriteTrackId"
+            class="body-medium text-on-surface"
+          >
+            {{ favoriteTrackTitle }}
+          </span>
+          <span 
+            v-else
+            class="body-medium text-on-surface-variant truncate"
+          >
+            /
+          </span>
+        </div>
+        
+        <div class="flex items-center p-3 gap-3 rounded-extra-small bg-surface-container-low">
+          <span
+            class="flex items-center justify-center min-w-12 aspect-square rounded-medium bg-secondary-container text-on-secondary-container label-medium"
+          >
+            <HeartOff class="w-6 h-6" />
+          </span>
+          <span 
+            v-if="albumStore.album?.review?.leastFavoriteTrackId"
+            class="body-medium text-on-surface"
+          >
+            {{ leastFavoriteTrackTitle }}
+          </span>
+          <span 
+            v-else
+            class="body-medium text-on-surface-variant"
+          >
+            /
+          </span>
+        </div>
+      </div>
+
+      <span class="body-medium text-on-surface-variant">
+        Dernière modification le {{ lastModifiedDate }}
+      </span>
     </div>
   </main>
 </template>

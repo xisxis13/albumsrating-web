@@ -17,6 +17,10 @@ const props = defineProps({
     type: Array as PropType<string[]>,
     default: () => [],
   },
+  isInCollection: {
+    type: Boolean,
+    required: true,
+  },
   isFavorite: {
     type: Boolean,
     required: true,
@@ -57,7 +61,10 @@ const isMenuOpen = ref(false)
     </div>
 
     
-    <div class="flex items-center gap-2">
+    <div
+      v-if="isInCollection"
+      class="flex items-center gap-2"
+    >
       <Heart v-if="isFavorite" class="w-5 h-5 text-outline" />
       <HeartOff v-if="isLeastFavorite" class="w-5 h-5 text-outline" />
       
