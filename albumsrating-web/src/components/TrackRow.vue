@@ -81,14 +81,19 @@ const ratingColorClass = computed(() => {
     
     <div
       v-if="isInCollection"
-      class="flex items-center gap-2"
+      class="flex items-center"
     >
-      <div v-if="ratingColorClass" class="flex items-center justify-center w-5 h-5">
+      <div v-if="isFavorite" class="flex items-center justify-center w-8 h-8">
+        <Heart class="w-5 h-5 text-outline" />
+      </div>
+
+      <div v-if="isLeastFavorite" class="flex items-center justify-center w-8 h-8">
+        <HeartOff class="w-5 h-5 text-on-outline" />
+      </div>
+
+      <div v-if="ratingColorClass" class="flex items-center justify-center w-8 h-8">
         <div class="w-3.5 h-3.5 rounded-full" :class="ratingColorClass"></div>
       </div>
-      
-      <Heart v-if="isFavorite" class="w-5 h-5 text-outline" />
-      <HeartOff v-if="isLeastFavorite" class="w-5 h-5 text-outline" />
       
       <button
         ref="triggerBtn"
@@ -98,7 +103,7 @@ const ratingColorClass = computed(() => {
       >
         <Ellipsis class="w-6 h-6" />
       </button>
-  
+
       <TrackMenu
         v-if="isMenuOpen"
         :target-el="triggerBtn"

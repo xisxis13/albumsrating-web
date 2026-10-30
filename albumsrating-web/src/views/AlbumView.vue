@@ -272,7 +272,7 @@ const lastModifiedDate = computed(() => {
             <span class="title-large text-primary">
               {{ albumStore.album.artists.join(', ') }}
             </span>
-            <span class="body-medium text-outline">
+            <span class="body-medium text-on-surface-variant">
               {{ albumStore.album.releaseYear }} • {{ albumStore.album.tracks.length }} titre{{ albumStore.album.tracks.length > 1 ? 's' : '' }}
               <template v-if="totalMinutes > 0">
                 • {{ totalMinutes }} min
@@ -325,53 +325,52 @@ const lastModifiedDate = computed(() => {
       v-if="isRightMenuOpen"
       class="flex flex-col min-w-80 w-fit h-full p-6 gap-4 rounded-large bg-surface-container-lowest overflow-scroll"
     >
-      <div class="flex flex-col w-full gap-2">
-        <span class="title-large text-on-surface">Commentaire global</span>
+      <div class="flex flex-col w-full gap-0.5 rounded-large overflow-hidden">
+        <div class="flex flex-col p-4 gap-2 rounded-extra-small bg-surface-container-low">
+          <span class="title-medium text-on-surface">Commentaire global</span>
 
-        <div
-          v-if="!isEditingComment"
-          class="flex flex-col gap-2"
-        >
-          <span
-            v-if="!hasComment"
-            class="body-medium text-on-surface-variant italic"
-          >
-            Pas de commentaire
-          </span>
+          <template v-if="!isEditingComment">
+            <span
+              v-if="!hasComment"
+              class="body-medium text-on-surface-variant italic"
+            >
+              Pas de commentaire
+            </span>
 
-          <span
-            v-else
-            class="body-medium text-on-surface"
-          >
-            {{ albumStore.album?.review?.comment }}
-          </span>
-
-          <button
-            v-if="albumStore.album?.review"
-            @click="startEditing"
-            class="flex items-center justify-center w-full mt-2 px-4 py-2 rounded-full border border-outline-variant label-medium whitespace-nowrap text-on-surface-variant cursor-pointer hover:border-primary hover:text-primary transition-colors"
-          >
-            {{ hasComment ? 'Modifier le commentaire' : 'Ajouter un commentaire' }}
-          </button>
+            <span
+              v-else
+              class="body-medium text-on-surface-variant"
+            >
+              {{ albumStore.album?.review?.comment }}
+            </span>
+          </template>
         </div>
+
+        <button
+          v-if="!isEditingComment && albumStore.album?.review"
+          @click="startEditing"
+          class="flex items-center justify-center w-full mt-2 px-4 py-3 rounded-extra-small bg-primary-container label-medium whitespace-nowrap text-on-primary-container cursor-pointer hover:bg-primary-container/80 transition-colors"
+        >
+          {{ hasComment ? 'Modifier le commentaire' : 'Ajouter un commentaire' }}
+        </button>
 
         <form 
           v-else
           @submit.prevent="updateAlbumComment"
-          class="flex flex-col gap-3"
+          class="flex flex-col gap-0.5"
         >
           <textarea 
             v-model="comment"
             placeholder="Écrivez votre commentaire..."
-            class="flex-1 min-h-28 px-4 py-3 rounded-large border border-outline-variant bg-surface body-medium text-on-surface outline-none focus:border-primary resize-none"
+            class="flex-1 min-h-28 px-4 py-3 rounded-extra-small border border-outline-variant bg-surface body-medium text-on-surface outline-none focus:border-primary resize-none"
           ></textarea>
 
-          <div class="flex gap-2">
+          <div class="flex gap-0.5">
             <button
               type="button"
               @click="cancelEditing"
               :disabled="isUpdating"
-              class="flex items-center justify-center flex-1 px-4 py-2 rounded-full border border-outline-variant label-medium whitespace-nowrap text-on-surface-variant cursor-pointer hover:border-error hover:text-error"
+              class="flex items-center justify-center flex-1 px-4 py-2.5 rounded-r-extra-small rounded-tl-extra-small rounded-bl-large border border-outline-variant label-medium whitespace-nowrap text-on-surface-variant cursor-pointer hover:border-error hover:text-error"
             >
               Annuler
             </button>
@@ -379,7 +378,7 @@ const lastModifiedDate = computed(() => {
             <button
               type="submit"
               :disabled="isUpdating"
-              class="flex items-center justify-center flex-2 px-4 py-2 rounded-full bg-primary label-medium whitespace-nowrap text-on-primary cursor-pointer hover:bg-primary/80 disabled:opacity-50 disabled:cursor-wait"
+              class="flex items-center justify-center flex-2 px-4 py-2.5 rounded-extra-small bg-primary label-medium whitespace-nowrap text-on-primary cursor-pointer hover:bg-primary/80 disabled:opacity-50 disabled:cursor-wait"
             >
               {{ isUpdating ? 'Enregistrement...' : 'Enregistrer' }}
             </button>
@@ -388,7 +387,7 @@ const lastModifiedDate = computed(() => {
       </div>
 
       <div class="flex flex-col gap-0.5 rounded-large overflow-hidden">
-        <div class="flex items-center p-3 gap-3 rounded-extra-small bg-surface-container-low">
+        <div class="flex items-center p-4 gap-3 rounded-extra-small bg-surface-container-low">
           <span
             class="flex items-center justify-center min-w-12 aspect-square rounded-medium bg-secondary-container text-on-secondary-container label-medium"
           >
@@ -408,7 +407,7 @@ const lastModifiedDate = computed(() => {
           </span>
         </div>
         
-        <div class="flex items-center p-3 gap-3 rounded-extra-small bg-surface-container-low">
+        <div class="flex items-center p-4 gap-3 rounded-extra-small bg-surface-container-low">
           <span
             class="flex items-center justify-center min-w-12 aspect-square rounded-medium bg-secondary-container text-on-secondary-container label-medium"
           >
