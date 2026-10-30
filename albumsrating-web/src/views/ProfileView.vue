@@ -64,7 +64,7 @@ function formatDate(value: string | null) {
           </div>
 
           <div class="flex flex-col">
-            <span class="title-medium">{{ profileStore.profile.displayName }}</span>
+            <span class="title-medium text-on-surface">{{ profileStore.profile.displayName }}</span>
             <span class="body-medium text-on-surface-variant">
               {{ authStore.user?.email }}
             </span>

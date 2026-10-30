@@ -88,7 +88,7 @@ const ratingColorClass = computed(() => {
       </div>
 
       <div v-if="isLeastFavorite" class="flex items-center justify-center w-8 h-8">
-        <HeartOff class="w-5 h-5 text-on-outline" />
+        <HeartOff class="w-5 h-5 text-outline" />
       </div>
 
       <div v-if="ratingColorClass" class="flex items-center justify-center w-8 h-8">
