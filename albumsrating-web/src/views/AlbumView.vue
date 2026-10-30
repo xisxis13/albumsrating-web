@@ -108,6 +108,11 @@ async function handleSetLeastFavoriteTrack(track: AlbumTrack) {
   albumStore.setLeastFavoriteTrack(track.id!!)
 }
 
+function handleSetRating(track: AlbumTrack, rating: number) {
+  console.log(`Note reçu pour ${track.title} : ${rating}`)
+  albumStore.setTrackRating(track.id!!, rating)
+}
+
 const favoriteTrackTitle = computed(() => {
   const trackId = albumStore.album?.review?.favoriteTrackId
   if (!trackId) return null
@@ -301,11 +306,13 @@ const lastModifiedDate = computed(() => {
                 :track-number="track.trackNumber"
                 :track-title="track.title"
                 :artists="trackArtists(track)"
+                :review="track.review"
                 :is-in-collection="albumStore.album.review !== null"
                 :is-favorite="albumStore.isFavoriteTrack(track.id!!)"
                 :is-least-favorite="albumStore.isLeastFavoriteTrack(track.id!!)"
                 @set-favorite="handleSetFavoriteTrack(track)"
                 @set-least-favorite="handleSetLeastFavoriteTrack(track)"
+                @set-rating="(rating) => handleSetRating(track, rating)"
               />
             </li>
           </ol>

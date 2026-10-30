@@ -11,6 +11,13 @@ export interface AlbumTrack {
   discNumber: number
   durationMs: number | null
   artists: string[]
+  review: AlbumTrackReview | null
+}
+
+export interface AlbumTrackReview {
+  id: string
+  comment: string | null
+  rating: number | null
 }
 
 export interface AlbumReview {
@@ -50,6 +57,7 @@ interface AlbumResponse {
     disc_number: number
     duration_ms: number | null
     track_artist: { artist: { name: string } }[]
+    track_review: { id: string, comment: string | null, rating: number | null }[]
   }[]
   album_review: { 
     id: string
@@ -79,8 +87,9 @@ function toDetails(resp: AlbumResponse): AlbumDetail {
     review: review
       ? { id: review.id, createdAt: review.created_at, lastModifiedAt:review.last_modified_at, comment: review.comment, favoriteTrackId: review.favorite_track_id, leastFavoriteTrackId: review.least_favorite_track_id }
       : null,
-    tracks: resp.track
-      .map((t) => ({
+    tracks: resp.track.map((t) => {
+      const trackRev = t.track_review?.[0] ?? null
+      return {
         id: t.id,
         spotifyId: t.spotify_id,
         title: t.title,
@@ -88,7 +97,9 @@ function toDetails(resp: AlbumResponse): AlbumDetail {
         discNumber: t.disc_number,
         durationMs: t.duration_ms,
         artists: artistNames(t.track_artist),
-      }))
+        review: trackRev ? { id: trackRev.id, comment: trackRev.comment, rating: trackRev.rating } : null
+      }
+    })
       .sort((a, b) => a.discNumber - b.discNumber || a.trackNumber - b.trackNumber),
   }
 }
@@ -97,7 +108,7 @@ async function queryAlbum(spotifyId: string): Promise<AlbumResponse | null> {
   const { data, error } = await supabase
     .from('album')
     .select(
-      'id, spotify_id, title, cover_url, release_year, album_type, album_artist(artist(name)), track(id, spotify_id, title, track_number, disc_number, duration_ms, track_artist(artist(name))), album_review(id, created_at, last_modified_at, comment, favorite_track_id, least_favorite_track_id)',
+      'id, spotify_id, title, cover_url, release_year, album_type, album_artist(artist(name)), track(id, spotify_id, title, track_number, disc_number, duration_ms, track_artist(artist(name)), track_review(id, comment, rating)), album_review(id, created_at, last_modified_at, comment, favorite_track_id, least_favorite_track_id)',
     )
     .eq('spotify_id', spotifyId)
     .maybeSingle()
@@ -238,5 +249,44 @@ export const useAlbumDetailStore = defineStore('albumDetail', () => {
     review.lastModifiedAt = now
   }
 
-  return { album, loading, error, notFound, fetchAlbum, updateAlbumComment, isFavoriteTrack, isLeastFavoriteTrack, setFavoriteTrack, setLeastFavoriteTrack }
+  // TODO: Update lastModifiedAt from the albumReview
+  async function setTrackRating(trackId: string, rating: number) {
+    const track = album.value?.tracks.find((t) => t.id === trackId)
+    const reviewId = album.value?.review?.id
+
+    if (!track) return 
+
+    const existing = track.review
+
+    try {
+      if (existing) {
+        const { error } = await supabase
+          .from('track_review')
+          .update({ rating })
+          .eq('id', existing.id)
+        
+        if (error) throw error
+
+        track.review!.rating = rating
+      } else {
+        const { data, error } = await supabase
+          .from('track_review')
+          .insert({ track_id: trackId, album_review_id: reviewId, rating })
+          .select('id, comment, rating')
+          .single()
+
+        if (error) throw error
+        
+        track.review = {
+          id: data.id,
+          comment: data.comment,
+          rating: data.rating,
+        }
+      }
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour de la note du titre : ', error)
+    }
+  }
+
+  return { album, loading, error, notFound, fetchAlbum, updateAlbumComment, isFavoriteTrack, isLeastFavoriteTrack, setFavoriteTrack, setLeastFavoriteTrack, setTrackRating }
 })

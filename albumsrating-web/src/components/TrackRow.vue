@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import type { PropType } from 'vue'
+import { ref, computed } from 'vue'
 import { Heart, HeartOff, Ellipsis } from '@lucide/vue'
 import TrackMenu from './TrackMenu.vue'
+
+import type { PropType } from 'vue'
+import type { AlbumTrackReview } from '@/stores/albumDetails.ts'
 
 const props = defineProps({
   trackNumber: {
@@ -16,6 +18,10 @@ const props = defineProps({
   artists: {
     type: Array as PropType<string[]>,
     default: () => [],
+  },
+  review: { 
+    type: Object as PropType<AlbumTrackReview | null>, 
+    default: null 
   },
   isInCollection: {
     type: Boolean,
@@ -34,7 +40,7 @@ const props = defineProps({
 const emit = defineEmits<{
   (e: 'set-favorite'): void
   (e: 'set-least-favorite'): void
-  // (e: 'set-rating', rating: number): void
+  (e: 'set-rating', rating: number): void
   // (e: 'add-comment'): void
   // (e: 'delete-rating'): void
   // (e: 'delete-comment'): void
@@ -42,6 +48,19 @@ const emit = defineEmits<{
 
 const triggerBtn = ref<HTMLElement | null>(null)
 const isMenuOpen = ref(false)
+
+const ratingColors: Record<number, string> = {
+  5: 'bg-masterpiece',
+  4: 'bg-great',
+  3: 'bg-good',
+  2: 'bg-mid',
+  1: 'bg-skip',
+}
+
+const ratingColorClass = computed(() => {
+  if (!props.review?.rating) return null
+  return ratingColors[props.review.rating] ?? null
+})
 </script>
 
 <template>
@@ -59,12 +78,15 @@ const isMenuOpen = ref(false)
         {{ artists.join(', ') }}
       </span>
     </div>
-
     
     <div
       v-if="isInCollection"
       class="flex items-center gap-2"
     >
+      <div v-if="ratingColorClass" class="flex items-center justify-center w-5 h-5">
+        <div class="w-3.5 h-3.5 rounded-full" :class="ratingColorClass"></div>
+      </div>
+      
       <Heart v-if="isFavorite" class="w-5 h-5 text-outline" />
       <HeartOff v-if="isLeastFavorite" class="w-5 h-5 text-outline" />
       
@@ -83,11 +105,11 @@ const isMenuOpen = ref(false)
         @close="isMenuOpen = false"
         @set-favorite="emit('set-favorite')"
         @set-least-favorite="emit('set-least-favorite')"
+        @set-rating="emit('set-rating', $event)"
       />
     </div>
 
-    <!-- 
-      @set-rating="emit('set-rating')"
+    <!--
       @add-comment="emit('add-comment')"
       @delete-rating="emit('delete-rating')"
       @delete-comment="emit('delete-comment')" 

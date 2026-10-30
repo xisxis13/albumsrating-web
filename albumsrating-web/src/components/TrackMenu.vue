@@ -19,7 +19,7 @@ const emit = defineEmits<{
   (e: 'close'): void
   (e: 'set-favorite'): void
   (e: 'set-least-favorite'): void
-  // (e: 'set-rating', rating: number): void
+  (e: 'set-rating', rating: number): void
   // (e: 'add-comment'): void
   // (e: 'delete-rating'): void
   // (e: 'delete-comment'): void
@@ -74,11 +74,11 @@ const ratings = [
   { label: 'À zapper', value: 1, color: 'bg-skip' }
 ]
 
-// function handleSelectRating(value: number) {
-//   emit('set-rating', value)
-//   isRatingsOpen.value = false
-//   emit('close')
-// }
+function handleSelectRating(value: number) {
+  emit('set-rating', value)
+  isRatingsOpen.value = false
+  emit('close')
+}
 </script>
 
 <template>
@@ -89,8 +89,7 @@ const ratings = [
       :style="mainFloatingStyles"
       class="flex flex-col z-50 w-56 gap-0.5 rounded-medium select-none"
     >
-      <!-- <div class="grid grid-cols-2 p-1 gap-1 rounded-t-medium rounded-b-extra-small bg-tertiary-container shadow-xl shadow-[#47464F]/20"> -->
-      <div class="grid grid-cols-2 p-1 gap-1 rounded-medium bg-tertiary-container shadow-xl shadow-[#47464F]/20">
+      <div class="grid grid-cols-2 p-1 gap-1 rounded-t-medium rounded-b-extra-small bg-tertiary-container shadow-xl shadow-[#47464F]/20">
         <button
           type="button"
           @click="emit('set-favorite')"
@@ -114,7 +113,7 @@ const ratings = [
         </button>
       </div>
 
-      <!-- <div class="flex flex-col p-1 gap-1 rounded-extra-small bg-tertiary-container shadow-xl shadow-[#47464F]/20">
+      <div class="flex flex-col p-1 gap-1 rounded-t-extra-small rounded-b-medium bg-tertiary-container shadow-xl shadow-[#47464F]/20">
         <button
           ref="ratingTriggerRef"
           type="button"
@@ -132,17 +131,17 @@ const ratings = [
           />
         </button>
 
-        <button
+        <!-- <button
           type="button"
           @click="emit('add-comment')"
           class="flex items-center w-full px-3 py-2 gap-3 rounded-small text-on-tertiary-container hover:bg-on-tertiary-container/10 transition-colors cursor-pointer"
         >
           <Plus class="w-5 h-5" />
           <span class="label-large text-left">Ajouter un commentaire</span>
-        </button>
+        </button> -->
       </div>
 
-      <div class="flex flex-col p-1 gap-1 rounded-b-medium rounded-t-extra-small bg-tertiary-container shadow-xl shadow-[#47464F]/20">
+      <!-- <div class="flex flex-col p-1 gap-1 rounded-b-medium rounded-t-extra-small bg-tertiary-container shadow-xl shadow-[#47464F]/20">
         <button
           type="button"
           @click="emit('delete-rating')"
@@ -164,7 +163,7 @@ const ratings = [
     </div>
 
     <!-- Sub menu : rating -->
-    <!-- <div
+    <div
       v-if="isRatingsOpen"
       ref="ratingMenuRef"
       :style="ratingFloatingStyles"
@@ -178,10 +177,10 @@ const ratings = [
         class="flex items-center w-full px-3 py-2 gap-3 rounded-small text-on-tertiary-container hover:bg-on-tertiary-container/10 transition-colors cursor-pointer"
       >
         <span class="w-4 h-4 rounded-full shrink-0" :class="rating.color" />
-        <span class="title-small text-on-surface font-semibold">
+        <span class="body-medium">
           {{ rating.label }}
         </span>
       </button>
-    </div> -->
+    </div>
   </Teleport>
 </template>
