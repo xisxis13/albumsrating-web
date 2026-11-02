@@ -12,6 +12,7 @@ import {
   PanelRightOpen,
   Heart, 
   HeartOff,
+  Star,
 } from '@lucide/vue'
 import NavigationRail from '@/components/NavigationRail.vue'
 import TrackRow from '@/components/TrackRow.vue'
@@ -266,7 +267,7 @@ const lastModifiedDate = computed(() => {
             <EighthNotes class="w-13 h-13 text-on-surface-variant" />
           </div>
 
-          <div class="flex flex-col justify-end gap-2 min-w-0">
+          <div class="flex flex-col justify-end py-1 gap-2 min-w-0">
             <span class="title-medium text-on-surface-variant">
               {{ typeLabels[albumStore.album.albumType] ?? 'Album' }}
             </span>
@@ -282,6 +283,27 @@ const lastModifiedDate = computed(() => {
                 • {{ totalMinutes }} min
               </template>
             </span>
+
+            <div
+              v-if="albumStore.album?.review"
+              class="flex items-center justify-center w-fit px-3 py-1.5 gap-1 rounded-full bg-primary-container text-on-primary-container"
+            >
+              <Star class="w-4 h-4" fill="var(--color-on-primary-container)" />
+
+              <span 
+                v-if="albumStore.album?.review.averageRating"
+                class="title-medium"
+              >
+                {{ albumStore.averageRating?.toFixed(1) }}
+              </span>
+
+              <span 
+                v-else
+                class="title-medium"
+              >
+                /
+              </span>
+            </div>
           </div>
         </div>
 

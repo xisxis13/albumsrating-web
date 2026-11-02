@@ -1,5 +1,5 @@
 import { defineStore } from "pinia"
-import { ref } from "vue"
+import { computed, ref } from "vue"
 import { FunctionsHttpError } from "@supabase/supabase-js"
 import { supabase } from "@/lib/supabase"
 
@@ -27,6 +27,7 @@ export interface AlbumReview {
   comment: string | null
   favoriteTrackId: string | null
   leastFavoriteTrackId: string | null
+  averageRating: number | null
 }
 
 export interface AlbumDetail {
@@ -66,6 +67,7 @@ interface AlbumResponse {
     comment: string | null
     favorite_track_id: string | null
     least_favorite_track_id: string | null
+    average_rating: number | null
   }[]
 }
 
@@ -85,7 +87,7 @@ function toDetails(resp: AlbumResponse): AlbumDetail {
     albumType: resp.album_type,
     artists: artistNames(resp.album_artist),
     review: review
-      ? { id: review.id, createdAt: review.created_at, lastModifiedAt:review.last_modified_at, comment: review.comment, favoriteTrackId: review.favorite_track_id, leastFavoriteTrackId: review.least_favorite_track_id }
+      ? { id: review.id, createdAt: review.created_at, lastModifiedAt:review.last_modified_at, comment: review.comment, favoriteTrackId: review.favorite_track_id, leastFavoriteTrackId: review.least_favorite_track_id, averageRating: review.average_rating ? Number(review.average_rating) : null }
       : null,
     tracks: resp.track.map((t) => {
       const trackRev = t.track_review?.[0] ?? null
@@ -108,7 +110,7 @@ async function queryAlbum(spotifyId: string): Promise<AlbumResponse | null> {
   const { data, error } = await supabase
     .from('album')
     .select(
-      'id, spotify_id, title, cover_url, release_year, album_type, album_artist(artist(name)), track(id, spotify_id, title, track_number, disc_number, duration_ms, track_artist(artist(name)), track_review(id, comment, rating)), album_review(id, created_at, last_modified_at, comment, favorite_track_id, least_favorite_track_id)',
+      'id, spotify_id, title, cover_url, release_year, album_type, album_artist(artist(name)), track(id, spotify_id, title, track_number, disc_number, duration_ms, track_artist(artist(name)), track_review(id, comment, rating)), album_review(id, created_at, last_modified_at, comment, favorite_track_id, least_favorite_track_id, average_rating)',
     )
     .eq('spotify_id', spotifyId)
     .maybeSingle()
@@ -249,10 +251,9 @@ export const useAlbumDetailStore = defineStore('albumDetail', () => {
     review.lastModifiedAt = now
   }
 
-  // TODO: Update lastModifiedAt from the albumReview
   async function setTrackRating(trackId: string, rating: number) {
     const track = album.value?.tracks.find((t) => t.id === trackId)
-    const reviewId = album.value?.review?.id
+    const review = album.value?.review
 
     if (!track) return 
 
@@ -271,7 +272,7 @@ export const useAlbumDetailStore = defineStore('albumDetail', () => {
       } else {
         const { data, error } = await supabase
           .from('track_review')
-          .insert({ track_id: trackId, album_review_id: reviewId, rating })
+          .insert({ track_id: trackId, album_review_id: review?.id, rating })
           .select('id, comment, rating')
           .single()
 
@@ -283,6 +284,11 @@ export const useAlbumDetailStore = defineStore('albumDetail', () => {
           rating: data.rating,
         }
       }
+
+      if (review) {
+        review.averageRating = averageRating.value
+        review.lastModifiedAt = new Date().toISOString()
+      }
     } catch (error) {
       console.error('Erreur lors de la mise à jour de la note du titre : ', error)
     }
@@ -290,7 +296,7 @@ export const useAlbumDetailStore = defineStore('albumDetail', () => {
 
   async function deleteTrackRating(trackId: string) {
     const track = album.value?.tracks.find((t) => t.id === trackId)
-    const reviewId = album.value?.review?.id
+    const review = album.value?.review
 
     if (!track) return 
 
@@ -307,10 +313,25 @@ export const useAlbumDetailStore = defineStore('albumDetail', () => {
 
         track.review!.rating = null
       }
+
+      if (review) {
+        review.averageRating = averageRating.value
+        review.lastModifiedAt = new Date().toISOString()
+      }
     } catch (error) {
       console.error('Erreur lors de la suppression de la note du titre : ', error)
     }
   }
 
-  return { album, loading, error, notFound, fetchAlbum, updateAlbumComment, isFavoriteTrack, isLeastFavoriteTrack, setFavoriteTrack, setLeastFavoriteTrack, setTrackRating, deleteTrackRating }
+  const averageRating = computed(() => {
+    const tracks = album.value?.tracks ?? []
+    const ratedTracks = tracks.filter((t) => t.review?.rating != null)
+
+    if (ratedTracks.length === 0) return null
+
+    const total = ratedTracks.reduce((sum, t) => sum + (t.review!.rating as number), 0)
+    return Number((total / ratedTracks.length).toFixed(1))
+  })
+
+  return { album, loading, error, notFound, fetchAlbum, updateAlbumComment, isFavoriteTrack, isLeastFavoriteTrack, setFavoriteTrack, setLeastFavoriteTrack, setTrackRating, deleteTrackRating, averageRating }
 })
