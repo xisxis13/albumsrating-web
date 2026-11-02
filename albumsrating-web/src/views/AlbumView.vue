@@ -16,8 +16,9 @@ import {
 } from '@lucide/vue'
 import NavigationRail from '@/components/NavigationRail.vue'
 import TrackRow from '@/components/TrackRow.vue'
+import RatingDistributionItem from '@/components/RatingDistributionItem.vue'
 
-import type { AlbumTrack  } from '@/stores/albumDetails'
+import type { AlbumTrack } from '@/stores/albumDetails'
 
 const route = useRoute()
 const router = useRouter()
@@ -34,6 +35,29 @@ const isRightMenuOpen = ref(false)
 const isEditingComment = ref(false)
 const isUpdating = ref(false)
 const comment = ref('')
+
+const RATING_CATEGORIES = [
+  { value: 5, label: 'Incroyable', colorClass: 'bg-masterpiece' },
+  { value: 4, label: 'Très bien', colorClass: 'bg-great' },
+  { value: 3, label: 'Bien', colorClass: 'bg-good' },
+  { value: 2, label: 'Moyen', colorClass: 'bg-mid' },
+  { value: 1, label: 'À zapper', colorClass: 'bg-skip' }
+]
+
+const ratingDistribution = computed(() => {
+  const counts: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }
+  const tracks = albumStore.album?.tracks ?? []
+
+  for (const track of tracks) {
+    if (track.review?.rating) {
+      counts[track.review.rating] = (counts[track.review.rating] || 0) + 1
+    }
+  }
+
+  const maxCount = Math.max(...Object.values(counts), 1)
+
+  return { counts, maxCount }
+})
 
 function goBack() {
   if (window.history.state?.back) router.back()
@@ -94,7 +118,7 @@ async function updateAlbumComment() {
       albumStore.album.review.comment = newCommentValue
     }
   } catch (error) {
-    console.error("Erreur lors de la modification du commantaire.", error)
+    console.error("Erreur lors de la modification du commentaire.", error)
   } finally {
     isUpdating.value = false
     cancelEditing()
@@ -110,7 +134,7 @@ async function handleSetLeastFavoriteTrack(track: AlbumTrack) {
 }
 
 function handleSetRating(track: AlbumTrack, rating: number) {
-  console.log(`Note reçu pour ${track.title} : ${rating}`)
+  console.log(`Note reçue pour ${track.title} : ${rating}`)
   albumStore.setTrackRating(track.id!!, rating)
 }
 
@@ -187,7 +211,7 @@ const lastModifiedDate = computed(() => {
     <NavigationRail />
 
     <!-- Album panel -->
-    <div class="flex flex-col w-full h-full p-6 gap-6 overflow-scroll rounded-large bg-surface-container-lowest">
+    <div class="flex flex-col flex-1 h-full p-6 gap-6 overflow-y-auto rounded-large bg-surface-container-lowest min-w-0">
       <div class="flex justify-between gap-4">
         <button
           @click="goBack"
@@ -224,13 +248,13 @@ const lastModifiedDate = computed(() => {
         </div>
 
         <button
-            v-else
-            @click="addToCollection"
-            :disabled="isAdding"
-            class="flex items-center justify-center px-4 py-2 rounded-full border border-outline-variant label-medium whitespace-nowrap text-on-surface-variant cursor-pointer hover:border-primary hover:text-primary disabled:opacity-50 disabled:cursor-wait"
-          >
-            {{ isAdding ? 'Ajout...' : 'Ajouter' }}
-          </button>
+          v-else
+          @click="addToCollection"
+          :disabled="isAdding"
+          class="flex items-center justify-center px-4 py-2 rounded-full border border-outline-variant label-medium whitespace-nowrap text-on-surface-variant cursor-pointer hover:border-primary hover:text-primary disabled:opacity-50 disabled:cursor-wait"
+        >
+          {{ isAdding ? 'Ajout...' : 'Ajouter' }}
+        </button>
       </div>
 
       <p
@@ -288,13 +312,13 @@ const lastModifiedDate = computed(() => {
               v-if="albumStore.album?.review"
               class="flex items-center justify-center w-fit px-3 py-1.5 gap-1 rounded-full bg-primary-container text-on-primary-container"
             >
-              <Star class="w-4 h-4" fill="var(--color-on-primary-container)" />
+              <Star class="w-4 h-4 fill-current" />
 
               <span 
-                v-if="albumStore.album?.review.averageRating"
+                v-if="albumStore.averageRating"
                 class="title-medium"
               >
-                {{ albumStore.averageRating?.toFixed(1) }}
+                {{ albumStore.averageRating.toFixed(1) }}
               </span>
 
               <span 
@@ -350,9 +374,10 @@ const lastModifiedDate = computed(() => {
     <!-- Review panel -->
     <div 
       v-if="isRightMenuOpen"
-      class="flex flex-col min-w-80 w-fit h-full p-6 gap-4 rounded-large bg-surface-container-lowest overflow-scroll"
+      class="flex flex-col w-80 shrink-0 h-full p-6 gap-4 rounded-large bg-surface-container-lowest overflow-y-auto"
     >
-      <div class="flex flex-col w-full gap-0.5 rounded-large overflow-hidden">
+      <!-- Global comment -->
+      <div class="flex flex-col w-full gap-0.5 rounded-large overflow-hidden shrink-0">
         <div class="flex flex-col p-4 gap-2 rounded-extra-small bg-surface-container-low">
           <span class="title-medium text-on-surface">Commentaire global</span>
 
@@ -413,7 +438,38 @@ const lastModifiedDate = computed(() => {
         </form>
       </div>
 
-      <div class="flex flex-col gap-0.5 rounded-large overflow-hidden">
+      <!-- Rating distribution -->
+      <div class="flex flex-col gap-0.5 rounded-large overflow-hidden shrink-0">
+        <div class="flex flex-col p-4 gap-4 rounded-extra-small bg-surface-container-low">
+          <div class="flex flex-col items-center justify-center gap-1">
+            <span class="title-medium text-on-surface">Répartition des notes</span>
+          </div>
+
+          <div class="flex items-end justify-between w-full h-44 px-2">
+            <RatingDistributionItem 
+              v-for="cat in RATING_CATEGORIES"
+              :key="cat.value"
+              :rating-category="cat.value"
+              :tracks-in-category="ratingDistribution.counts[cat.value] || 0"
+              :max-tracks-count="ratingDistribution.maxCount"
+            />
+          </div>
+        </div>
+
+        <div class="flex items-start justify-start flex-wrap p-4 gap-3 rounded-extra-small bg-surface-container-low">
+          <div 
+            v-for="cat in RATING_CATEGORIES"
+            :key="cat.value"
+            class="flex items-center justify-center w-fit gap-1.5"
+          >
+            <div class="w-4 h-4 rounded-full" :class="cat.colorClass" />
+            <span class="body-medium text-on-surface-variant">{{ cat.label }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Favorite / least favorite tracks -->
+      <div class="flex flex-col gap-0.5 rounded-large overflow-hidden shrink-0">
         <div class="flex items-center p-4 gap-3 rounded-extra-small bg-surface-container-low">
           <span
             class="flex items-center justify-center min-w-12 aspect-square rounded-medium bg-secondary-container text-on-secondary-container label-medium"
@@ -455,7 +511,8 @@ const lastModifiedDate = computed(() => {
         </div>
       </div>
 
-      <span class="body-medium text-on-surface-variant">
+      <!-- Last modified at -->
+      <span class="body-medium text-on-surface-variant shrink-0">
         Dernière modification le {{ lastModifiedDate }}
       </span>
     </div>
