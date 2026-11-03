@@ -88,7 +88,7 @@ function toggleTheme() {
         />
         <div
           v-else
-          class="flex items-center justify-center aspect-square w-16 rounded-full bg-primary-container text-on-primary-container text-title-large"
+          class="flex items-center justify-center aspect-square w-11 rounded-full bg-primary-container text-on-primary-container text-title-large"
         >
           {{ profileStore.profile?.displayName?.charAt(0) ?? '?' }}
         </div>
