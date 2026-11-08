@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { Heart, HeartOff, Ellipsis } from '@lucide/vue'
+import { Heart, HeartOff, Ellipsis, MessageSquare } from '@lucide/vue'
 import TrackMenu from './TrackMenu.vue'
+import TrackCommentModal from './TrackCommentModal.vue'
 
 import type { PropType } from 'vue'
 import type { AlbumTrackReview } from '@/stores/albumDetails.ts'
@@ -41,13 +42,16 @@ const emit = defineEmits<{
   (e: 'set-favorite'): void
   (e: 'set-least-favorite'): void
   (e: 'set-rating', rating: number): void
-  // (e: 'add-comment'): void
+  (e: 'set-comment', comment: string | null): void
   (e: 'delete-rating'): void
-  // (e: 'delete-comment'): void
+  (e: 'delete-comment'): void
 }>()
 
 const triggerBtn = ref<HTMLElement | null>(null)
 const isMenuOpen = ref(false)
+const isCommentModalOpen = ref(false)
+
+const hasComment = computed(() => !!props.review?.comment)
 
 const ratingColors: Record<number, string> = {
   5: 'bg-masterpiece',
@@ -61,6 +65,10 @@ const ratingColorClass = computed(() => {
   if (!props.review?.rating) return null
   return ratingColors[props.review.rating] ?? null
 })
+
+function handleSaveComment(comment: string | null) {
+  emit('set-comment', comment)
+}
 </script>
 
 <template>
@@ -83,6 +91,10 @@ const ratingColorClass = computed(() => {
       v-if="isInCollection"
       class="flex items-center"
     >
+      <div v-if="hasComment" class="flex items-center justify-center w-8 h-8" :title="review?.comment || ''">
+        <MessageSquare class="w-4 h-4 text-outline" />
+      </div>
+
       <div v-if="isFavorite" class="flex items-center justify-center w-8 h-8">
         <Heart class="w-5 h-5 text-outline" />
       </div>
@@ -107,17 +119,23 @@ const ratingColorClass = computed(() => {
       <TrackMenu
         v-if="isMenuOpen"
         :target-el="triggerBtn"
+        :has-comment="hasComment"
         @close="isMenuOpen = false"
         @set-favorite="emit('set-favorite')"
         @set-least-favorite="emit('set-least-favorite')"
         @set-rating="emit('set-rating', $event)"
+        @add-comment="isCommentModalOpen = true"
         @delete-rating="emit('delete-rating')"
+        @delete-comment="emit('delete-comment')"
+      />
+
+      <TrackCommentModal
+        :is-open="isCommentModalOpen"
+        :track-title="trackTitle"
+        :initial-comment="review?.comment ?? null"
+        @close="isCommentModalOpen = false"
+        @save="handleSaveComment"
       />
     </div>
-
-    <!--
-      @add-comment="emit('add-comment')"
-      @delete-comment="emit('delete-comment')" 
-    -->
   </div>
 </template>

@@ -323,6 +323,72 @@ export const useAlbumDetailStore = defineStore('albumDetail', () => {
     }
   }
 
+  async function setTrackComment(trackId: string, comment: string | null) {
+    const track = album.value?.tracks.find((t) => t.id === trackId)
+    const review = album.value?.review
+
+    if (!track) return 
+
+    const existing = track.review
+
+    try {
+      if (existing) {
+        const { error } = await supabase
+          .from('track_review')
+          .update({ comment })
+          .eq('id', existing.id)
+
+        if (error) throw error
+
+        track.review!.comment = comment
+      } else {
+        const { data, error } = await supabase
+          .from('track_review')
+          .insert({ track_id: trackId, album_review_id: review?.id, comment })
+          .select('id, comment, rating')
+          .single()
+
+        if (error) throw error
+
+        track.review = {
+          id: data.id,
+          comment: data.comment,
+          rating: data.rating,
+        }
+      }
+
+      if (review) {
+        review.lastModifiedAt = new Date().toISOString()
+      }
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour du commentaire du titre : ', error)
+    }
+  }
+
+  async function deleteTrackComment(trackId: string) {
+    const track = album.value?.tracks.find((t) => t.id === trackId)
+    const review = album.value?.review
+
+    if (!track || !track.review) return
+
+    try {
+      const { error } = await supabase
+        .from('track_review')
+        .update({ comment: null })
+        .eq('id', track.review.id)
+
+      if (error) throw error
+
+      track.review.comment = null
+
+      if (review) {
+        review.lastModifiedAt = new Date().toISOString()
+      }
+    } catch (error) {
+      console.error('Erreur lors de la suppression du commentaire du titre : ', error)
+    }
+  }
+
   const averageRating = computed(() => {
     const tracks = album.value?.tracks ?? []
     const ratedTracks = tracks.filter((t) => t.review?.rating != null)
@@ -333,5 +399,5 @@ export const useAlbumDetailStore = defineStore('albumDetail', () => {
     return Number((total / ratedTracks.length).toFixed(1))
   })
 
-  return { album, loading, error, notFound, fetchAlbum, updateAlbumComment, isFavoriteTrack, isLeastFavoriteTrack, setFavoriteTrack, setLeastFavoriteTrack, setTrackRating, deleteTrackRating, averageRating }
+  return { album, loading, error, notFound, fetchAlbum, updateAlbumComment, isFavoriteTrack, isLeastFavoriteTrack, setFavoriteTrack, setLeastFavoriteTrack, setTrackRating, deleteTrackRating, setTrackComment, deleteTrackComment, averageRating }
 })

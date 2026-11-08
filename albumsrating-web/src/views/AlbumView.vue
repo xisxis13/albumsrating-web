@@ -142,6 +142,14 @@ function handleDeleteTrackRating(track: AlbumTrack) {
   albumStore.deleteTrackRating(track.id!!)
 }
 
+function handleSetTrackComment(track: AlbumTrack, comment: string | null) {
+  albumStore.setTrackComment(track.id!, comment)
+}
+
+function handleDeleteTrackComment(track: AlbumTrack) {
+  albumStore.deleteTrackComment(track.id!)
+}
+
 const favoriteTrackTitle = computed(() => {
   const trackId = albumStore.album?.review?.favoriteTrackId
   if (!trackId) return null
@@ -357,13 +365,15 @@ const lastModifiedDate = computed(() => {
                 :track-title="track.title"
                 :artists="trackArtists(track)"
                 :review="track.review"
-                :is-in-collection="albumStore.album.review !== null"
-                :is-favorite="albumStore.isFavoriteTrack(track.id!!)"
-                :is-least-favorite="albumStore.isLeastFavoriteTrack(track.id!!)"
+                :is-in-collection="!!albumStore.album?.review"
+                :is-favorite="albumStore.isFavoriteTrack(track.id!)"
+                :is-least-favorite="albumStore.isLeastFavoriteTrack(track.id!)"
                 @set-favorite="handleSetFavoriteTrack(track)"
                 @set-least-favorite="handleSetLeastFavoriteTrack(track)"
-                @set-rating="(rating) => handleSetRating(track, rating)"
+                @set-rating="handleSetRating(track, $event)"
+                @set-comment="handleSetTrackComment(track, $event)"
                 @delete-rating="handleDeleteTrackRating(track)"
+                @delete-comment="handleDeleteTrackComment(track)"
               />
             </li>
           </ol>

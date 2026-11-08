@@ -7,12 +7,14 @@ import {
   HeartOff,
   Star,
   Plus,
+  MessageSquare,
   Trash2,
   ChevronRight
 } from '@lucide/vue'
 
 const props = defineProps<{
   targetEl: HTMLElement | null
+  hasComment?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -20,9 +22,9 @@ const emit = defineEmits<{
   (e: 'set-favorite'): void
   (e: 'set-least-favorite'): void
   (e: 'set-rating', rating: number): void
-  // (e: 'add-comment'): void
+  (e: 'add-comment'): void
   (e: 'delete-rating'): void
-  // (e: 'delete-comment'): void
+  (e: 'delete-comment'): void
 }>()
 
 const targetRef = toRef(props, 'targetEl')
@@ -79,6 +81,16 @@ function handleSelectRating(value: number) {
   isRatingsOpen.value = false
   emit('close')
 }
+
+function handleAddComment() {
+  emit('add-comment')
+  emit('close')
+}
+
+function handleDeleteComment() {
+  emit('delete-comment')
+  emit('close')
+}
 </script>
 
 <template>
@@ -131,14 +143,17 @@ function handleSelectRating(value: number) {
           />
         </button>
 
-        <!-- <button
+        <button
           type="button"
-          @click="emit('add-comment')"
+          @click="handleAddComment"
           class="flex items-center w-full px-3 py-2 gap-3 rounded-small text-on-tertiary-container hover:bg-on-tertiary-container/10 transition-colors cursor-pointer"
         >
-          <Plus class="w-5 h-5" />
-          <span class="label-large text-left">Ajouter un commentaire</span>
-        </button> -->
+          <Plus v-if="!hasComment" class="w-5 h-5" />
+          <MessageSquare v-else class="w-5 h-5" />
+          <span class="label-large text-left">
+            {{ hasComment ? 'Modifier le commentaire' : 'Ajouter un commentaire' }}
+          </span>
+        </button>
       </div>
 
       <div class="flex flex-col p-1 gap-1 rounded-b-medium rounded-t-extra-small bg-tertiary-container shadow-xl shadow-[#47464F]/20">
@@ -151,14 +166,15 @@ function handleSelectRating(value: number) {
           <span class="label-large text-left">Supprimer la note</span>
         </button>
 
-        <!-- <button
+        <button
+          v-if="hasComment"
           type="button"
-          @click="emit('delete-comment')"
+          @click="handleDeleteComment"
           class="flex items-center w-full px-3 py-2 gap-3 rounded-small text-error hover:bg-on-tertiary-container/10 transition-colors cursor-pointer"
         >
           <Trash2 class="w-5 h-5" />
           <span class="label-large text-left">Supprimer le commentaire</span>
-        </button> -->
+        </button>
       </div>
     </div>
 
