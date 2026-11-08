@@ -92,7 +92,7 @@ function handleSaveComment(comment: string | null) {
       class="flex items-center"
     >
       <div v-if="hasComment" class="flex items-center justify-center w-8 h-8" :title="review?.comment || ''">
-        <MessageSquare class="w-4 h-4 text-outline" />
+        <MessageSquare class="w-4.5 h-4.5 text-outline" />
       </div>
 
       <div v-if="isFavorite" class="flex items-center justify-center w-8 h-8">

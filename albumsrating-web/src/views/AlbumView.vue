@@ -232,19 +232,21 @@ const lastModifiedDate = computed(() => {
           v-if="albumStore.album?.review" 
           class="flex gap-3"
         >
-          <span
-            v-if="albumStore.album?.review"
-            class="flex items-center justify-center px-4 py-2 rounded-full bg-secondary-container text-on-secondary-container label-medium"
-          >
-            Dans ma collection
-          </span>
-
-          <button
-            @click="removeFromCollection"
-            class="flex items-center justify-center aspect-square w-10 rounded-full text-on-error-container bg-error-container hover:bg-error hover:text-on-error transition-colors cursor-pointer"
-          >
-            <Trash2 class="w-6 h-6" />
-          </button>
+          <div class="flex gap-0.5 rounded-full overflow-hidden">
+            <span
+              v-if="albumStore.album?.review"
+              class="flex items-center justify-center pl-4 pr-3 py-2 rounded-extra-small bg-secondary-container text-on-secondary-container label-medium"
+            >
+              Dans ma collection
+            </span>
+  
+            <button
+              @click="removeFromCollection"
+              class="flex items-center justify-center pl-3 pr-4 py-2 rounded-extra-small text-on-error-container bg-error-container hover:px-4 hover:bg-error hover:text-on-error hover:rounded-full transition-all cursor-pointer"
+            >
+              <Trash2 class="w-6 h-6" />
+            </button>
+          </div>
 
           <button
             @click="toggleRightMenuState"
@@ -299,14 +301,14 @@ const lastModifiedDate = computed(() => {
             <EighthNotes class="w-13 h-13 text-on-surface-variant" />
           </div>
 
-          <div class="flex flex-col justify-end py-1 gap-2 min-w-0">
-            <span class="title-medium text-on-surface-variant">
+          <div class="flex flex-col justify-end py-4 gap-2 min-w-0">
+            <span class="title-small text-on-surface-variant">
               {{ typeLabels[albumStore.album.albumType] ?? 'Album' }}
             </span>
             <h1 class="display-medium text-on-surface">
               {{ albumStore.album.title }}
             </h1>
-            <span class="title-large text-primary">
+            <span class="title-medium text-primary">
               {{ albumStore.album.artists.join(', ') }}
             </span>
             <span class="body-medium text-on-surface-variant">
@@ -315,27 +317,6 @@ const lastModifiedDate = computed(() => {
                 • {{ totalMinutes }} min
               </template>
             </span>
-
-            <div
-              v-if="albumStore.album?.review"
-              class="flex items-center justify-center w-fit px-3 py-1.5 gap-1 rounded-full bg-primary-container text-on-primary-container"
-            >
-              <Star class="w-4 h-4 fill-current" />
-
-              <span 
-                v-if="albumStore.averageRating"
-                class="title-medium"
-              >
-                {{ albumStore.averageRating.toFixed(1) }}
-              </span>
-
-              <span 
-                v-else
-                class="title-medium"
-              >
-                /
-              </span>
-            </div>
           </div>
         </div>
 
@@ -386,12 +367,44 @@ const lastModifiedDate = computed(() => {
       v-if="isRightMenuOpen"
       class="flex flex-col w-80 shrink-0 h-full p-6 gap-4 rounded-large bg-surface-container-lowest overflow-y-auto"
     >
-      <!-- Global comment -->
-      <div class="flex flex-col w-full gap-0.5 rounded-large overflow-hidden shrink-0">
-        <div class="flex flex-col p-4 gap-2 rounded-extra-small bg-surface-container-low">
-          <span class="title-medium text-on-surface">Commentaire global</span>
+      <span class="title-large text-on-surface">Avis sur l'album</span>
+      <hr class="border-outline-variant">
 
-          <template v-if="!isEditingComment">
+      <!-- Avarage rating -->
+      <div class="flex flex-col items-start pb-2 gap-2">
+        <span class="title-medium text-on-surface">Note moyenne</span>
+
+        <div
+          v-if="albumStore.album?.review"
+          class="flex items-center justify-center w-fit px-3 py-1.5 gap-1 rounded-full bg-primary-container text-on-primary-container"
+        >
+          <Star class="w-4 h-4 fill-current" />
+
+          <span 
+            v-if="albumStore.averageRating"
+            class="title-medium"
+          >
+            {{ albumStore.averageRating.toFixed(1) }}
+          </span>
+
+          <span 
+            v-else
+            class="title-medium"
+          >
+            /
+          </span>
+        </div>
+      </div>
+
+      <!-- Global comment -->
+      <div class="flex flex-col items-start pb-2 gap-2">
+        <span class="title-medium text-on-surface">Commentaire global</span>
+
+        <div class="flex flex-col w-full gap-0.5 rounded-large overflow-hidden shrink-0">
+          <div 
+            v-if="!isEditingComment"
+            class="flex flex-col p-4 gap-2 rounded-extra-small bg-surface-container-low"
+          >
             <span
               v-if="!hasComment"
               class="body-medium text-on-surface-variant italic"
@@ -405,57 +418,55 @@ const lastModifiedDate = computed(() => {
             >
               {{ albumStore.album?.review?.comment }}
             </span>
-          </template>
-        </div>
-
-        <button
-          v-if="!isEditingComment && albumStore.album?.review"
-          @click="startEditing"
-          class="flex items-center justify-center w-full mt-2 px-4 py-3 rounded-extra-small bg-primary-container label-medium whitespace-nowrap text-on-primary-container cursor-pointer hover:bg-primary-container/80 transition-colors"
-        >
-          {{ hasComment ? 'Modifier le commentaire' : 'Ajouter un commentaire' }}
-        </button>
-
-        <form 
-          v-else
-          @submit.prevent="updateAlbumComment"
-          class="flex flex-col gap-0.5"
-        >
-          <textarea 
-            v-model="comment"
-            placeholder="Écrivez votre commentaire..."
-            class="flex-1 min-h-28 px-4 py-3 rounded-extra-small border border-outline-variant bg-surface body-medium text-on-surface outline-none focus:border-primary resize-none"
-          ></textarea>
-
-          <div class="flex gap-0.5">
-            <button
-              type="button"
-              @click="cancelEditing"
-              :disabled="isUpdating"
-              class="flex items-center justify-center flex-1 px-4 py-2.5 rounded-r-extra-small rounded-tl-extra-small rounded-bl-large border border-outline-variant label-medium whitespace-nowrap text-on-surface-variant cursor-pointer hover:border-error hover:text-error"
-            >
-              Annuler
-            </button>
-
-            <button
-              type="submit"
-              :disabled="isUpdating"
-              class="flex items-center justify-center flex-2 px-4 py-2.5 rounded-extra-small bg-primary label-medium whitespace-nowrap text-on-primary cursor-pointer hover:bg-primary/80 disabled:opacity-50 disabled:cursor-wait"
-            >
-              {{ isUpdating ? 'Enregistrement...' : 'Enregistrer' }}
-            </button>
           </div>
-        </form>
+  
+          <button
+            v-if="!isEditingComment && albumStore.album?.review"
+            @click="startEditing"
+            class="flex items-center justify-center w-full mt-2 px-4 py-3 rounded-extra-small bg-primary-container label-medium whitespace-nowrap text-on-primary-container cursor-pointer hover:bg-primary-container/80 transition-colors"
+          >
+            {{ hasComment ? 'Modifier le commentaire' : 'Ajouter un commentaire' }}
+          </button>
+  
+          <form 
+            v-else
+            @submit.prevent="updateAlbumComment"
+            class="flex flex-col gap-0.5"
+          >
+            <textarea 
+              v-model="comment"
+              placeholder="Écrivez votre commentaire..."
+              class="flex-1 min-h-28 px-4 py-3 rounded-t-large rounded-b-extra-small border border-outline-variant bg-surface body-medium text-on-surface outline-none focus:border-primary resize-none"
+            ></textarea>
+  
+            <div class="flex gap-0.5">
+              <button
+                type="button"
+                @click="cancelEditing"
+                :disabled="isUpdating"
+                class="flex items-center justify-center flex-1 px-4 py-2.5 rounded-r-extra-small rounded-tl-extra-small rounded-bl-large border border-outline-variant label-medium whitespace-nowrap text-on-surface-variant cursor-pointer hover:border-error hover:text-error"
+              >
+                Annuler
+              </button>
+  
+              <button
+                type="submit"
+                :disabled="isUpdating"
+                class="flex items-center justify-center flex-2 px-4 py-2.5 rounded-extra-small bg-primary label-medium whitespace-nowrap text-on-primary cursor-pointer hover:bg-primary/80 disabled:opacity-50 disabled:cursor-wait"
+              >
+                {{ isUpdating ? 'Enregistrement...' : 'Enregistrer' }}
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
 
       <!-- Rating distribution -->
-      <div class="flex flex-col gap-0.5 rounded-large overflow-hidden shrink-0">
-        <div class="flex flex-col p-4 gap-4 rounded-extra-small bg-surface-container-low">
-          <div class="flex flex-col items-center justify-center gap-1">
-            <span class="title-medium text-on-surface">Répartition des notes</span>
-          </div>
+      <div class="flex flex-col items-start pb-2 gap-2">
+        <span class="title-medium text-on-surface">Répartition des notes</span>
 
-          <div class="flex items-end justify-between w-full h-44 px-2">
+        <div class="flex flex-col gap-0.5 rounded-large overflow-hidden shrink-0">
+          <div class="flex items-end w-full h-52 p-4 gap-4 rounded-extra-small bg-surface-container-low">
             <RatingDistributionItem 
               v-for="cat in RATING_CATEGORIES"
               :key="cat.value"
@@ -464,16 +475,16 @@ const lastModifiedDate = computed(() => {
               :max-tracks-count="ratingDistribution.maxCount"
             />
           </div>
-        </div>
-
-        <div class="flex items-start justify-start flex-wrap p-4 gap-3 rounded-extra-small bg-surface-container-low">
-          <div 
-            v-for="cat in RATING_CATEGORIES"
-            :key="cat.value"
-            class="flex items-center justify-center w-fit gap-1.5"
-          >
-            <div class="w-4 h-4 rounded-full" :class="cat.colorClass" />
-            <span class="body-medium text-on-surface-variant">{{ cat.label }}</span>
+  
+          <div class="flex items-start justify-start flex-wrap p-4 gap-3 rounded-extra-small bg-surface-container-low">
+            <div 
+              v-for="cat in RATING_CATEGORIES"
+              :key="cat.value"
+              class="flex items-center justify-center w-fit gap-1.5"
+            >
+              <div class="w-4 h-4 rounded-full" :class="cat.colorClass" />
+              <span class="body-medium text-on-surface-variant">{{ cat.label }}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -522,7 +533,7 @@ const lastModifiedDate = computed(() => {
       </div>
 
       <!-- Last modified at -->
-      <span class="body-medium text-on-surface-variant shrink-0">
+      <span class="body-small text-on-surface-variant shrink-0">
         Dernière modification le {{ lastModifiedDate }}
       </span>
     </div>
