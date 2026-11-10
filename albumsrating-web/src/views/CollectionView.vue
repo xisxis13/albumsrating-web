@@ -73,6 +73,9 @@ function remove(item: CollectionItem) {
           <CollectionCardItem
             :to="`/album/${item.album.spotifyId}`"
             :album="item.album"
+            :average-rating="item.album.review.averageRating!!"
+            :rated-tracks="item.album.tracks.filter(t => t.review?.rating != null).length"
+            :total-tracks="item.album.tracks.length"
             @remove="remove(item)"
           />
         </li>

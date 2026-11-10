@@ -2,16 +2,33 @@ import { defineStore } from "pinia"
 import { ref, computed } from "vue"
 import { supabase } from "@/lib/supabase"
 
+export interface CollectionItemReview {
+  id: string
+  averageRating: number | null
+}
+
+export interface CollectionItemTrack {
+  id?: string
+  review: CollectionItemTrackReview | null
+}
+
+export interface CollectionItemTrackReview {
+  id: string
+  rating: number | null
+}
+
 export interface CollectionItem {
   reviewId: string
   addedAt: string
   album: {
     id: string
     spotifyId: string
-    title: string,
+    title: string
     coverUrl: string | null
     releaseYear: number
     artists: string[]
+    tracks: CollectionItemTrack[]
+    review: CollectionItemReview
   }
 }
 
@@ -25,6 +42,14 @@ interface CollectionResponse {
     cover_url: string | null
     release_year: number
     album_artist: { artist: { name: string } }[]
+    tracks: {
+      id: string
+      track_review: { id: string; rating: number | null }[]
+    }[]
+    album_review: { 
+      id: string
+      average_rating: number | null
+    }[]
   }
 }
 
@@ -55,25 +80,40 @@ export const useCollectionStore = defineStore('collection', () => {
     const { data, error: fetchError } = await supabase
       .from('album_review')
       .select(
-        'id, created_at, album(id, spotify_id, title, cover_url, release_year, album_artist(artist(name)))',
+        'id, created_at, album(id, spotify_id, title, cover_url, release_year, album_artist(artist(name)), tracks:track(id, track_review(id, rating)), album_review(id, average_rating))',
       )
       .order('created_at', { ascending: false })
 
     if (fetchError) {
       error.value = 'Impossible de charger votre collection.'
     } else {
-      items.value = (data as unknown as CollectionResponse[]).map((resp) => ({
-        reviewId: resp.id,
-        addedAt: resp.created_at,
-        album: {
-          id: resp.album.id,
-          spotifyId: resp.album.spotify_id,
-          title: resp.album.title,
-          coverUrl: resp.album.cover_url,
-          releaseYear: resp.album.release_year,
-          artists: resp.album.album_artist.map((aa) => aa.artist.name),
-        },
-      }))
+      items.value = (data as unknown as CollectionResponse[]).map((resp) => {
+        const albumReview = resp.album.album_review?.find((ar) => ar.id === resp.id) ?? resp.album.album_review?.[0]
+
+        return {
+          reviewId: resp.id,
+          addedAt: resp.created_at,
+          album: {
+            id: resp.album.id,
+            spotifyId: resp.album.spotify_id,
+            title: resp.album.title,
+            coverUrl: resp.album.cover_url,
+            releaseYear: resp.album.release_year,
+            artists: resp.album.album_artist.map((aa) => aa.artist.name),
+            tracks: (resp.album.tracks ?? []).map((t) => {
+              const tr = t.track_review?.[0] ?? null
+              return {
+                id: t.id,
+                review: tr ? { id: tr.id, rating: tr.rating } : null,
+              }
+            }),
+            review: {
+              id: albumReview?.id ?? resp.id,
+              averageRating: albumReview?.average_rating ?? null,
+            },
+          },
+        }
+      })
       loaded.value = true
     }
 
