@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useAuthStore } from '@/stores/auth'
+import AppIcon from '@/components/AppIcon.vue';
 
 const authStore = useAuthStore()
 </script>
@@ -7,16 +8,7 @@ const authStore = useAuthStore()
 <template>
   <div class="flex flex-col items-center justify-center h-dvh p-3 gap-6 bg-surface">
     <div class="flex items-center justify-center gap-4">
-      <img 
-      src="../assets/app_icon_light.svg" 
-      alt="AlbumsRating icon"
-      class="w-11 aspect-square dark:hidden"
-    />
-    <img 
-      src="../assets/app_icon_dark.svg" 
-      alt="AlbumsRating icon"
-      class="w-11 aspect-square hidden dark:block"
-    />
+      <AppIcon class="w-11 h-11 text-primary" />
 
       <h1 class="headline-medium text-on-surface">AlbumsRating</h1>
     </div>
