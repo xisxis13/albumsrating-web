@@ -23,85 +23,81 @@ function formatYear(date: string) {
 </script>
 
 <template>
-  <main class="flex items-center justify-center h-dvh p-3 gap-3">
-    <NavigationRail />
+  <div class="flex flex-col w-full h-full p-6 gap-6 overflow-scroll rounded-large bg-surface-container-lowest">
+    <h1 class="headline-small text-on-surface">Rechercher un album</h1>
 
-    <div class="flex flex-col w-full h-full p-6 gap-6 overflow-scroll rounded-large bg-surface-container-lowest">
-      <h1 class="headline-small text-on-surface">Rechercher un album</h1>
-
-      <form 
-        @submit.prevent="submit"
-        class="flex gap-3"
+    <form 
+      @submit.prevent="submit"
+      class="flex gap-3"
+    >
+      <input 
+        v-model="input"
+        type="search"
+        placeholder="Titre d'album ou artiste"
+        class="flex-1 px-6 py-3 rounded-full border border-outline-variant bg-surface body-large text-on-surface-variant outline-none focus:border-primary"
       >
-        <input 
-          v-model="input"
-          type="search"
-          placeholder="Titre d'album ou artiste"
-          class="flex-1 px-6 py-3 rounded-full border border-outline-variant bg-surface body-large text-on-surface-variant outline-none focus:border-primary"
-        >
-
-        <button
-          type="submit"
-          :disabled="searchStore.loading || !input.trim()"
-          class="px-6 py-3 rounded-full bg-primary text-on-primary label-large cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          Rechercher
-        </button>
-      </form>
-
-      <p
-        v-if="!searchStore.error"
-        class="body-large text-error"
-      >
-        {{ searchStore.error }}
-      </p>
-
-      <p
-        v-if="collectionStore.error"
-        class="body-large text-error"
-      >
-        {{ collectionStore.error }}
-      </p>
-      
-      <p
-        v-else-if="searchStore.hasSearched && !searchStore.loadMore && searchStore.results.length === 0"
-        class="body-large text-on-surface-variant"
-      >
-        Aucun album trouvé pour "{{ searchStore.query }}"
-      </p>
-
-      <ul
-        v-if="searchStore.results.length"
-        class="grid grid-cols-[repeat(auto-fill,minmax(210px,1fr))] gap-4"
-      >
-        <li
-          v-for="album in searchStore.results"
-          :key="album.spotifyId"
-        >
-          <SearchResultItem
-            :to="`/album/${album.spotifyId}`"
-            :album="album"
-            :is-in-collection="collectionStore.has(album.spotifyId)"
-            :is-adding="collectionStore.isAdding(album.spotifyId)"
-            @add="collectionStore.addAlbum(album.spotifyId)"
-          />
-        </li>
-      </ul>
-
-      <p
-        v-if="searchStore.loading"
-        class="body-large text-on-surface-variant"
-      >
-        Recherche en cours...
-      </p>
 
       <button
-        v-if="searchStore.results.length && searchStore.results.length < searchStore.total && !searchStore.loading"
-        @click="searchStore.loadMore()"
-        class="px-6 py-3 rounded-full border border-outline-variant label-large text-on-surface-variant cursor-pointer hover:border-on-surface hover:text-on-surface"
+        type="submit"
+        :disabled="searchStore.loading || !input.trim()"
+        class="px-6 py-3 rounded-full bg-primary text-on-primary label-large cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        Charger plus de résultat
+        Rechercher
       </button>
-    </div>
-  </main>
+    </form>
+
+    <p
+      v-if="!searchStore.error"
+      class="body-large text-error"
+    >
+      {{ searchStore.error }}
+    </p>
+
+    <p
+      v-if="collectionStore.error"
+      class="body-large text-error"
+    >
+      {{ collectionStore.error }}
+    </p>
+    
+    <p
+      v-else-if="searchStore.hasSearched && !searchStore.loadMore && searchStore.results.length === 0"
+      class="body-large text-on-surface-variant"
+    >
+      Aucun album trouvé pour "{{ searchStore.query }}"
+    </p>
+
+    <ul
+      v-if="searchStore.results.length"
+      class="grid grid-cols-[repeat(auto-fill,minmax(210px,1fr))] gap-4"
+    >
+      <li
+        v-for="album in searchStore.results"
+        :key="album.spotifyId"
+      >
+        <SearchResultItem
+          :to="`/album/${album.spotifyId}`"
+          :album="album"
+          :is-in-collection="collectionStore.has(album.spotifyId)"
+          :is-adding="collectionStore.isAdding(album.spotifyId)"
+          @add="collectionStore.addAlbum(album.spotifyId)"
+        />
+      </li>
+    </ul>
+
+    <p
+      v-if="searchStore.loading"
+      class="body-large text-on-surface-variant"
+    >
+      Recherche en cours...
+    </p>
+
+    <button
+      v-if="searchStore.results.length && searchStore.results.length < searchStore.total && !searchStore.loading"
+      @click="searchStore.loadMore()"
+      class="px-6 py-3 rounded-full border border-outline-variant label-large text-on-surface-variant cursor-pointer hover:border-on-surface hover:text-on-surface"
+    >
+      Charger plus de résultat
+    </button>
+  </div>
 </template>

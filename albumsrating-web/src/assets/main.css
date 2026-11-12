@@ -25,6 +25,7 @@
   --color-on-surface-variant: var(--on-surface-variant);
   --color-outline: var(--outline);
   --color-outline-variant: var(--outline-variant);
+  --color-scrim: var(--scrim);
   --color-surface-container-lowest: var(--surface-container-lowest);
   --color-surface-container-low: var(--surface-container-low);
   --color-surface-container: var(--surface-container);
@@ -92,6 +93,7 @@
   --on-surface-variant: #47464F;
   --outline: #787680;
   --outline-variant: #C8C5D0;
+  --scrim: rgb(0 0 0 / 0.4);
   --surface-container-lowest: #FFFFFF;
   --surface-container-low: #F6F2FA;
   --surface-container: #F0ECF4;
@@ -128,6 +130,7 @@
   --on-surface-variant: #C8C5D0;
   --outline: #928F9A;
   --outline-variant: #47464F;
+  --scrim: rgb(0 0 0 / 0.4);
   --surface-container-lowest: #0E0E13;
   --surface-container-low: #1C1B21;
   --surface-container: #201F25;

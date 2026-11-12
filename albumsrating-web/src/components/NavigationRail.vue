@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useProfileStore } from '@/stores/profile'
 import NavigationRailItem from './NavigationRailItem.vue'
@@ -10,17 +11,29 @@ import {
   TextAlignStart,
   Sun,
   Moon,
+  Menu,
+  X,
 } from 'lucide-vue-next'
 
+const route = useRoute()
 const authStore = useAuthStore()
 const profileStore = useProfileStore()
+
 const isDark = ref(false)
+const isMobileMenuOpen = ref(false)
 
 const navItems = [
   { path: '/', label: 'Accueil', icon: Home },
   { path: '/search', label: 'Recherche', icon: Search },
   { path: '/collection', label: 'Collection', icon: TextAlignStart },
 ]
+
+watch(
+  () => route.path,
+  () => {
+    isMobileMenuOpen.value = false
+  }
+)
 
 function updateFavicon() {
   const favicon = document.querySelector<HTMLLinkElement>('link[rel="icon"]')
@@ -69,7 +82,110 @@ function toggleTheme() {
 </script>
 
 <template>
-  <div class="flex flex-col items-center justify-between h-full py-10">
+  <!-- Header - Mobile -->
+  <header class="flex md:hidden items-center justify-between w-full px-2 py-1 shrink-0">
+    <RouterLink to="/" class="flex items-center gap-3">
+      <AppIcon class="w-8 h-8 text-primary" />
+      <span class="title-large text-on-surface">AlbumsRating</span>
+    </RouterLink>
+
+    <button
+      @click="isMobileMenuOpen = true"
+      aria-label="Ouvrir le menu"
+      class="flex items-center justify-center w-11 h-11 rounded-full text-on-surface hover:bg-surface-container-highest transition-colors cursor-pointer"
+    >
+      <Menu class="w-6 h-6" />
+    </button>
+  </header>
+
+  <!-- Navigation Rail - Mobile -->
+  <Teleport to="body">
+    <div v-if="isMobileMenuOpen" class="fixed inset-0 z-50 flex md:hidden">
+      <div
+        class="fixed inset-0 bg-scrim transition-opacity"
+        @click="isMobileMenuOpen = false"
+      />
+
+      <aside
+        class="relative z-10 flex flex-col justify-between w-72 max-w-[80vw] h-full p-4 rounded-r-large bg-surface-container-low shadow-xl"
+      >
+        <div class="flex flex-col gap-6">
+          <div class="flex items-center justify-between px-1 pt-0.5">
+            <div class="flex items-center gap-3">
+              <AppIcon class="w-8 h-8 text-primary" />
+              <span class="title-large text-on-surface">AlbumsRating</span>
+            </div>
+
+            <button
+              @click="isMobileMenuOpen = false"
+              aria-label="Fermer le menu"
+              class="flex items-center justify-center w-10 h-10 rounded-full text-on-surface-variant hover:bg-surface-container-highest transition-colors cursor-pointer"
+            >
+              <X class="w-5 h-5" />
+            </button>
+          </div>
+
+          <nav class="flex flex-col gap-1">
+            <RouterLink
+              v-for="item in navItems"
+              :key="item.path"
+              :to="item.path"
+              class="flex items-center gap-3 px-4 py-3 rounded-full label-large transition-colors"
+              :class="
+                route.path === item.path
+                  ? 'bg-primary-container text-on-primary-container'
+                  : 'text-on-surface-variant hover:bg-surface-container-highest'
+              "
+            >
+              <component :is="item.icon" class="w-5 h-5 shrink-0" />
+              <span>{{ item.label }}</span>
+            </RouterLink>
+          </nav>
+        </div>
+
+        <!-- Actions du bas (Thème + Profil) -->
+        <div class="flex flex-col gap-2 pt-4 border-t border-outline-variant/40">
+          <button
+            @click="toggleTheme"
+            class="flex items-center gap-3 w-full px-4 py-3 rounded-full label-large text-on-surface-variant hover:bg-surface-container-highest transition-colors cursor-pointer"
+          >
+            <Sun v-if="isDark" class="w-5 h-5 shrink-0" />
+            <Moon v-else class="w-5 h-5 shrink-0" />
+            <span>{{ isDark ? 'Mode clair' : 'Mode sombre' }}</span>
+          </button>
+
+          <RouterLink
+            to="/profile"
+            class="flex items-center gap-3 px-3 py-2 rounded-full hover:bg-surface-container-highest transition-colors"
+          >
+            <img
+              v-if="profileStore.profile?.avatarUrl"
+              :src="profileStore.profile.avatarUrl"
+              referrerpolicy="no-referrer"
+              alt="User avatar"
+              class="w-9 h-9 rounded-full shrink-0"
+            />
+            <div
+              v-else
+              class="flex items-center justify-center w-9 h-9 rounded-full bg-primary-container text-on-primary-container title-medium shrink-0"
+            >
+              {{ profileStore.profile?.displayName?.charAt(0) ?? '?' }}
+            </div>
+
+            <div class="flex flex-col min-w-0">
+              <span class="label-large text-on-surface truncate">
+                {{ profileStore.profile?.displayName ?? 'Mon profil' }}
+              </span>
+              <span class="body-small text-on-surface-variant">Voir le profil</span>
+            </div>
+          </RouterLink>
+        </div>
+      </aside>
+    </div>
+  </Teleport>
+
+  <!-- Navigation Rail - Tablet & Desktop -->
+  <div class="hidden md:flex flex-col items-center justify-between h-full py-10">
     <AppIcon class="w-11 h-11 text-primary" />
 
     <nav>
