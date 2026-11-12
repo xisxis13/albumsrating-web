@@ -19,7 +19,8 @@ export interface CollectionItemTrackReview {
 
 export interface CollectionItem {
   reviewId: string
-  addedAt: string
+  createdAt: string
+  lastModifiedAt: string
   album: {
     id: string
     spotifyId: string
@@ -35,6 +36,7 @@ export interface CollectionItem {
 interface CollectionResponse {
   id: string
   created_at: string
+  last_modified_at: string
   album: {
     id: string
     spotify_id: string
@@ -71,6 +73,15 @@ export const useCollectionStore = defineStore('collection', () => {
     return adding.value.includes(spotifyId)
   }
 
+  const recentlyAdded = computed(() => items.value.slice(0, 5))
+
+  const recentlyUpdated = computed(() =>
+    [...items.value]
+      .filter((item) => item.lastModifiedAt !== item.createdAt)
+      .sort((a, b) => new Date(b.lastModifiedAt).getTime() - new Date(a.lastModifiedAt).getTime())
+      .slice(0, 5),
+  )
+
   async function fetchCollection(force = false) {
     if (loading.value || (loaded.value && !force)) return
 
@@ -80,7 +91,7 @@ export const useCollectionStore = defineStore('collection', () => {
     const { data, error: fetchError } = await supabase
       .from('album_review')
       .select(
-        'id, created_at, album(id, spotify_id, title, cover_url, release_year, album_artist(artist(name)), tracks:track(id, track_review(id, rating)), album_review(id, average_rating))',
+        'id, created_at, last_modified_at, album(id, spotify_id, title, cover_url, release_year, album_artist(artist(name)), tracks:track(id, track_review(id, rating)), album_review(id, average_rating))',
       )
       .order('created_at', { ascending: false })
 
@@ -92,7 +103,8 @@ export const useCollectionStore = defineStore('collection', () => {
 
         return {
           reviewId: resp.id,
-          addedAt: resp.created_at,
+          createdAt: resp.created_at,
+          lastModifiedAt: resp.last_modified_at,
           album: {
             id: resp.album.id,
             spotifyId: resp.album.spotify_id,
@@ -164,5 +176,5 @@ export const useCollectionStore = defineStore('collection', () => {
     adding.value = []
   }
 
-  return { items, loading, loaded, error, count, has, isAdding, fetchCollection, addAlbum, removeAlbum, reset }
+  return { items, loading, loaded, error, count, has, isAdding, recentlyAdded, recentlyUpdated, fetchCollection, addAlbum, removeAlbum, reset }
 })
