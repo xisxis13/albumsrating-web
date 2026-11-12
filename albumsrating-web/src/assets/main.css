@@ -144,66 +144,64 @@
   --skip: #FF8A8A;
 }
 
-@layer components {
-  .display-large {
-    @apply text-display-large leading-tight font-bold;
-  }
+@utility display-large {
+  @apply text-display-large leading-tight font-bold;
+}
 
-  .display-medium {
-    @apply text-display-medium leading-tight font-bold;
-  }
+@utility display-medium {
+  @apply text-display-medium leading-tight font-bold;
+}
 
-  .display-small {
-    @apply text-display-small leading-tight font-bold;
-  }
+@utility display-small {
+  @apply text-display-small leading-tight font-bold;
+}
 
-  .headline-large {
-    @apply text-headline-large leading-tight font-bold;
-  }
+@utility headline-large {
+  @apply text-headline-large leading-tight font-bold;
+}
 
-  .headline-medium {
-    @apply text-headline-medium leading-snug font-bold;
-  }
+@utility headline-medium {
+  @apply text-headline-medium leading-snug font-bold;
+}
 
-  .headline-small {
-    @apply text-headline-small leading-snug font-semibold;
-  }
+@utility headline-small {
+  @apply text-headline-small leading-snug font-semibold;
+}
 
-  .title-large {
-    @apply text-title-large leading-snug font-semibold;
-  }
+@utility title-large {
+  @apply text-title-large leading-snug font-semibold;
+}
 
-  .title-medium {
-    @apply text-title-medium leading-normal font-medium;
-  }
+@utility title-medium {
+  @apply text-title-medium leading-normal font-medium;
+}
 
-  .title-small {
-    @apply text-title-small leading-normal font-medium;
-  }
+@utility title-small {
+  @apply text-title-small leading-normal font-medium;
+}
 
-  .body-large {
-    @apply text-body-large leading-relaxed font-normal;
-  }
+@utility body-large {
+  @apply text-body-large leading-relaxed font-normal;
+}
 
-  .body-medium {
-    @apply text-body-medium leading-relaxed font-normal;
-  }
+@utility body-medium {
+  @apply text-body-medium leading-relaxed font-normal;
+}
 
-  .body-small {
-    @apply text-body-small leading-normal font-normal;
-  }
+@utility body-small {
+  @apply text-body-small leading-normal font-normal;
+}
 
-  .label-large {
-    @apply text-label-large leading-normal font-medium;
-  }
+@utility label-large {
+  @apply text-label-large leading-normal font-medium;
+}
 
-  .label-medium {
-    @apply text-label-medium leading-normal font-medium;
-  }
+@utility label-medium {
+  @apply text-label-medium leading-normal font-medium;
+}
 
-  .label-small {
-    @apply text-label-small leading-normal font-medium;
-  }
+@utility label-small {
+  @apply text-label-small leading-normal font-medium;
 }
 
 @variant dark (&:where(.dark, .dark *));

@@ -24,7 +24,7 @@ const heightPercentage = computed(() => {
 </script>
 
 <template>
-  <div class="flex flex-col items-center justify-end h-full gap-2">
+  <div class="flex flex-col items-center justify-end w-full h-full gap-2">
     <span 
       class="label-large transition-colors" 
       :class="tracksInCategory === 0 ? 'text-outline-variant' : 'text-on-surface'"

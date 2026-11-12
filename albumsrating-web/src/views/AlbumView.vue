@@ -13,6 +13,7 @@ import {
   Heart, 
   HeartOff,
   Star,
+  X,
 } from '@lucide/vue'
 import NavigationRail from '@/components/NavigationRail.vue'
 import TrackRow from '@/components/TrackRow.vue'
@@ -215,7 +216,10 @@ const lastModifiedDate = computed(() => {
 </script>
 
 <template>
-  <div class="flex flex-col flex-1 h-full p-6 gap-6 overflow-y-auto rounded-large bg-surface-container-lowest min-w-0">
+  <div
+    class="flex-col flex-1 min-w-0 min-h-0 w-full md:h-full p-4 sm:p-6 gap-6 overflow-y-auto md:rounded-large md:bg-surface-container-lowest"
+    :class="isRightMenuOpen ? 'hidden md:flex' : 'flex'"
+  >
     <div class="flex justify-between gap-4">
       <button
         @click="goBack"
@@ -285,12 +289,12 @@ const lastModifiedDate = computed(() => {
     </p>
 
     <template v-else-if="albumStore.album">
-      <div class="flex flex-col sm:flex-row gap-6">
+      <div class="flex flex-col items-center sm:flex-row gap-6">
         <img
           v-if="albumStore.album.coverUrl"
           :src="albumStore.album.coverUrl"
           :alt="`Cover de ${albumStore.album.title}`"
-          class="aspect-square w-full sm:w-64 rounded-large object-cover"
+          class="aspect-square w-full max-w-80 sm:w-64 rounded-large object-cover"
         />
 
         <div v-else class="flex items-center justify-center aspect-square w-full sm:w-64 rounded-large bg-surface-container-high">
@@ -298,16 +302,16 @@ const lastModifiedDate = computed(() => {
         </div>
 
         <div class="flex flex-col justify-end py-4 gap-2 min-w-0">
-          <span class="title-small text-on-surface-variant">
+          <span class="title-small text-on-surface-variant text-center sm:text-left">
             {{ typeLabels[albumStore.album.albumType] ?? 'Album' }}
           </span>
-          <h1 class="display-medium text-on-surface">
+          <h1 class="headline-medium sm:display-medium text-on-surface text-center sm:text-left">
             {{ albumStore.album.title }}
           </h1>
-          <span class="title-medium text-primary">
+          <span class="title-medium text-primary text-center sm:text-left">
             {{ albumStore.album.artists.join(', ') }}
           </span>
-          <span class="body-medium text-on-surface-variant">
+          <span class="body-medium text-on-surface-variant text-center sm:text-left">
             {{ albumStore.album.releaseYear }} • {{ albumStore.album.tracks.length }} titre{{ albumStore.album.tracks.length > 1 ? 's' : '' }}
             <template v-if="totalMinutes > 0">
               • {{ totalMinutes }} min
@@ -361,9 +365,19 @@ const lastModifiedDate = computed(() => {
   <!-- Review panel -->
   <div 
     v-if="isRightMenuOpen"
-    class="flex flex-col w-80 shrink-0 h-full p-6 gap-4 rounded-large bg-surface-container-lowest overflow-y-auto"
+    class="flex flex-col flex-1 min-h-0 w-full md:w-80 md:flex-none md:h-full p-4 sm:p-6 gap-4 md:rounded-large sm:bg-surface-container-lowest overflow-y-auto"
   >
-    <span class="title-large text-on-surface">Avis sur l'album</span>
+    <div class="flex items-center justify-between gap-2">
+      <span class="title-large text-on-surface">Avis sur l'album</span>
+
+      <button
+        @click="toggleRightMenuState"
+        aria-label="Fermer le panneau d'avis"
+        class="flex md:hidden items-center justify-center aspect-square w-10 rounded-full text-on-surface-variant hover:bg-surface-container-highest transition-colors cursor-pointer"
+      >
+        <X class="w-6 h-6" />
+      </button>
+    </div>
     <hr class="border-outline-variant">
 
     <!-- Avarage rating -->
