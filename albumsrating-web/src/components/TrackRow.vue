@@ -91,16 +91,16 @@ function handleSaveComment(comment: string | null) {
       v-if="isInCollection"
       class="flex items-center"
     >
-      <div v-if="hasComment" class="flex items-center justify-center w-8 h-8" :title="review?.comment || ''">
-        <MessageSquare class="w-4.5 h-4.5 text-outline" />
-      </div>
-
       <div v-if="isFavorite" class="flex items-center justify-center w-8 h-8">
         <Heart class="w-5 h-5 text-outline" />
       </div>
 
       <div v-if="isLeastFavorite" class="flex items-center justify-center w-8 h-8">
         <HeartOff class="w-5 h-5 text-outline" />
+      </div>
+
+      <div v-if="hasComment" class="flex items-center justify-center w-8 h-8" :title="review?.comment || ''">
+        <MessageSquare class="w-4.5 h-4.5 text-outline" />
       </div>
 
       <div v-if="ratingColorClass" class="flex items-center justify-center w-8 h-8">

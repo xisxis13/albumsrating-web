@@ -6,7 +6,7 @@ const authStore = useAuthStore()
 </script>
 
 <template>
-  <div class="flex flex-col items-center justify-center h-dvh p-3 gap-6 bg-surface">
+  <div class="flex flex-col items-center justify-center h-dvh p-6 gap-6 bg-surface">
     <div class="flex items-center justify-center gap-4">
       <AppIcon class="w-11 h-11 text-primary" />
 
@@ -14,12 +14,15 @@ const authStore = useAuthStore()
     </div>
 
     <div
-      class="flex flex-col items-start justify-center max-w-96 p-6 gap-6 rounded-large bg-surface-container-lowest"
+      class="flex flex-col items-start justify-center max-w-full sm:max-w-96 p-6 gap-6 rounded-large bg-surface-container-lowest"
     >
       <div class="flex flex-col items-start justify-center gap-1">
         <span class="title-large text-on-surface">Ravi de vous revoir,</span>
         <span class="body-medium text-on-surface-variant">
-          Connectez-vous pour récupérer vos données ou inscrivez-vous
+          Connectez-vous avec Google pour retrouver vos notes ou démarrer votre collection.
+        </span>
+        <span class="body-small text-outline">
+          Note : de nouvelles façons de se connecter arriveront bientôt.
         </span>
       </div>
 

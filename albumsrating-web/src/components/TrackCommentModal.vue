@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, nextTick } from 'vue'
 import { X } from '@lucide/vue'
 
 const props = defineProps<{
@@ -15,16 +15,31 @@ const emit = defineEmits<{
 
 const commentText = ref('')
 const isSaving = ref(false)
+const textareaRef = ref<HTMLTextAreaElement | null>(null)
+
+function adjustHeight() {
+  nextTick(() => {
+    if (textareaRef.value) {
+      textareaRef.value.style.height = 'auto'
+      textareaRef.value.style.height = `${textareaRef.value.scrollHeight}px`
+    }
+  })
+}
 
 watch(
   () => props.isOpen,
   (open) => {
     if (open) {
       commentText.value = props.initialComment || ''
+      adjustHeight()
     }
   },
   { immediate: true }
 )
+
+watch(commentText, () => {
+  adjustHeight()
+})
 
 function handleClose() {
   if (isSaving.value) return
@@ -67,10 +82,11 @@ async function handleSubmit() {
         <!-- Form -->
         <form @submit.prevent="handleSubmit" class="flex flex-col gap-4">
           <textarea
+            ref="textareaRef"
             v-model="commentText"
             placeholder="Écrivez votre avis sur ce titre..."
-            rows="4"
-            class="w-full p-3 rounded-small border border-outline-variant bg-surface body-medium text-on-surface outline-none focus:border-primary resize-none"
+            rows="1"
+            class="w-full min-h-44 max-h-60 p-3 rounded-small border border-outline-variant bg-surface body-medium text-on-surface outline-none focus:border-primary resize-none overflow-y-auto"
             autoFocus
           ></textarea>
 

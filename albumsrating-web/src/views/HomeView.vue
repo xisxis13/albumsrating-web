@@ -29,7 +29,7 @@ onMounted(() => {
 
     <template v-if="isAuthenticated">
       <div class="flex flex-col flex-1 min-w-0 h-full p-6 gap-6 overflow-y-auto rounded-large bg-surface-container-lowest">
-        <div class="flex flex-col gap-1">
+        <div class="flex flex-col gap-1 px-1 py-4">
           <span class="title-large text-on-surface-variant">Ravie de vous revoir</span>
           <span class="display-small text-primary">
             {{ profileStore.profile?.displayName?.split(' ')[0] ?? '' }}
