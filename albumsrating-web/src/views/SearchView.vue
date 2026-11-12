@@ -23,7 +23,6 @@ function formatYear(date: string) {
 </script>
 
 <template>
-  <!-- <div class="flex flex-col flex-1 min-w-0 min-h-0 w-full md:h-full p-4 sm:p-6 gap-6 overflow-y-auto md:rounded-large md:bg-surface-container-lowest"></div> -->
   <div class="flex flex-col min-w-0 min-h-0 w-full h-full p-4 sm:p-6 gap-6 overflow-scroll md:rounded-large md:bg-surface-container-lowest">
     <h1 class="headline-small text-on-surface">Rechercher un album</h1>
 

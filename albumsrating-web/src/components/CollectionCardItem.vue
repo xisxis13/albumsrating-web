@@ -49,7 +49,7 @@ const strokeDashoffset = computed(() => {
 </script>
 
 <template>
-  <div class="flex flex-col flex-1 min-w-0 p-4 gap-3 rounded-large bg-surface-container-low">
+  <div class="flex flex-col flex-1 min-w-0 p-3 sm:p-4 gap-3 rounded-large bg-surface-container sm:bg-surface-container-low">
     <RouterLink
       :to="{ name: 'album', params: { spotifyId: album.spotifyId } }"
       class="flex flex-col flex-1 gap-2 rounded-medium cursor-pointer"
@@ -128,7 +128,7 @@ const strokeDashoffset = computed(() => {
 
     <button
       @click="emit('remove')"
-      class="flex items-center justify-center w-full px-4 py-2 rounded-full border border-outline-variant label-medium whitespace-nowrap text-on-surface-variant cursor-pointer hover:border-error hover:text-error"
+      class="flex items-center justify-center w-full px-4 py-2 rounded-full border border-outline-variant label-small sm:label-medium whitespace-nowrap text-on-surface-variant cursor-pointer hover:border-error hover:text-error"
     >
       Retirer
     </button>

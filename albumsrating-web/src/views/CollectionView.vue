@@ -22,7 +22,7 @@ function remove(item: CollectionItem) {
 </script>
 
 <template>
-  <div class="flex flex-col w-full h-full p-6 gap-6 overflow-scroll rounded-large bg-surface-container-lowest">
+  <div class="flex flex-col min-w-0 min-h-0 w-full h-full p-4 sm:p-6 gap-6 overflow-scroll md:rounded-large md:bg-surface-container-lowest">
     <div class="flex justify-between gap-4">
       <h1 class="headline-small text-on-surface">Ma collection</h1>
       <span
@@ -62,7 +62,7 @@ function remove(item: CollectionItem) {
       </RouterLink>
     </div>
 
-    <ul v-else class="grid grid-cols-[repeat(auto-fill,minmax(210px,1fr))] gap-4">
+    <ul v-else class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-[repeat(auto-fill,minmax(210px,1fr))] gap-3 sm:gap-4">
       <li
         v-for="item in collectionStore.items"
         :key="item.reviewId"
