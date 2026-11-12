@@ -21,9 +21,15 @@ onMounted(() => {
 </script>
 
 <template>
-  <main class="flex flex-col md:flex-row items-stretch md:items-center justify-center h-dvh p-3 gap-3">
-    <NavigationRail />
+  <template v-if="route.path !== '/login'">
+    <main class="flex flex-col md:flex-row items-stretch md:items-center justify-center h-dvh md:p-3 gap-3">
+      <NavigationRail />
 
+      <RouterView />
+    </main>
+  </template>
+
+  <template v-else>
     <RouterView />
-  </main>
+  </template>
 </template>
