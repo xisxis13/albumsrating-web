@@ -25,7 +25,7 @@ onMounted(() => {
 
 <template>
   <template v-if="isAuthenticated">
-    <div class="flex flex-col flex-1 min-w-0 min-h-0 w-full md:h-full p-4 sm:p-6 gap-6 overflow-y-auto md:rounded-large bg-surface-container-lowest">
+    <div class="flex flex-col flex-1 min-w-0 min-h-0 w-full md:h-full p-4 sm:p-6 gap-6 overflow-y-auto md:rounded-large md:bg-surface-container-lowest">
       <div class="flex flex-col gap-1 px-1 py-4">
         <span class="title-large text-on-surface-variant">Ravie de vous revoir</span>
         <span class="display-small text-primary">

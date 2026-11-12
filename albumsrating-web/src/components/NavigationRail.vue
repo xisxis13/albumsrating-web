@@ -83,19 +83,22 @@ function toggleTheme() {
 
 <template>
   <!-- Header - Mobile -->
-  <header class="flex md:hidden items-center justify-between w-full px-5 pt-4 shrink-0">
-    <RouterLink to="/" class="flex items-center gap-3">
-      <AppIcon class="w-8 h-8 text-primary" />
-      <span class="title-large text-on-surface">AlbumsRating</span>
-    </RouterLink>
-
-    <button
-      @click="isMobileMenuOpen = true"
-      aria-label="Ouvrir le menu"
-      class="flex items-center justify-center w-11 h-11 rounded-full text-on-surface hover:bg-surface-container-highest transition-colors cursor-pointer"
-    >
-      <Menu class="w-6 h-6" />
-    </button>
+  <header class="flex md:hidden items-center justify-center w-full px-4 pt-4 shrink-0">
+    <div class="flex items-center justify-between w-full px-5 py-4 rounded-full bg-surface-container-low">
+      <RouterLink to="/" class="flex items-center gap-3">
+        <AppIcon class="w-8 h-8 text-primary" />
+        <span class="title-large text-on-surface">AlbumsRating</span>
+      </RouterLink>
+  
+      <button
+        @click="isMobileMenuOpen = true"
+        aria-label="Ouvrir le menu"
+        class="flex items-center justify-center w-11 h-11 rounded-full text-on-surface hover:bg-surface-container-highest transition-colors cursor-pointer"
+      >
+        <Menu class="w-6 h-6" />
+      </button>
+    </div>
+    
   </header>
 
   <!-- Navigation Rail - Mobile -->
@@ -107,7 +110,7 @@ function toggleTheme() {
       />
 
       <aside
-        class="relative z-10 flex flex-col justify-between w-72 max-w-[80vw] h-full p-4 rounded-r-large bg-surface-container-low shadow-xl"
+        class="relative z-10 flex flex-col justify-between w-72 max-w-[80vw] h-full p-4 bg-surface-container-low shadow-xl"
       >
         <div class="flex flex-col gap-6">
           <div class="flex items-center justify-between px-1 pt-0.5">
