@@ -42,7 +42,7 @@ function formatYear(date: string) {
 </script>
 
 <template>
-  <div class="flex flex-col flex-1 min-w-0 p-4 gap-3 rounded-large bg-surface-container-low">
+  <div class="flex flex-col flex-1 min-w-0 p-3 md:p-4 gap-3 rounded-large bg-surface-container-low">
     <RouterLink
       :to="{ name: 'album', params: { spotifyId: album.spotifyId } }"
       class="flex flex-col flex-1 gap-2 rounded-medium cursor-pointer"
@@ -67,7 +67,7 @@ function formatYear(date: string) {
 
     <span
       v-if="isInCollection"
-      class="flex items-center justify-center w-full px-4 py-2 rounded-full bg-primary-container label-medium text-on-primary-container whitespace-nowrap"
+      class="flex items-center justify-center w-full px-4 py-2 rounded-full bg-primary-container label-small sm:label-medium text-on-primary-container whitespace-nowrap"
     >
       Dans ma collection
     </span>
@@ -76,7 +76,7 @@ function formatYear(date: string) {
       v-else
       @click="emit('add')"
       :disabled="isAdding"
-      class="flex items-center justify-center w-full px-4 py-2 rounded-full border border-outline-variant label-medium whitespace-nowrap text-on-surface-variant cursor-pointer hover:border-primary hover:text-primary disabled:opacity-50 disabled:cursor-wait"
+      class="flex items-center justify-center w-full px-4 py-2 rounded-full border border-outline-variant label-small sm:label-medium whitespace-nowrap text-on-surface-variant cursor-pointer hover:border-primary hover:text-primary disabled:opacity-50 disabled:cursor-wait"
     >
       {{ isAdding ? 'Ajout...' : 'Ajouter' }}
     </button>
