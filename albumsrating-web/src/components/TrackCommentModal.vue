@@ -59,23 +59,25 @@ async function handleSubmit() {
   <Teleport to="body">
     <div
       v-if="isOpen"
-      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs"
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-scrim backdrop-blur-xs"
       @click.self="handleClose"
     >
       <div
-        class="flex flex-col w-full max-w-md p-6 gap-4 rounded-large bg-surface-container-lowest shadow-xl border border-outline-variant"
+        class="flex flex-col w-full max-w-130 p-6 gap-4 rounded-large bg-surface-container-low shadow-xl"
       >
         <!-- Modal Header -->
-        <div class="flex items-center justify-between">
-          <div class="flex flex-col">
+        <div class="flex items-center justify-between flex-1">
+          <div class="flex flex-col w-full">
             <span class="label-medium text-on-surface-variant">Commentaire du titre</span>
-            <h3 class="title-large text-on-surface font-semibold truncate">{{ trackTitle }}</h3>
+            <span class="title-large text-on-surface">{{ trackTitle }}</span>
+            <!-- <h3 class="title-large text-on-surface font-semibold truncate">{{ trackTitle }}</h3> -->
           </div>
+
           <button
             @click="handleClose"
-            class="flex items-center justify-center w-8 h-8 rounded-full text-on-surface-variant hover:bg-surface-container-highest transition-colors cursor-pointer"
+            class="flex items-center justify-center aspect-square w-10 rounded-full text-on-surface-variant hover:bg-surface-container-highest transition-colors cursor-pointer"
           >
-            <X class="w-5 h-5" />
+            <X class="w-6 h-6" />
           </button>
         </div>
 
@@ -86,7 +88,7 @@ async function handleSubmit() {
             v-model="commentText"
             placeholder="Écrivez votre avis sur ce titre..."
             rows="1"
-            class="w-full min-h-44 max-h-60 p-3 rounded-small border border-outline-variant bg-surface body-medium text-on-surface outline-none focus:border-primary resize-none overflow-y-auto"
+            class="w-full min-h-36 max-h-60 p-3 rounded-small border border-outline-variant bg-surface body-medium text-on-surface outline-none focus:border-primary resize-none overflow-y-auto"
             autoFocus
           ></textarea>
 
