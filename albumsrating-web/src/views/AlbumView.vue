@@ -413,7 +413,7 @@ const lastModifiedDate = computed(() => {
       <div class="flex flex-col w-full gap-0.5 rounded-large overflow-hidden shrink-0">
         <div 
           v-if="!isEditingComment"
-          class="flex flex-col p-4 gap-2 rounded-extra-small bg-surface-container-low"
+          class="flex flex-col p-4 gap-2 rounded-extra-small bg-surface-container sm:bg-surface-container-low"
         >
           <span
             v-if="!hasComment"
@@ -476,7 +476,7 @@ const lastModifiedDate = computed(() => {
       <span class="title-medium text-on-surface">Répartition des notes</span>
 
       <div class="flex flex-col gap-0.5 rounded-large overflow-hidden shrink-0">
-        <div class="flex items-end w-full h-52 p-4 gap-4 rounded-extra-small bg-surface-container-low">
+        <div class="flex items-end w-full h-52 p-4 gap-4 rounded-extra-small bg-surface-container sm:bg-surface-container-low">
           <RatingDistributionItem 
             v-for="cat in RATING_CATEGORIES"
             :key="cat.value"
@@ -486,7 +486,7 @@ const lastModifiedDate = computed(() => {
           />
         </div>
 
-        <div class="flex items-start justify-start flex-wrap p-4 gap-3 rounded-extra-small bg-surface-container-low">
+        <div class="flex items-start justify-start flex-wrap p-4 gap-3 rounded-extra-small bg-surface-container sm:bg-surface-container-low">
           <div 
             v-for="cat in RATING_CATEGORIES"
             :key="cat.value"
@@ -501,7 +501,7 @@ const lastModifiedDate = computed(() => {
 
     <!-- Favorite / least favorite tracks -->
     <div class="flex flex-col gap-0.5 rounded-large overflow-hidden shrink-0">
-      <div class="flex items-center p-4 gap-3 rounded-extra-small bg-surface-container-low">
+      <div class="flex items-center p-4 gap-3 rounded-extra-small bg-surface-container sm:bg-surface-container-low">
         <span
           class="flex items-center justify-center min-w-12 aspect-square rounded-medium bg-secondary-container text-on-secondary-container label-medium"
         >
@@ -521,7 +521,7 @@ const lastModifiedDate = computed(() => {
         </span>
       </div>
       
-      <div class="flex items-center p-4 gap-3 rounded-extra-small bg-surface-container-low">
+      <div class="flex items-center p-4 gap-3 rounded-extra-small bg-surface-container sm:bg-surface-container-low">
         <span
           class="flex items-center justify-center min-w-12 aspect-square rounded-medium bg-secondary-container text-on-secondary-container label-medium"
         >

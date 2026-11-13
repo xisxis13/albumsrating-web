@@ -28,7 +28,7 @@ function formatDate(value: string | null) {
 </script>
 
 <template>
-  <div class="flex flex-col w-full h-full p-6 gap-6 overflow-scroll rounded-large bg-surface-container-lowest">
+  <div class="flex flex-col min-w-0 min-h-0 w-full h-full p-4 sm:p-6 gap-6 overflow-scroll md:rounded-large md:bg-surface-container-lowest">
     <button
       @click="goBack"
       class="flex items-center justify-center aspect-square w-10 rounded-full text-on-surface-variant hover:bg-surface-container-highest transition-colors cursor-pointer"

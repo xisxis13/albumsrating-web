@@ -84,7 +84,7 @@ function toggleTheme() {
 <template>
   <!-- Header - Mobile -->
   <header class="flex md:hidden items-center justify-center w-full px-4 pt-4 shrink-0">
-    <div class="flex items-center justify-between w-full px-5 py-4 rounded-full bg-surface-container-low">
+    <div class="flex items-center justify-between w-full px-5 py-4 rounded-full bg-surface-container">
       <RouterLink to="/" class="flex items-center gap-3">
         <AppIcon class="w-8 h-8 text-primary" />
         <span class="title-large text-on-surface">AlbumsRating</span>

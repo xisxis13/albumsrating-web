@@ -47,7 +47,7 @@ const strokeDashoffset = computed(() => {
 </script>
 
 <template>
-  <div class="flex flex-col w-52 min-w-52 shrink-0 p-4 gap-3 rounded-large bg-surface-container-low">
+  <div class="flex flex-col w-52 min-w-52 shrink-0 p-4 gap-3 rounded-large bg-surface-container sm:bg-surface-container-low">
     <RouterLink
       :to="{ name: 'album', params: { spotifyId: album.spotifyId } }"
       class="flex flex-col flex-1 gap-2 rounded-medium cursor-pointer"

@@ -72,7 +72,7 @@ function handleSaveComment(comment: string | null) {
 </script>
 
 <template>
-  <div class="flex items-center px-4 py-2.5 gap-3 rounded-extra-small bg-surface-container-low">
+  <div class="flex items-center px-4 py-2.5 gap-3 rounded-extra-small bg-surface-container sm:bg-surface-container-low">
     <span class="w-5 text-center title-small text-on-surface-variant">
       {{ trackNumber }}
     </span>
