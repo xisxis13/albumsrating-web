@@ -289,7 +289,10 @@ const lastModifiedDate = computed(() => {
     </p>
 
     <template v-else-if="albumStore.album">
-      <div class="flex flex-col items-center sm:flex-row gap-6">
+      <div
+        class="flex flex-col items-center gap-6"
+        :class="isRightMenuOpen ? 'xl:flex-row' : 'sm:flex-row'"
+      >
         <img
           v-if="albumStore.album.coverUrl"
           :src="albumStore.album.coverUrl"
@@ -301,17 +304,20 @@ const lastModifiedDate = computed(() => {
           <EighthNotes class="w-13 h-13 text-on-surface-variant" />
         </div>
 
-        <div class="flex flex-col justify-end py-4 gap-2 min-w-0">
-          <span class="title-small text-on-surface-variant text-center sm:text-left">
+        <div
+          class="flex flex-col items-center text-center justify-end py-4 gap-1.5 min-w-0"
+          :class="isRightMenuOpen ? 'xl:items-start xl:text-left' : 'sm:items-start sm:text-left'"
+        >
+          <span class="title-small text-on-surface-variant">
             {{ typeLabels[albumStore.album.albumType] ?? 'Album' }}
           </span>
-          <h1 class="headline-medium sm:display-medium text-on-surface text-center sm:text-left">
+          <h1 class="headline-medium sm:display-medium text-on-surface">
             {{ albumStore.album.title }}
           </h1>
-          <span class="title-medium text-primary text-center sm:text-left">
+          <span class="title-medium text-primary">
             {{ albumStore.album.artists.join(', ') }}
           </span>
-          <span class="body-medium text-on-surface-variant text-center sm:text-left">
+          <span class="body-medium text-on-surface-variant">
             {{ albumStore.album.releaseYear }} • {{ albumStore.album.tracks.length }} titre{{ albumStore.album.tracks.length > 1 ? 's' : '' }}
             <template v-if="totalMinutes > 0">
               • {{ totalMinutes }} min
@@ -475,7 +481,7 @@ const lastModifiedDate = computed(() => {
     <div class="flex flex-col items-start pb-2 gap-2">
       <span class="title-medium text-on-surface">Répartition des notes</span>
 
-      <div class="flex flex-col gap-0.5 rounded-large overflow-hidden shrink-0">
+      <div class="flex flex-col w-full gap-0.5 rounded-large overflow-hidden shrink-0">
         <div class="flex items-end w-full h-52 p-4 gap-4 rounded-extra-small bg-surface-container sm:bg-surface-container-low">
           <RatingDistributionItem 
             v-for="cat in RATING_CATEGORIES"
