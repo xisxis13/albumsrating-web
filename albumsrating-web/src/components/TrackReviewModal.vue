@@ -190,7 +190,7 @@ function handleDeleteComment() {
           <div class="flex flex-col w-full gap-0.5 rounded-large overflow-hidden shrink-0">
             <div 
               v-if="!isEditingComment"
-              class="flex flex-col p-4 gap-2 rounded-extra-small bg-surface-container sm:bg-surface-container-high"
+              class="flex flex-col p-4 gap-2 rounded-extra-small bg-surface-container-high"
             >
               <span
                 v-if="!hasComment"
