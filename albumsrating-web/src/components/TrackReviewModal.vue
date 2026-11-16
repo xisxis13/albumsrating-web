@@ -160,7 +160,7 @@ function handleDeleteComment() {
                 v-model="selectedValue"
                 @change="handleRatingChange"
                 :class="[
-                  'w-full pr-11 py-3 rounded-extra-small bg-surface-container-high body-medium appearance-none cursor-pointer focus:rounded-l-full',
+                  'w-full pr-11 py-3 rounded-extra-small bg-surface-container-high body-medium text-on-surface appearance-none cursor-pointer focus:rounded-l-full',
                   selectedValue === null ? 'pl-4' : 'pl-11',
                 ]"
               >
