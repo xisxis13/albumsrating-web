@@ -3,6 +3,7 @@ import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAlbumDetailStore } from '@/stores/albumDetails'
 import { useCollectionStore } from '@/stores/collection'
+import { RATINGS } from '@/constants/ratings'
 
 import { 
   ArrowLeft, 
@@ -15,7 +16,6 @@ import {
   Star,
   X,
 } from '@lucide/vue'
-import NavigationRail from '@/components/NavigationRail.vue'
 import TrackRow from '@/components/TrackRow.vue'
 import RatingDistributionItem from '@/components/RatingDistributionItem.vue'
 
@@ -36,14 +36,6 @@ const isRightMenuOpen = ref(false)
 const isEditingComment = ref(false)
 const isUpdating = ref(false)
 const comment = ref('')
-
-const RATING_CATEGORIES = [
-  { value: 5, label: 'Incroyable', colorClass: 'bg-masterpiece' },
-  { value: 4, label: 'Très bien', colorClass: 'bg-great' },
-  { value: 3, label: 'Bien', colorClass: 'bg-good' },
-  { value: 2, label: 'Moyen', colorClass: 'bg-mid' },
-  { value: 1, label: 'À zapper', colorClass: 'bg-skip' }
-]
 
 const ratingDistribution = computed(() => {
   const counts: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }
@@ -484,7 +476,7 @@ const lastModifiedDate = computed(() => {
       <div class="flex flex-col w-full gap-0.5 rounded-large overflow-hidden shrink-0">
         <div class="flex items-end w-full h-52 p-4 gap-4 rounded-extra-small bg-surface-container sm:bg-surface-container-low">
           <RatingDistributionItem 
-            v-for="cat in RATING_CATEGORIES"
+            v-for="cat in RATINGS"
             :key="cat.value"
             :rating-category="cat.value"
             :tracks-in-category="ratingDistribution.counts[cat.value] || 0"
@@ -494,11 +486,11 @@ const lastModifiedDate = computed(() => {
 
         <div class="flex items-start justify-start flex-wrap p-4 gap-3 rounded-extra-small bg-surface-container sm:bg-surface-container-low">
           <div 
-            v-for="cat in RATING_CATEGORIES"
+            v-for="cat in RATINGS"
             :key="cat.value"
             class="flex items-center justify-center w-fit gap-1.5"
           >
-            <div class="w-4 h-4 rounded-full" :class="cat.colorClass" />
+            <div class="w-4 h-4 rounded-full" :class="cat.color" />
             <span class="body-medium text-on-surface-variant">{{ cat.label }}</span>
           </div>
         </div>

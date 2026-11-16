@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch, nextTick } from 'vue'
+import { RATINGS } from '@/constants/ratings';
 
 import { X, Trash2, ChevronDown } from '@lucide/vue'
 
@@ -35,14 +36,6 @@ const emit = defineEmits<{
   (e: 'delete-rating'): void
   (e: 'delete-comment'): void
 }>()
-
-const ratings = [
-  { label: 'Incroyable', value: 5, color: 'bg-masterpiece' },
-  { label: 'Très bien', value: 4, color: 'bg-great' },
-  { label: 'Bien', value: 3, color: 'bg-good' },
-  { label: 'Moyen', value: 2, color: 'bg-mid' },
-  { label: 'À zapper', value: 1, color: 'bg-skip' }
-]
 
 const commentText = ref('')
 const isSaving = ref(false)
@@ -154,7 +147,7 @@ function handleDeleteComment() {
               <span
                 v-if="selectedValue !== null"
                 class="absolute left-4 w-4 h-4 rounded-full pointer-events-none"
-                :class="ratings.find(r => r.value === selectedValue)?.color"
+                :class="RATINGS.find(r => r.value === selectedValue)?.color"
               />
               <select
                 v-model="selectedValue"
@@ -165,7 +158,7 @@ function handleDeleteComment() {
                 ]"
               >
                 <option :value="null" disabled>Sélectionner une note</option>
-                <option v-for="rating in ratings" :key="rating.value" :value="rating.value">
+                <option v-for="rating in RATINGS" :key="rating.value" :value="rating.value">
                   {{ rating.label }}
                 </option>
               </select>
