@@ -291,7 +291,7 @@ const lastModifiedDate = computed(() => {
     <template v-else-if="albumStore.album">
       <div
         class="flex flex-col items-center gap-6"
-        :class="isRightMenuOpen ? 'xl:flex-row' : 'sm:flex-row'"
+        :class="isRightMenuOpen ? 'min-[1100px]:flex-row' : 'sm:flex-row'"
       >
         <img
           v-if="albumStore.album.coverUrl"
@@ -306,7 +306,7 @@ const lastModifiedDate = computed(() => {
 
         <div
           class="flex flex-col items-center text-center justify-end py-4 gap-1.5 min-w-0"
-          :class="isRightMenuOpen ? 'xl:items-start xl:text-left' : 'sm:items-start sm:text-left'"
+          :class="isRightMenuOpen ? 'min-[1100px]:items-start min-[1100px]:text-left' : 'sm:items-start sm:text-left'"
         >
           <span class="title-small text-on-surface-variant">
             {{ typeLabels[albumStore.album.albumType] ?? 'Album' }}
