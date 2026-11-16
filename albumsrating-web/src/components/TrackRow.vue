@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue'
 import { Heart, HeartOff, Ellipsis, MessageSquare } from '@lucide/vue'
 import TrackMenu from './TrackMenu.vue'
-import TrackCommentModal from './TrackCommentModal.vue'
+import TrackReviewModal from './TrackReviewModal.vue'
 
 import type { PropType } from 'vue'
 import type { AlbumTrackReview } from '@/stores/albumDetails.ts'
@@ -49,7 +49,7 @@ const emit = defineEmits<{
 
 const triggerBtn = ref<HTMLElement | null>(null)
 const isMenuOpen = ref(false)
-const isCommentModalOpen = ref(false)
+const isTrackReviewModalOpen = ref(false)
 
 const hasComment = computed(() => !!props.review?.comment)
 
@@ -72,7 +72,11 @@ function handleSaveComment(comment: string | null) {
 </script>
 
 <template>
-  <div class="flex items-center px-4 py-2.5 gap-3 rounded-extra-small bg-surface-container sm:bg-surface-container-low">
+  <div 
+    @click="isTrackReviewModalOpen = true"
+    class="flex items-center px-4 py-2.5 gap-3 rounded-extra-small bg-surface-container sm:bg-surface-container-low"
+    :class="isInCollection ? 'hover:bg-surface-container-highest hover:sm:bg-surface-container-high hover:rounded-medium cursor-pointer' : ''"
+  >
     <span class="w-5 text-center title-small text-on-surface-variant">
       {{ trackNumber }}
     </span>
@@ -110,7 +114,7 @@ function handleSaveComment(comment: string | null) {
       <button
         ref="triggerBtn"
         type="button"
-        @click="isMenuOpen = !isMenuOpen"
+        @click.stop="isMenuOpen = !isMenuOpen"
         class="flex items-center justify-center aspect-square w-8 rounded-full text-on-surface-variant hover:bg-surface-container-highest transition-colors cursor-pointer"
       >
         <Ellipsis class="w-6 h-6" />
@@ -119,22 +123,24 @@ function handleSaveComment(comment: string | null) {
       <TrackMenu
         v-if="isMenuOpen"
         :target-el="triggerBtn"
-        :has-comment="hasComment"
+        :is-favorite="isFavorite"
+        :is-least-favorite="isLeastFavorite"
         @close="isMenuOpen = false"
         @set-favorite="emit('set-favorite')"
         @set-least-favorite="emit('set-least-favorite')"
-        @set-rating="emit('set-rating', $event)"
-        @add-comment="isCommentModalOpen = true"
-        @delete-rating="emit('delete-rating')"
-        @delete-comment="emit('delete-comment')"
       />
 
-      <TrackCommentModal
-        :is-open="isCommentModalOpen"
+      <TrackReviewModal
+        :is-open="isTrackReviewModalOpen"
         :track-title="trackTitle"
+        :artists="artists"
         :initial-comment="review?.comment ?? null"
-        @close="isCommentModalOpen = false"
-        @save="handleSaveComment"
+        :initial-rating="review?.rating ?? null"
+        @close="isTrackReviewModalOpen = false"
+        @save-comment="handleSaveComment"
+        @set-rating="emit('set-rating', $event)"
+        @delete-rating="emit('delete-rating')"
+        @delete-comment="emit('delete-comment')"
       />
     </div>
   </div>
