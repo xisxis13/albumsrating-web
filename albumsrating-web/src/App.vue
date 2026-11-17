@@ -4,6 +4,7 @@ import { RouterView } from 'vue-router'
 import { useRoute } from 'vue-router'
 
 import NavigationRail from './components/NavigationRail.vue'
+import ToastContainer from './components/ToastContainer.vue'
 
 const route = useRoute()
 
@@ -32,4 +33,6 @@ onMounted(() => {
   <template v-else>
     <RouterView />
   </template>
+
+  <ToastContainer />
 </template>
