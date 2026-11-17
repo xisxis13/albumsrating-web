@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import { useRouter } from 'vue-router'
-import { useAuthStore } from '@/stores/auth';
+import { useAuthStore } from '@/stores/authStore';
 import { useProfileStore } from '@/stores/profile';
 import { ArrowLeft } from 'lucide-vue-next'
-import NavigationRail from '@/components/NavigationRail.vue';
 
 const router = useRouter()
 const authStore = useAuthStore()

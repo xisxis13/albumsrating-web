@@ -1,14 +1,25 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
-import { RouterView } from 'vue-router'
-import { useRoute } from 'vue-router'
+import { onMounted, ref, watch } from 'vue'
+import { RouterView, useRoute, useRouter } from 'vue-router'
+import { useAuthStore } from './stores/authStore.ts'
 
 import NavigationRail from './components/NavigationRail.vue'
 import ToastContainer from './components/ToastContainer.vue'
 
 const route = useRoute()
+const router = useRouter()
+const authStore = useAuthStore()
 
 const isDark = ref(false)
+
+watch(
+  () => authStore.user,
+  (newUser, oldUser) => {
+    if (!newUser && oldUser && route.path !== '/login') {
+      router.push('/login')
+    }
+  }
+)
 
 onMounted(() => {
   const savedTheme = localStorage.getItem('theme')

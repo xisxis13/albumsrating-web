@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import { useAuthStore } from '@/stores/auth'
+import { useAuthStore } from '@/stores/authStore.ts'
 import { useProfileStore } from '@/stores/profile'
 import NavigationRailItem from './NavigationRailItem.vue'
 import AppIcon from './AppIcon.vue'

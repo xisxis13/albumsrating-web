@@ -1,19 +1,16 @@
 <script setup lang="ts">
 import { onMounted, computed } from 'vue'
 import { RouterLink } from 'vue-router'
-import { useAuthStore } from '@/stores/auth'
+import { useAuthStore } from '@/stores/authStore'
 import { useProfileStore } from '@/stores/profile'
-import { useCollectionStore, type CollectionItem } from '@/stores/collection'
+import { useCollectionStore } from '@/stores/collection'
 
 import { DatabaseX } from '@lucide/vue'
-import NavigationRail from '@/components/NavigationRail.vue'
 import HomeItemCard from '@/components/HomeItemCard.vue'
 
 const authStore = useAuthStore()
 const profileStore = useProfileStore()
 const collectionStore = useCollectionStore()
-
-const isAuthenticated = computed(() => Boolean(authStore.user))
 
 onMounted(() => {
   if (authStore.user) {
@@ -24,7 +21,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <template v-if="isAuthenticated">
+  <template v-if="authStore.isAuthenticated">
     <div class="flex flex-col flex-1 min-w-0 min-h-0 w-full md:h-full p-4 sm:p-6 gap-6 overflow-y-auto md:rounded-large md:bg-surface-container-lowest">
       <div class="flex flex-col gap-1 px-1 py-4">
         <span class="title-large text-on-surface-variant">Ravie de vous revoir</span>

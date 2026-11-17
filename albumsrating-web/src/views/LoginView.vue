@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useAuthStore } from '@/stores/auth'
+import { useAuthStore } from '@/stores/authStore'
 import AppIcon from '@/components/AppIcon.vue';
 
 const authStore = useAuthStore()

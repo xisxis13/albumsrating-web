@@ -10,7 +10,7 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 
-import { useAuthStore } from './stores/auth.ts'
+import { useAuthStore } from './stores/authStore.ts'
 
 const app = createApp(App)
 const pinia = createPinia()
