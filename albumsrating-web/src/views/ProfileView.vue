@@ -2,7 +2,7 @@
 import { onMounted } from 'vue';
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore';
-import { useProfileStore } from '@/stores/profile';
+import { useProfileStore } from '@/stores/profileStore';
 import { ArrowLeft } from 'lucide-vue-next'
 
 const router = useRouter()
@@ -39,10 +39,6 @@ function formatDate(value: string | null) {
       Chargement…
     </p>
 
-    <p v-else-if="profileStore.error" class="body-medium text-error">
-      {{ profileStore.error }}
-    </p>
-
     <template v-else-if="profileStore.profile">
       <div class="flex items-center gap-4">
         <img
@@ -61,20 +57,17 @@ function formatDate(value: string | null) {
 
         <div class="flex flex-col">
           <span class="title-medium text-on-surface">{{ profileStore.profile.displayName }}</span>
-          <span class="body-medium text-on-surface-variant">
-            {{ authStore.user?.email }}
+          <span class="body-small text-on-surface-variant">
+            Membre depuis le {{ formatDate(profileStore.profile.createdAt) }}
           </span>
         </div>
       </div>
-
-      <p class="body-small text-on-surface-variant">
-        Membre depuis le {{ formatDate(profileStore.profile.createdAt) }}
-      </p>
     </template>
 
     <button
       class="w-full px-6 py-3 rounded-full bg-error text-on-error label-large cursor-pointer"
       @click="authStore.signOut()"
+      :disabled="authStore.loading"
     >
       Se déconnecter
     </button>

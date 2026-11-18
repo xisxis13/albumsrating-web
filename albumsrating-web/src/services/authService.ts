@@ -14,7 +14,7 @@ export const authService = {
   async getSession() {
     const { data, error } = await supabase.auth.getSession()
 
-    if (error) throw toAppError(error, 'Impossible de récupérer la session')
+    if (error) throw toAppError(error, 'Impossible de récupérer la session.')
 
     return data.session?.user ? toAuthUser(data.session.user) : null
   },

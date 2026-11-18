@@ -2,7 +2,7 @@
 import { onMounted, computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
-import { useProfileStore } from '@/stores/profile'
+import { useProfileStore } from '@/stores/profileStore'
 import { useCollectionStore } from '@/stores/collection'
 
 import { DatabaseX } from '@lucide/vue'

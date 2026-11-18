@@ -2,6 +2,7 @@
 import { onMounted, ref, watch } from 'vue'
 import { RouterView, useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from './stores/authStore.ts'
+import { useProfileStore } from './stores/profileStore.ts'
 
 import NavigationRail from './components/NavigationRail.vue'
 import ToastContainer from './components/ToastContainer.vue'
@@ -9,14 +10,19 @@ import ToastContainer from './components/ToastContainer.vue'
 const route = useRoute()
 const router = useRouter()
 const authStore = useAuthStore()
+const profileStore = useProfileStore()
 
 const isDark = ref(false)
 
 watch(
   () => authStore.user,
   (newUser, oldUser) => {
-    if (!newUser && oldUser && route.path !== '/login') {
-      router.push('/login')
+    if (!newUser && oldUser) {
+      profileStore.clear()
+
+      if (route.path !== '/login') {
+        router.push('/login')
+      }
     }
   }
 )

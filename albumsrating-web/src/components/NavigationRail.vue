@@ -2,7 +2,7 @@
 import { ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore.ts'
-import { useProfileStore } from '@/stores/profile'
+import { useProfileStore } from '@/stores/profileStore.ts'
 import NavigationRailItem from './NavigationRailItem.vue'
 import AppIcon from './AppIcon.vue'
 import {
