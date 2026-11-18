@@ -102,7 +102,7 @@ function handleColorSchemeChange(event: Event) {
           <SwatchBook class="text-on-surface w-5 h-5" />
           <div class="flex flex-col flex-1">
             <span class="title-medium text-on-surface">Palette de couleur</span>
-            <!-- <span class="body-medium text-outline">Cette fonctionnalité sera disponible dans une prochaine version.</span> -->
+            <span class="body-medium text-outline">Cette fonctionnalité sera disponible dans une prochaine version.</span>
           </div>
 
           <div class="relative">
