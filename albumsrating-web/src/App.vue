@@ -1,40 +1,60 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue'
+import { onMounted, onUnmounted, watch } from 'vue'
 import { RouterView, useRoute, useRouter } from 'vue-router'
-import { useAuthStore } from './stores/authStore.ts'
-import { useProfileStore } from './stores/profileStore.ts'
+import { useAuthStore } from '@/stores/authStore'
+import { useProfileStore } from '@/stores/profileStore'
+import { useSettingsStore } from '@/stores/settingsStore'
 
-import NavigationRail from './components/NavigationRail.vue'
-import ToastContainer from './components/ToastContainer.vue'
+import NavigationRail from '@/components/NavigationRail.vue'
+import ToastContainer from '@/components/ToastContainer.vue'
 
 const route = useRoute()
 const router = useRouter()
 const authStore = useAuthStore()
 const profileStore = useProfileStore()
+const settingsStore = useSettingsStore()
 
-const isDark = ref(false)
+const darkMediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+
+function applyAppearance() {
+  const isDark =
+    settingsStore.theme.value === 'dark' ||
+    ((settingsStore.theme.value as string) === 'system' && darkMediaQuery.matches)
+
+  document.documentElement.classList.toggle('dark', isDark)
+  document.documentElement.dataset.colorScheme = settingsStore.colorScheme.value
+}
 
 watch(
   () => authStore.user,
   (newUser, oldUser) => {
-    if (!newUser && oldUser) {
+    if (newUser) {
+      profileStore.fetchProfile(newUser.id)
+      settingsStore.fetchSettings(newUser.id)
+    } else if (oldUser) {
       profileStore.clear()
+      settingsStore.clear()
 
       if (route.path !== '/login') {
         router.push('/login')
       }
     }
-  }
+  },
+  { immediate: true },
+)
+
+watch(
+  [() => settingsStore.theme.value, () => settingsStore.colorScheme.value],
+  applyAppearance,
+  { immediate: true },
 )
 
 onMounted(() => {
-  const savedTheme = localStorage.getItem('theme')
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+  darkMediaQuery.addEventListener('change', applyAppearance)
+})
 
-  if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-    isDark.value = true
-    document.documentElement.classList.add('dark')
-  }
+onUnmounted(() => {
+  darkMediaQuery.removeEventListener('change', applyAppearance)
 })
 </script>
 

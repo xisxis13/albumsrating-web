@@ -1,9 +1,13 @@
 import { THEMES, COLORSCHEMES } from '@/constants/themes'
 
-export type Theme = (typeof THEMES)[number]['value']
-export type ColorScheme = (typeof COLORSCHEMES)[number]['value']
+export type ThemeOption = (typeof THEMES)[number]
+export type ColorSchemeOption = (typeof COLORSCHEMES)[number]
+
+export type Theme = ThemeOption['value']
+export type ColorScheme = ColorSchemeOption['value']
 
 export interface UserSettings {
+  userId: string
   theme: Theme
   colorScheme: ColorScheme
 }

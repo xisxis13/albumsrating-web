@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, onUnmounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore.ts'
 import { useProfileStore } from '@/stores/profileStore.ts'
+import { useSettingsStore } from '@/stores/settingsStore.ts'
 import NavigationRailItem from './NavigationRailItem.vue'
 import AppIcon from './AppIcon.vue'
 import {
@@ -18,7 +19,9 @@ import {
 const route = useRoute()
 const authStore = useAuthStore()
 const profileStore = useProfileStore()
+const settingsStore = useSettingsStore()
 
+const darkMediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
 const isDark = ref(false)
 const isMobileMenuOpen = ref(false)
 
@@ -33,6 +36,22 @@ watch(
   () => {
     isMobileMenuOpen.value = false
   }
+)
+
+function applyAppearance() {
+  const theme = settingsStore.theme.value
+
+  isDark.value =
+    theme === 'dark' ||
+    (theme === 'system' && darkMediaQuery.matches)
+
+  updateFavicon()
+}
+
+watch(
+  [() => settingsStore.theme.value, () => settingsStore.colorScheme.value],
+  applyAppearance,
+  { immediate: true }
 )
 
 function updateFavicon() {
@@ -56,28 +75,15 @@ onMounted(() => {
     profileStore.fetchProfile(authStore.user.id)
   }
 
-  isDark.value = localStorage.getItem('theme') === 'dark'
-  if (isDark.value) {
-    document.documentElement.classList.add('dark')
-  } else {
-    document.documentElement.classList.remove('dark')
-  }
+  darkMediaQuery.addEventListener('change', applyAppearance)
+})
 
-  updateFavicon()
+onUnmounted(() => {
+  darkMediaQuery.removeEventListener('change', applyAppearance)
 })
 
 function toggleTheme() {
-  isDark.value = !isDark.value
-
-  if (isDark.value) {
-    document.documentElement.classList.add('dark')
-    localStorage.setItem('theme', 'dark')
-  } else {
-    document.documentElement.classList.remove('dark')
-    localStorage.setItem('theme', 'light')
-  }
-
-  updateFavicon()
+  settingsStore.updateTheme(isDark.value ? 'light' : 'dark')
 }
 </script>
 

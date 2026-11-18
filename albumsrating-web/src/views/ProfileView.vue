@@ -1,13 +1,18 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAuthStore } from '@/stores/authStore';
-import { useProfileStore } from '@/stores/profileStore';
+import { useAuthStore } from '@/stores/authStore'
+import { useProfileStore } from '@/stores/profileStore'
+import { useSettingsStore } from '@/stores/settingsStore'
 import { ArrowLeft } from 'lucide-vue-next'
+import { COLORSCHEMES, THEMES } from '@/constants/themes'
+import { Blend, SwatchBook, Info, ChevronRight, ChevronDown } from '@lucide/vue'
+import type { ColorScheme, Theme } from '@/types/userSettings'
 
 const router = useRouter()
 const authStore = useAuthStore()
 const profileStore = useProfileStore()
+const settingsStore = useSettingsStore()
 
 onMounted(() => {
   if (authStore.user) {
@@ -20,9 +25,19 @@ function goBack() {
   else router.push('/')
 }
 
-function formatDate(value: string | null) {
+function formatDate(value: string | null) {
   if (!value) return '-'
   return new Date(value).toLocaleDateString('fr-BE', { dateStyle: 'long' })
+}
+
+function handleThemeChange(event: Event) {
+  const newTheme = (event.target as HTMLSelectElement).value as Theme
+  settingsStore.updateTheme(newTheme)
+}
+
+function handleColorSchemeChange(event: Event) {
+  const newColorScheme = (event.target as HTMLSelectElement).value as ColorScheme
+  settingsStore.updateColorScheme(newColorScheme)
 }
 </script>
 
@@ -61,6 +76,58 @@ function formatDate(value: string | null) {
             Membre depuis le {{ formatDate(profileStore.profile.createdAt) }}
           </span>
         </div>
+      </div>
+
+      <!-- Settings -->
+      <div class="flex flex-col gap-0.5 rounded-large overflow-hidden shrink-0">
+        <div class="flex items-center px-4 py-3 gap-4 rounded-extra-small bg-surface-container sm:bg-surface-container-low">
+          <Blend class="text-on-surface w-5 h-5" />
+          <span class="flex-1 title-medium text-on-surface">Apparence</span>
+
+          <div class="relative">
+            <ChevronDown class="absolute right-3 top-1.5 text-on-surface-variant w-5 h-5 pointer-events-none" />
+            <select
+              v-model="settingsStore.theme.value"
+              @change="handleThemeChange"            
+              class="w-32 px-4 pr-10 py-1 rounded-small body-medium text-right text-on-surface appearance-none cursor-pointer"
+            >
+              <option v-for="theme in THEMES" :key="theme.value" :value="theme.value">
+                {{ theme.label }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div class="flex items-center px-4 py-3 gap-4 rounded-extra-small bg-surface-container sm:bg-surface-container-low">
+          <SwatchBook class="text-on-surface w-5 h-5" />
+          <div class="flex flex-col flex-1">
+            <span class="title-medium text-on-surface">Palette de couleur</span>
+            <span class="body-medium text-outline">Cette fonctionnalité sera disponible dans une prochaine version.</span>
+          </div>
+
+          <div class="relative">
+            <!-- <ChevronDown class="absolute right-3 top-1.5 text-on-surface-variant w-5 h-5 pointer-events-none" /> -->
+            <select
+              disabled
+              v-model="settingsStore.colorScheme.value"
+              @change="handleColorSchemeChange"            
+              class="w-32 px-4 pr-10 py-1 rounded-small body-medium text-right text-on-surface appearance-none cursor-not-allowed"
+            >
+              <option v-for="scheme in COLORSCHEMES" :key="scheme.value" :value="scheme.value">
+                {{ scheme.label }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <!-- <div class="flex items-center px-4 py-3 gap-4 rounded-extra-small bg-surface-container sm:bg-surface-container-low">
+          <Info class="text-on-surface w-5 h-5" />
+          <div class="flex flex-col flex-1">
+            <span class="title-medium text-on-surface">À propos</span>
+            <span class="body-medium text-outline">Version, développeur, feedback</span>
+          </div>
+          <ChevronRight class="text-on-surface-variant w-5 h-5" />
+        </div> -->
       </div>
     </template>
 

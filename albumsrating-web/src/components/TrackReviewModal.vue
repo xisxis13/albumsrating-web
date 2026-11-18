@@ -163,7 +163,7 @@ function handleDeleteComment() {
                 </option>
               </select>
 
-              <ChevronDown class="absolute right-4 w-5 h-5 text-on-surface-variant" />
+              <ChevronDown class="absolute right-4 w-5 h-5 text-on-surface-variant pointer-events-none" />
             </div>
     
             <button
