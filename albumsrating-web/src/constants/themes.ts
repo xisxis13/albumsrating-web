@@ -1,4 +1,4 @@
-import type { UserSettings } from "@/types/userSettings"
+import type { UserSettings } from '@/types/userSettings'
 
 export const THEMES = [
   { label: 'Système', value: 'system' },
@@ -15,7 +15,7 @@ export const COLORSCHEMES = [
   { label: 'Rose', value: 'pink' },
 ] as const
 
-export const DEFAULT_USER_SETTINGS: UserSettings = {
+export const DEFAULT_USER_SETTINGS: Omit<UserSettings, 'userId'> = {
   theme: 'system',
   colorScheme: 'default',
 }
