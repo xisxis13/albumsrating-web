@@ -6,7 +6,7 @@ import { useProfileStore } from '@/stores/profileStore'
 import { useSettingsStore } from '@/stores/settingsStore'
 import { ArrowLeft } from 'lucide-vue-next'
 import { COLORSCHEMES, THEMES } from '@/constants/themes'
-import { Blend, SwatchBook, Info, ChevronRight, ChevronDown } from '@lucide/vue'
+import { Blend, SwatchBook, Info, ChevronRight, ChevronDown, SquareSplitHorizontal } from '@lucide/vue'
 import type { ColorScheme, Theme } from '@/types/userSettings'
 
 const router = useRouter()
@@ -119,6 +119,27 @@ function handleColorSchemeChange(event: Event) {
             </select>
           </div>
         </div>
+
+        <!-- <div class="flex items-center px-4 py-3 gap-4 rounded-extra-small bg-surface-container sm:bg-surface-container-low">
+          <SquareSplitHorizontal class="text-on-surface w-5 h-5" />
+          <div class="flex flex-col flex-1">
+            <span class="title-medium text-on-surface">Position de la navigation</span>
+            <span class="body-medium text-outline">Disponible uniquement en paysage.</span>
+          </div>
+
+          <div class="relative">
+            <ChevronDown class="absolute right-3 top-1.5 text-on-surface-variant w-5 h-5 pointer-events-none" />
+            <select
+              disabled
+
+         
+              class="w-32 px-4 pr-10 py-1 rounded-medium body-medium text-right text-on-surface appearance-none cursor-not-allowed"
+            >
+              <option value="left">Gauche</option>
+              <option value="right">Droite</option>
+            </select>
+          </div>
+        </div> -->
 
         <!-- <div class="flex items-center px-4 py-3 gap-4 rounded-extra-small bg-surface-container sm:bg-surface-container-low">
           <Info class="text-on-surface w-5 h-5" />
