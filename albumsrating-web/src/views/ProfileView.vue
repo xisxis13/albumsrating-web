@@ -80,7 +80,7 @@ function handleColorSchemeChange(event: Event) {
 
       <!-- Settings -->
       <div class="flex flex-col gap-0.5 rounded-large overflow-hidden shrink-0">
-        <div class="flex items-center px-4 py-3 gap-4 rounded-extra-small bg-surface-container sm:bg-surface-container-low">
+        <div class="flex items-center px-4 py-3 pr-3 gap-4 rounded-extra-small bg-surface-container sm:bg-surface-container-low">
           <Blend class="text-on-surface w-5 h-5" />
           <span class="flex-1 title-medium text-on-surface">Apparence</span>
 
@@ -89,7 +89,7 @@ function handleColorSchemeChange(event: Event) {
             <select
               v-model="settingsStore.theme.value"
               @change="handleThemeChange"            
-              class="w-32 px-4 pr-10 py-1 rounded-small body-medium text-right text-on-surface appearance-none cursor-pointer"
+              class="w-32 px-4 pr-10 py-1 rounded-medium body-medium text-right text-on-surface appearance-none cursor-pointer"
             >
               <option v-for="theme in THEMES" :key="theme.value" :value="theme.value">
                 {{ theme.label }}
@@ -98,11 +98,11 @@ function handleColorSchemeChange(event: Event) {
           </div>
         </div>
 
-        <div class="flex items-center px-4 py-3 gap-4 rounded-extra-small bg-surface-container sm:bg-surface-container-low">
+        <div class="flex items-center px-4 py-3 pr-3 gap-4 rounded-extra-small bg-surface-container sm:bg-surface-container-low">
           <SwatchBook class="text-on-surface w-5 h-5" />
           <div class="flex flex-col flex-1">
             <span class="title-medium text-on-surface">Palette de couleur</span>
-            <span class="body-medium text-outline">Cette fonctionnalité sera disponible dans une prochaine version.</span>
+            <!-- <span class="body-medium text-outline">Cette fonctionnalité sera disponible dans une prochaine version.</span> -->
           </div>
 
           <div class="relative">
@@ -111,7 +111,7 @@ function handleColorSchemeChange(event: Event) {
               disabled
               v-model="settingsStore.colorScheme.value"
               @change="handleColorSchemeChange"            
-              class="w-32 px-4 pr-10 py-1 rounded-small body-medium text-right text-on-surface appearance-none cursor-not-allowed"
+              class="w-32 px-4 pr-10 py-1 rounded-medium body-medium text-right text-on-surface appearance-none cursor-not-allowed"
             >
               <option v-for="scheme in COLORSCHEMES" :key="scheme.value" :value="scheme.value">
                 {{ scheme.label }}
