@@ -5,6 +5,7 @@ import { RATINGS } from '@/constants/ratings';
 import { X, Trash2, ChevronDown } from '@lucide/vue'
 
 import type { PropType } from 'vue'
+import type { RatingValue } from '@/types/review';
 
 const props = defineProps({
   isOpen: {
@@ -24,7 +25,7 @@ const props = defineProps({
     default: null,
   },
   initialRating: {
-    type: Number as PropType<number | null>,
+    type: Number as PropType<RatingValue | null>,
     default: null,
   },
 })
@@ -32,7 +33,7 @@ const props = defineProps({
 const emit = defineEmits<{
   (e: 'close'): void
   (e: 'save-comment', comment: string | null): void
-  (e: 'set-rating', rating: number): void
+  (e: 'set-rating', rating: RatingValue): void
   (e: 'delete-rating'): void
   (e: 'delete-comment'): void
 }>()
@@ -41,7 +42,7 @@ const commentText = ref('')
 const isSaving = ref(false)
 const isEditingComment = ref(false)
 const textareaRef = ref<HTMLTextAreaElement | null>(null)
-const selectedValue = ref<number | null>(null)
+const selectedValue = ref<RatingValue | null>(null)
 const hasComment = computed(() => !!props.initialComment)
 
 function adjustHeight() {

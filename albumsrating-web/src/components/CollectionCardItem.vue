@@ -1,14 +1,7 @@
 <script setup lang="ts">
 import { computed, type PropType } from 'vue'
 import { EighthNotes, Star } from '@lucide/vue'
-
-interface Album {
-  spotifyId: string
-  title: string
-  coverUrl?: string | null
-  releaseYear: number
-  artists: string[]
-}
+import type { CollectionAlbum } from '@/types/collection'
 
 const props = defineProps({
   to: {
@@ -16,7 +9,7 @@ const props = defineProps({
     required: true,
   },
   album: {
-    type: Object as PropType<Album>,
+    type: Object as PropType<CollectionAlbum>,
     required: true,
   },
   averageRating: {
@@ -55,13 +48,13 @@ const strokeDashoffset = computed(() => {
       class="flex flex-col flex-1 gap-2 rounded-medium cursor-pointer"
     >
       <div class="aspect-square w-full rounded-medium overflow-hidden">
-        <img 
+        <img
           v-if="album.coverUrl"
-          :src="album.coverUrl" 
+          :src="album.coverUrl"
           :alt="`Cover de ${album.title}`"
           class="aspect-square w-full object-cover"
         >
-  
+
         <div v-else class="flex items-center justify-center aspect-square w-full bg-surface-container-high">
           <EighthNotes class="w-10 h-10 text-on-surface-variant" />
         </div>
@@ -69,7 +62,7 @@ const strokeDashoffset = computed(() => {
 
       <div class="flex flex-col flex-1">
         <span class="title-medium text-on-surface truncate">{{ album.title }}</span>
-        <span class="body-medium text-on-surface-variant truncate">{{ album.artists.join(', ') }}</span>
+        <span class="body-medium text-on-surface-variant truncate">{{ album.artists.map((a) => a.name).join(', ') }}</span>
         <span class="body-small text-outline truncate">{{ album.releaseYear }}</span>
       </div>
 
@@ -79,14 +72,14 @@ const strokeDashoffset = computed(() => {
         >
           <Star class="w-3.5 h-3.5 fill-current" />
 
-          <span 
+          <span
             v-if="averageRating"
             class="label-large"
           >
             {{ averageRating.toFixed(1) }}
           </span>
 
-          <span 
+          <span
             v-else
             class="label-large"
           >

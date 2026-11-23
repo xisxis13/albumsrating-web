@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { useSearchStore } from '@/stores/search'
-import { useCollectionStore } from '@/stores/collection'
-import NavigationRail from '@/components/NavigationRail.vue'
+import { useSearchStore } from '@/stores/searchStore'
+import { useCollectionStore } from '@/stores/collectionStore'
 import SearchResultItem from '@/components/SearchResultItem.vue'
 
 const searchStore = useSearchStore()
@@ -16,21 +15,17 @@ onMounted(() => {
 function submit() {
   searchStore.search(input.value)
 }
-
-function formatYear(date: string) {
-  return date.slice(0, 4)
-}
 </script>
 
 <template>
   <div class="flex flex-col min-w-0 min-h-0 w-full h-full p-4 sm:p-6 gap-6 overflow-scroll md:rounded-large md:bg-surface-container-lowest">
     <h1 class="headline-small text-on-surface">Rechercher un album</h1>
 
-    <form 
+    <form
       @submit.prevent="submit"
       class="flex gap-3"
     >
-      <input 
+      <input
         v-model="input"
         type="search"
         placeholder="Titre d'album ou artiste"
@@ -47,21 +42,7 @@ function formatYear(date: string) {
     </form>
 
     <p
-      v-if="!searchStore.error"
-      class="body-large text-error"
-    >
-      {{ searchStore.error }}
-    </p>
-
-    <p
-      v-if="collectionStore.error"
-      class="body-large text-error"
-    >
-      {{ collectionStore.error }}
-    </p>
-    
-    <p
-      v-else-if="searchStore.hasSearched && !searchStore.loadMore && searchStore.results.length === 0"
+      v-if="searchStore.hasSearched && !searchStore.loading && searchStore.results.length === 0"
       class="body-large text-on-surface-variant"
     >
       Aucun album trouvé pour "{{ searchStore.query }}"

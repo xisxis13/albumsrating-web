@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { useAlbumDetailStore } from '@/stores/albumDetails'
-import { useCollectionStore } from '@/stores/collection'
+import { useAlbumDetailStore } from '@/stores/albumDetailStore'
+import { useCollectionStore } from '@/stores/collectionStore'
 import { RATINGS } from '@/constants/ratings'
 
-import { 
-  ArrowLeft, 
-  EighthNotes, 
+import {
+  ArrowLeft,
+  EighthNotes,
   Trash2,
   PanelRightClose,
   PanelRightOpen,
-  Heart, 
+  Heart,
   HeartOff,
   Star,
   X,
@@ -19,7 +19,8 @@ import {
 import TrackRow from '@/components/TrackRow.vue'
 import RatingDistributionItem from '@/components/RatingDistributionItem.vue'
 
-import type { AlbumTrack } from '@/stores/albumDetails'
+import type { AlbumTrack } from '@/types/album'
+import type { RatingValue } from '@/types/review'
 
 const route = useRoute()
 const router = useRouter()
@@ -62,11 +63,12 @@ function toggleRightMenuState() {
 }
 
 function trackArtists(track: AlbumTrack): string[] {
-  const albumArtists = albumStore.album?.artists ?? []
-  const same = 
-    track.artists.length === albumArtists.length &&
-    track.artists.every((name) => albumArtists.includes(name))
-  return same ? [] : track.artists
+  const albumArtistNames = (albumStore.album?.artists ?? []).map((a) => a.name)
+  const trackArtistNames = track.artists.map((a) => a.name)
+  const same =
+    trackArtistNames.length === albumArtistNames.length &&
+    trackArtistNames.every((name) => albumArtistNames.includes(name))
+  return same ? [] : trackArtistNames
 }
 
 async function addToCollection() {
@@ -77,14 +79,15 @@ async function addToCollection() {
 
 async function removeFromCollection() {
   const album = albumStore.album
-
   if (!album?.review) return
 
   const confirmed = window.confirm(
     `Retirer « ${album.title} » de votre collection ?\nVos notes et commentaires sur cet album seront supprimés.`
   )
+  if (!confirmed) return
 
-  if (confirmed) await collectionStore.removeAlbum(album.review.id)
+  await collectionStore.removeAlbum(album.review.id)
+  isRightMenuOpen.value = false
   await albumStore.fetchAlbum(spotifyId.value, true)
 }
 
@@ -106,53 +109,54 @@ async function updateAlbumComment() {
     isUpdating.value = true
     const newCommentValue = comment.value.trim() || null
     await albumStore.updateAlbumComment(newCommentValue)
-    
-    if (albumStore.album && albumStore.album.review) {
-      albumStore.album.review.comment = newCommentValue
-    }
-  } catch (error) {
-    console.error("Erreur lors de la modification du commentaire.", error)
+    cancelEditing()
+  } catch {
+    // Erreur déjà notifiée par albumDetailStore
   } finally {
     isUpdating.value = false
-    cancelEditing()
   }
 }
 
 async function handleSetFavoriteTrack(track: AlbumTrack) {
-  albumStore.setFavoriteTrack(track.id!!)
+  if (!track.id) return
+  await albumStore.setFavoriteTrack(track.id)
 }
 
 async function handleSetLeastFavoriteTrack(track: AlbumTrack) {
-  albumStore.setLeastFavoriteTrack(track.id!!)
+  if (!track.id) return
+  await albumStore.setLeastFavoriteTrack(track.id)
 }
 
-function handleSetRating(track: AlbumTrack, rating: number) {
-  console.log(`Note reçue pour ${track.title} : ${rating}`)
-  albumStore.setTrackRating(track.id!!, rating)
+function handleSetRating(track: AlbumTrack, rating: RatingValue) {
+  if (!track.id) return
+  albumStore.setTrackRating(track.id, rating)
 }
 
 function handleDeleteTrackRating(track: AlbumTrack) {
-  albumStore.deleteTrackRating(track.id!!)
+  if (!track.id) return
+  albumStore.deleteTrackRating(track.id)
 }
 
 function handleSetTrackComment(track: AlbumTrack, comment: string | null) {
-  albumStore.setTrackComment(track.id!, comment)
+  if (!track.id) return
+  albumStore.setTrackComment(track.id, comment)
 }
 
 function handleDeleteTrackComment(track: AlbumTrack) {
-  albumStore.deleteTrackComment(track.id!)
+  if (!track.id) return
+  albumStore.deleteTrackComment(track.id)
 }
 
 const favoriteTrackTitle = computed(() => {
   const trackId = albumStore.album?.review?.favoriteTrackId
   if (!trackId) return null
-  return albumStore.album?.tracks.find(t => t.id === trackId)?.title
+  return albumStore.album?.tracks.find((t) => t.id === trackId)?.title
 })
 
 const leastFavoriteTrackTitle = computed(() => {
   const trackId = albumStore.album?.review?.leastFavoriteTrackId
   if (!trackId) return null
-  return albumStore.album?.tracks.find(t => t.id === trackId)?.title
+  return albumStore.album?.tracks.find((t) => t.id === trackId)?.title
 })
 
 onMounted(() => {
@@ -202,7 +206,7 @@ const lastModifiedDate = computed(() => {
     month: 'long',
     year: 'numeric',
     hour: '2-digit',
-    minute: '2-digit'
+    minute: '2-digit',
   }).format(date).replace(',', ' à')
 })
 </script>
@@ -221,12 +225,11 @@ const lastModifiedDate = computed(() => {
       </button>
 
       <div
-        v-if="albumStore.album?.review" 
+        v-if="albumStore.album?.review"
         class="flex gap-3"
       >
         <div class="flex gap-0.5 rounded-full overflow-hidden">
           <span
-            v-if="albumStore.album?.review"
             class="flex items-center justify-center pl-4 pr-3 py-2 rounded-extra-small bg-secondary-container text-on-secondary-container label-medium"
           >
             Dans ma collection
@@ -267,13 +270,6 @@ const lastModifiedDate = computed(() => {
     </p>
 
     <p
-      v-else-if="albumStore.error"
-      class="body-medium text-error"
-    >
-      {{ albumStore.error }}
-    </p>
-
-    <p
       v-else-if="albumStore.notFound"
       class="body-medium text-on-surface-variant"
     >
@@ -307,7 +303,7 @@ const lastModifiedDate = computed(() => {
             {{ albumStore.album.title }}
           </h1>
           <span class="title-medium text-primary">
-            {{ albumStore.album.artists.join(', ') }}
+            {{ albumStore.album.artists.map((a) => a.name).join(', ') }}
           </span>
           <span class="body-medium text-on-surface-variant">
             {{ albumStore.album.releaseYear }} • {{ albumStore.album.tracks.length }} titre{{ albumStore.album.tracks.length > 1 ? 's' : '' }}
@@ -361,7 +357,7 @@ const lastModifiedDate = computed(() => {
   </div>
 
   <!-- Review panel -->
-  <div 
+  <div
     v-if="isRightMenuOpen"
     class="flex flex-col flex-1 min-h-0 w-full md:w-80 md:flex-none md:h-full p-4 sm:p-6 gap-4 md:rounded-large sm:bg-surface-container-lowest overflow-y-auto"
   >
@@ -378,7 +374,7 @@ const lastModifiedDate = computed(() => {
     </div>
     <hr class="border-outline-variant">
 
-    <!-- Avarage rating -->
+    <!-- Average rating -->
     <div class="flex flex-col items-start pb-2 gap-2">
       <span class="title-medium text-on-surface">Note moyenne</span>
 
@@ -388,14 +384,14 @@ const lastModifiedDate = computed(() => {
       >
         <Star class="w-4 h-4 fill-current" />
 
-        <span 
+        <span
           v-if="albumStore.averageRating"
           class="title-medium"
         >
           {{ albumStore.averageRating.toFixed(1) }}
         </span>
 
-        <span 
+        <span
           v-else
           class="title-medium"
         >
@@ -409,7 +405,7 @@ const lastModifiedDate = computed(() => {
       <span class="title-medium text-on-surface">Commentaire global</span>
 
       <div class="flex flex-col w-full gap-0.5 rounded-large overflow-hidden shrink-0">
-        <div 
+        <div
           v-if="!isEditingComment"
           class="flex flex-col p-4 gap-2 rounded-extra-small bg-surface-container sm:bg-surface-container-low"
         >
@@ -436,12 +432,12 @@ const lastModifiedDate = computed(() => {
           {{ hasComment ? 'Modifier le commentaire' : 'Ajouter un commentaire' }}
         </button>
 
-        <form 
+        <form
           v-else
           @submit.prevent="updateAlbumComment"
           class="flex flex-col gap-0.5"
         >
-          <textarea 
+          <textarea
             v-model="comment"
             placeholder="Écrivez votre commentaire..."
             class="flex-1 min-h-28 px-4 py-3 rounded-t-large rounded-b-extra-small border border-outline-variant bg-surface body-medium text-on-surface outline-none focus:border-primary resize-none"
@@ -475,7 +471,7 @@ const lastModifiedDate = computed(() => {
 
       <div class="flex flex-col w-full gap-0.5 rounded-large overflow-hidden shrink-0">
         <div class="flex items-end w-full h-52 p-4 gap-4 rounded-extra-small bg-surface-container sm:bg-surface-container-low">
-          <RatingDistributionItem 
+          <RatingDistributionItem
             v-for="cat in RATINGS"
             :key="cat.value"
             :rating-category="cat.value"
@@ -485,7 +481,7 @@ const lastModifiedDate = computed(() => {
         </div>
 
         <div class="flex items-start justify-start flex-wrap p-4 gap-3 rounded-extra-small bg-surface-container sm:bg-surface-container-low">
-          <div 
+          <div
             v-for="cat in RATINGS"
             :key="cat.value"
             class="flex items-center justify-center w-fit gap-1.5"
@@ -505,33 +501,33 @@ const lastModifiedDate = computed(() => {
         >
           <Heart class="w-6 h-6" />
         </span>
-        <span 
+        <span
           v-if="albumStore.album?.review?.favoriteTrackId"
           class="body-medium text-on-surface"
         >
           {{ favoriteTrackTitle }}
         </span>
-        <span 
+        <span
           v-else
           class="body-medium text-on-surface-variant truncate"
         >
           /
         </span>
       </div>
-      
+
       <div class="flex items-center p-4 gap-3 rounded-extra-small bg-surface-container sm:bg-surface-container-low">
         <span
           class="flex items-center justify-center min-w-12 aspect-square rounded-medium bg-secondary-container text-on-secondary-container label-medium"
         >
           <HeartOff class="w-6 h-6" />
         </span>
-        <span 
+        <span
           v-if="albumStore.album?.review?.leastFavoriteTrackId"
           class="body-medium text-on-surface"
         >
           {{ leastFavoriteTrackTitle }}
         </span>
-        <span 
+        <span
           v-else
           class="body-medium text-on-surface-variant"
         >

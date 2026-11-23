@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
-import { useCollectionStore, type CollectionItem } from '@/stores/collection'
+import { useCollectionStore } from '@/stores/collectionStore'
 import { EighthNotes } from '@lucide/vue'
-import NavigationRail from '@/components/NavigationRail.vue'
 import CollectionCardItem from '@/components/CollectionCardItem.vue'
+import type { CollectionItem } from '@/types/collection'
 
 const collectionStore = useCollectionStore()
 
@@ -38,13 +38,6 @@ function remove(item: CollectionItem) {
       class="body-large text-on-surface-variant"
     >
       Chargement...
-    </p>
-
-    <p
-      v-if="collectionStore.error"
-      class="body-large text-error"
-    >
-      {{ collectionStore.error }}
     </p>
 
     <div

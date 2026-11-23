@@ -5,7 +5,7 @@ import TrackMenu from './TrackMenu.vue'
 import TrackReviewModal from './TrackReviewModal.vue'
 
 import type { PropType } from 'vue'
-import type { AlbumTrackReview } from '@/stores/albumDetails.ts'
+import type { RatingValue, TrackReview } from '@/types/review'
 
 const props = defineProps({
   trackNumber: {
@@ -21,7 +21,7 @@ const props = defineProps({
     default: () => [],
   },
   review: { 
-    type: Object as PropType<AlbumTrackReview | null>, 
+    type: Object as PropType<TrackReview | null>, 
     default: null 
   },
   isInCollection: {
@@ -41,7 +41,7 @@ const props = defineProps({
 const emit = defineEmits<{
   (e: 'set-favorite'): void
   (e: 'set-least-favorite'): void
-  (e: 'set-rating', rating: number): void
+  (e: 'set-rating', rating: RatingValue): void
   (e: 'set-comment', comment: string | null): void
   (e: 'delete-rating'): void
   (e: 'delete-comment'): void

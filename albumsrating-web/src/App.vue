@@ -4,6 +4,9 @@ import { RouterView, useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
 import { useProfileStore } from '@/stores/profileStore'
 import { useSettingsStore } from '@/stores/settingsStore'
+import { useCollectionStore } from './stores/collectionStore'
+import { useSearchStore } from './stores/searchStore'
+import { useAlbumDetailStore } from './stores/albumDetailStore'
 
 import NavigationRail from '@/components/NavigationRail.vue'
 import ToastContainer from '@/components/ToastContainer.vue'
@@ -13,6 +16,9 @@ const router = useRouter()
 const authStore = useAuthStore()
 const profileStore = useProfileStore()
 const settingsStore = useSettingsStore()
+const collectionStore = useCollectionStore()
+const searchStore = useSearchStore()
+const albumDetailStore = useAlbumDetailStore()
 
 const darkMediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
 
@@ -34,6 +40,10 @@ watch(
     } else if (oldUser) {
       profileStore.clear()
       settingsStore.clear()
+      profileStore.clear()
+      collectionStore.clear()
+      searchStore.clear()
+      albumDetailStore.clear()
 
       if (route.path !== '/login') {
         router.push('/login')

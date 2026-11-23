@@ -1,27 +1,15 @@
 <script setup lang="ts">
 import type { PropType } from 'vue'
 import { EighthNotes } from '@lucide/vue'
+import type { SearchAlbum } from '@/types/album'
 
-interface Artist {
-  name: string,
-}
-
-interface Album {
-  spotifyId: string
-  title: string
-  coverUrl?: string | null
-  artists: Artist[]
-  releaseDate: string
-  totalTracks: number
-}
-
-const props = defineProps({
+defineProps({
   to: {
     type: String,
     required: true,
   },
   album: {
-    type: Object as PropType<Album>,
+    type: Object as PropType<SearchAlbum>,
     required: true,
   },
   isInCollection: {
@@ -34,7 +22,9 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['add'])
+const emit = defineEmits<{
+  add: []
+}>()
 
 function formatYear(date: string) {
   return date.slice(0, 4)
@@ -47,9 +37,9 @@ function formatYear(date: string) {
       :to="{ name: 'album', params: { spotifyId: album.spotifyId } }"
       class="flex flex-col flex-1 gap-2 rounded-medium cursor-pointer"
     >
-      <img 
+      <img
         v-if="album.coverUrl"
-        :src="album.coverUrl" 
+        :src="album.coverUrl"
         :alt="`Cover de ${album.title}`"
         class="aspect-square w-full rounded-medium object-cover"
       >

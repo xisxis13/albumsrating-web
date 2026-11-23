@@ -3,7 +3,7 @@ import { onMounted, computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
 import { useProfileStore } from '@/stores/profileStore'
-import { useCollectionStore } from '@/stores/collection'
+import { useCollectionStore } from '@/stores/collectionStore'
 
 import { DatabaseX } from '@lucide/vue'
 import HomeItemCard from '@/components/HomeItemCard.vue'
