@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { computed, type PropType } from 'vue'
 import { EighthNotes, Star } from '@lucide/vue'
+import type { Artist } from '@/types/album'
 
 interface Album {
   spotifyId: string
   title: string
   coverUrl?: string | null
   releaseYear: number
-  artists: string[]
+  artists: Artist[]
 }
 
 const props = defineProps({
@@ -67,7 +68,9 @@ const strokeDashoffset = computed(() => {
 
       <div class="flex flex-col flex-1">
         <span class="title-medium text-on-surface truncate">{{ album.title }}</span>
-        <span class="body-medium text-on-surface-variant truncate">{{ album.artists.join(', ') }}</span>
+        <span class="body-medium text-on-surface-variant truncate">
+          {{ album.artists.map((artist) => artist.name).join(', ') }}
+        </span>
         <span class="body-small text-outline truncate">{{ album.releaseYear }}</span>
       </div>
 
