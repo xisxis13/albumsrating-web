@@ -4,9 +4,8 @@ import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
 import { useProfileStore } from '@/stores/profileStore'
 import { useSettingsStore } from '@/stores/settingsStore'
-import { ArrowLeft } from 'lucide-vue-next'
 import { COLORSCHEMES, THEMES } from '@/constants/themes'
-import { Blend, SwatchBook, Info, ChevronRight, ChevronDown, SquareSplitHorizontal } from '@lucide/vue'
+import { ArrowLeft, Blend, SwatchBook, Info, ChevronRight, ChevronDown, SquareSplitHorizontal } from '@lucide/vue'
 import type { ColorScheme, Theme } from '@/types/userSettings'
 
 const router = useRouter()
@@ -141,14 +140,18 @@ function handleColorSchemeChange(event: Event) {
           </div>
         </div> -->
 
-        <!-- <div class="flex items-center px-4 py-3 gap-4 rounded-extra-small bg-surface-container sm:bg-surface-container-low">
+        <RouterLink
+          to="/about"
+          class="flex items-center px-4 py-3 gap-4 rounded-extra-small bg-surface-container sm:bg-surface-container-low hover:bg-surface-container-highest hover:sm:bg-surface-container-high hover:rounded-medium cursor-pointer"
+          title="À propos"
+        >
           <Info class="text-on-surface w-5 h-5" />
           <div class="flex flex-col flex-1">
             <span class="title-medium text-on-surface">À propos</span>
             <span class="body-medium text-outline">Version, développeur, feedback</span>
           </div>
           <ChevronRight class="text-on-surface-variant w-5 h-5" />
-        </div> -->
+        </RouterLink>
       </div>
     </template>
 
