@@ -16,13 +16,21 @@ export const useSettingsStore = defineStore('settings', () => {
 
   const settings = ref<UserSettings | null>(null)
   const loading = ref(false)
+  const themeOverride = ref<Theme | null>(null)
 
   const theme = computed<ThemeOption>(
     () => THEMES.find((t) => t.value === settings.value?.theme) ?? DEFAULT_THEME,
   )
+  const effectiveTheme = computed<Theme>(
+    () => themeOverride.value ?? settings.value?.theme ?? DEFAULT_THEME.value,
+  )
   const colorScheme = computed<ColorSchemeOption>(
     () => COLORSCHEMES.find((c) => c.value === settings.value?.colorScheme) ?? DEFAULT_COLOR_SCHEME,
   )
+
+  function setThemeOverride(newTheme: Theme) {
+    themeOverride.value = newTheme
+  }
 
   async function fetchSettings(userId: string) {
     if (settings.value?.userId === userId) return
@@ -56,6 +64,7 @@ export const useSettingsStore = defineStore('settings', () => {
       if (settings.value) {
         settings.value.theme = newTheme
       }
+      themeOverride.value = null
     } catch (error) {
       notificationStore.error(getErrorMessage(error))
     } finally {
@@ -84,16 +93,19 @@ export const useSettingsStore = defineStore('settings', () => {
 
   function clear() {
     settings.value = null
+    themeOverride.value = null
   }
 
   return {
     settings,
     loading,
     theme,
+    effectiveTheme,
     colorScheme,
     fetchSettings,
     updateTheme,
     updateColorScheme,
+    setThemeOverride,
     clear,
   }
 })

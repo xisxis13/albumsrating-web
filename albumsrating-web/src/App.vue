@@ -24,8 +24,8 @@ const darkMediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
 
 function applyAppearance() {
   const isDark =
-    settingsStore.theme.value === 'dark' ||
-    ((settingsStore.theme.value as string) === 'system' && darkMediaQuery.matches)
+    settingsStore.effectiveTheme === 'dark' ||
+    (settingsStore.effectiveTheme === 'system' && darkMediaQuery.matches)
 
   document.documentElement.classList.toggle('dark', isDark)
   document.documentElement.dataset.colorScheme = settingsStore.colorScheme.value
@@ -54,7 +54,7 @@ watch(
 )
 
 watch(
-  [() => settingsStore.theme.value, () => settingsStore.colorScheme.value],
+  [() => settingsStore.effectiveTheme, () => settingsStore.colorScheme.value],
   applyAppearance,
   { immediate: true },
 )

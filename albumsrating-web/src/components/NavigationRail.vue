@@ -39,7 +39,7 @@ watch(
 )
 
 function applyAppearance() {
-  const theme = settingsStore.theme.value
+  const theme = settingsStore.effectiveTheme
 
   isDark.value =
     theme === 'dark' ||
@@ -49,7 +49,7 @@ function applyAppearance() {
 }
 
 watch(
-  [() => settingsStore.theme.value, () => settingsStore.colorScheme.value],
+  [() => settingsStore.effectiveTheme, () => settingsStore.colorScheme.value],
   applyAppearance,
   { immediate: true }
 )
@@ -83,7 +83,7 @@ onUnmounted(() => {
 })
 
 function toggleTheme() {
-  settingsStore.updateTheme(isDark.value ? 'light' : 'dark')
+  settingsStore.setThemeOverride(isDark.value ? 'light' : 'dark')
 }
 </script>
 
