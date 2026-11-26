@@ -152,7 +152,7 @@ function toggleTheme() {
           </nav>
         </div>
 
-        <!-- Actions du bas (Thème + Profil) -->
+        <!-- Profile + theme toggle button -->
         <div class="flex flex-col gap-2 pt-4 border-t border-outline-variant/40">
           <button
             @click="toggleTheme"
@@ -195,9 +195,11 @@ function toggleTheme() {
 
   <!-- Navigation Rail - Tablet & Desktop -->
   <div class="hidden md:flex flex-col items-center justify-between h-full py-10">
-    <AppIcon class="w-11 h-11 text-primary" />
+    <RouterLink to="/" class="p-1.5 rounded-medium hover:bg-surface-container-high transition-colors">
+      <AppIcon class="w-12 h-12 text-primary" />
+    </RouterLink>
 
-    <nav>
+    <nav class="flex flex-col gap-1">
       <NavigationRailItem
         v-for="item in navItems"
         :key="item.path"
